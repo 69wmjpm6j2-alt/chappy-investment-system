@@ -1,7 +1,16 @@
-name: CIS W04 Ratings Weekly
+name: CIS W04 TradingView Ratings
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "auto / missing / monthly / full / single"
+        required: false
+        default: "auto"
+      ticker:
+        description: "single mode ticker, e.g. RDW"
+        required: false
+        default: ""
   schedule:
     # Saturday JST 07:30 = Friday UTC 22:30
     - cron: "30 22 * * 5"
@@ -12,7 +21,7 @@ permissions:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
 
     steps:
       - name: Checkout
@@ -26,14 +35,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run ratings update
+      - name: Run TradingView ratings update
+        env:
+          MODE: ${{ github.event.inputs.mode || 'auto' }}
+          TICKER: ${{ github.event.inputs.ticker || '' }}
         run: python scripts/cis_ratings_weekly.py
 
       - name: Commit ratings output
         run: |
           git config user.name "cis-bot"
           git config user.email "cis-bot@example.com"
-          git add data/ratings_master.csv output/
+          git add data/ratings_master.csv data/tv_symbol_map.csv output/
           git add data/data_health_log.csv || true
-          git commit -m "CIS ratings weekly update" || echo "No changes"
+          git commit -m "CIS TradingView ratings update" || echo "No changes"
           git push
