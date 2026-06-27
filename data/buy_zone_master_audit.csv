@@ -1,0 +1,76 @@
+﻿ticker,market,name,status,basis_type,probe_price,core_price,strong_price,action_needed
+AVAV,US,AeroVironment,locked_v1,初期基準案_v1.0,150,130,110,OK_locked
+AXON,US,Axon Enterprise,locked_v1,初期基準案_v1.0,410,360,310,OK_locked
+AUR,US,Aurora Innovation,locked_v1,初期基準案_v1.0,5.5,4.5,3.5,OK_locked
+TMDX,US,TransMedics,locked_v1,初期基準案_v1.0,100,85,70,OK_locked
+NOW,US,ServiceNow,locked_v1,初期基準案_v1.0,90,80,70,OK_locked
+RDW,US,Redwire,locked_v1,既存基準移植,16,13,10,OK_locked
+TRMB,US,Trimble,locked_v1,既存基準移植,52,45,39,OK_locked
+VEEV,US,Veeva Systems,locked_v1,既存基準移植,165,145,127.5,OK_locked
+PYPL,US,PayPal,locked_v1,既存基準移植,45,40,35,OK_locked
+TEM,US,Tempus AI,locked_v1,初期基準案_v1.0,45,38,30,OK_locked
+FICO,US,Fair Isaac,locked_v1,初期基準案_v1.0,1350,1200,1050,OK_locked
+AAOI,US,Applied Optoelectronics,locked_v1,初期基準案_v1.0,80,65,50,OK_locked
+OUST,US,Ouster,locked_v1,初期基準案_v1.0,25,20,15,OK_locked
+APH,US,Amphenol,locked_v1,初期基準案_v1.0,85,75,65,OK_locked
+ASPI,US,ASP Isotopes,locked_v1,初期基準案_v1.0,6.5,5.0,4.0,OK_locked
+NBIS,US,Nebius,locked_v1,初期基準案_v1.0,75,60,45,OK_locked
+EWY,US,iShares MSCI South Korea ETF,locked_v1,初期基準案_v1.0,70,65,60,OK_locked
+ISRG,US,Intuitive Surgical,locked_v1,初期基準案_v1.0,450,400,350,OK_locked
+SPGI,US,S&P Global,locked_v1,初期基準案_v1.0,450,410,370,OK_locked
+MELI,US,MercadoLibre,locked_v1,初期基準案_v1.0,1900,1700,1500,OK_locked
+TMO,US,Thermo Fisher,locked_v1,初期基準案_v1.0,460,420,380,OK_locked
+META,US,Meta Platforms,locked_v1,初期基準案_v1.0,620,560,500,OK_locked
+IONQ,US,IonQ,locked_v1,初期基準案_v1.0,35,28,22,OK_locked
+RGTI,US,Rigetti,locked_v1,初期基準案_v1.0,14,11,8,OK_locked
+SDGR,US,Schrodinger,locked_v1,既存基準移植,15,12,10,OK_locked
+RXRX,US,Recursion,locked_v1,既存基準移植,3.5,2.8,2.2,OK_locked
+QCOM,US,Qualcomm,locked_v1,初期基準案_v1.0,150,135,120,OK_locked
+HSAI,US,Hesai,locked_v1,初期基準案_v1.0,14,11,8,OK_locked
+PL,US,Planet Labs,locked_v1,初期基準案_v1.0,5.0,4.0,3.2,OK_locked
+V,US,Visa,locked_v1,既存基準移植,310,300,275,OK_locked
+VRTX,US,Vertex Pharma,locked_v1,初期基準案_v1.0,420,380,340,OK_locked
+DIS,US,Disney,locked_v1,既存基準移植,100,90,82,OK_locked
+KVYO,US,Klaviyo,locked_v1,既存基準移植,15,12,10,OK_locked
+DKNG,US,DraftKings,locked_v1,初期基準案_v1.0,32,28,24,OK_locked
+CRSP,US,CRISPR Therapeutics,locked_v1,初期基準案_v1.0,45,36,28,OK_locked
+BEAM,US,Beam Therapeutics,locked_v1,既存基準移植,26.5,22,18,OK_locked
+ETN,US,Eaton,locked_v1,初期基準案_v1.0,330,290,250,OK_locked
+MSTR,US,MicroStrategy,locked_v1,初期基準案_v1.0,250,200,160,OK_locked
+POET,US,POET Technologies,locked_v1,初期基準案_v1.0,4.5,3.6,2.8,OK_locked
+KITT,US,Nauticus Robotics,locked_v1,初期基準案_v1.0,1.5,1.0,0.7,OK_locked
+AXTI,US,AXT,locked_v1,初期基準案_v1.0,3.0,2.5,2.0,OK_locked
+COHR,US,Coherent,locked_v1,初期基準案_v1.0,85,70,55,OK_locked
+ANET,US,Arista Networks,locked_v1,初期基準案_v1.0,95,80,65,OK_locked
+DDOG,US,Datadog,locked_v1,初期基準案_v1.0,125,105,85,OK_locked
+SNOW,US,Snowflake,locked_v1,初期基準案_v1.0,180,150,125,OK_locked
+OPTX,US,Syntec Optics,locked_v1,初期基準案_v1.0,1.5,1.1,0.8,OK_locked
+AEM,US,Agnico Eagle Mines,locked_v1,初期基準案_v1.0,120,105,90,OK_locked
+ZETA,US,Zeta Global,locked_v1,初期基準案_v1.0,13,10,8,OK_locked
+SPCX,US,SpaceX/SPCX,watch_only,特殊確認,,,,ticker確認
+7974.T,JP,任天堂,locked_v1,初期基準案_v1.0,10000,9000,8000,OK_locked
+6383.T,JP,ダイフク,locked_v1,初期基準案_v1.0,3000,2700,2400,OK_locked
+5401.T,JP,日本製鉄,locked_v1,初期基準案_v1.0,3000,2700,2400,OK_locked
+4901.T,JP,富士フイルム,locked_v1,初期基準案_v1.0,3000,2700,2400,OK_locked
+3407.T,JP,旭化成,locked_v1,初期基準案_v1.0,950,850,760,OK_locked
+3402.T,JP,東レ,locked_v1,初期基準案_v1.0,850,760,680,OK_locked
+3405.T,JP,クラレ,locked_v1,既存基準移植,1550,1400,1250,OK_locked
+2871.T,JP,ニチレイ,locked_v1,初期基準案_v1.0,3600,3200,2800,OK_locked
+8601.T,JP,大和証券G,locked_v1,初期基準案_v1.0,950,850,750,OK_locked
+8410.T,JP,セブン銀行,locked_v1,初期基準案_v1.0,290,260,230,OK_locked
+6902.T,JP,デンソー,locked_v1,初期基準案_v1.0,2000,1800,1600,OK_locked
+6758.T,JP,ソニーG,locked_v1,既存基準移植,3400,3200,3000,OK_locked
+5020.T,JP,ENEOS,locked_v1,既存基準移植,850,780,700,OK_locked
+4063.T,JP,信越化学,locked_v1,既存基準移植,4900,4500,4100,OK_locked
+4042.T,JP,東ソー,locked_v1,既存基準移植,2650,2400,2200,OK_locked
+1911.T,JP,住友林業,locked_v1,既存基準移植,1300,1150,1000,OK_locked
+1928.T,JP,積水ハウス,locked_v1,初期基準案_v1.0,3200,2900,2600,OK_locked
+6326.T,JP,クボタ,locked_v1,初期基準案_v1.0,2000,1800,1600,OK_locked
+7267.T,JP,ホンダ,locked_v1,既存基準移植,1450,1300,1150,OK_locked
+6501.T,JP,日立,locked_v1,初期基準案_v1.0,3500,3200,2900,OK_locked
+9861.T,JP,吉野家HD,locked_v1,初期基準案_v1.0,2800,2500,2200,OK_locked
+7821.T,JP,前田工繊,locked_v1,既存基準移植,2000,1800,1600,OK_locked
+1377.T,JP,サカタのタネ,locked_v1,初期基準案_v1.0,3400,3000,2700,OK_locked
+6287.T,JP,サトーHD,locked_v1,既存基準移植,2300,2100,1900,OK_locked
+4368.T,JP,扶桑化学,locked_v1,初期基準案_v1.0,4000,3600,3200,OK_locked
+9432.T,JP,NTT/日本電信電話,locked_v1,初期基準案_v1.0,145,135,125,OK_locked

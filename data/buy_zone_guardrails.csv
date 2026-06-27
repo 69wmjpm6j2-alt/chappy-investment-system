@@ -1,0 +1,6 @@
+﻿rule,status,description
+price_scale_guard,enabled,現在値が本命価格の0.25倍未満または4倍超の場合、買い場判定を停止して価格スケール要確認にする
+split_reverse_split_watch,enabled,株式分割/逆分割/ティッカー変更候補はdata_health_logにWARN以上で記録
+microcap_size_limit,enabled,KITT/OPTX/POET/AXTI/RGTIなどは判定が強く買いたいでも最大投資額を別途制限
+mstr_btc_condition,enabled,MSTRは株価だけでなくBTCトレンド・mNAV/プレミアム確認を必須にする
+buyzone_daily_lock,enabled,buy_zone_master.csvは毎日自動更新しない。月次レビューで変更候補を出すだけ
