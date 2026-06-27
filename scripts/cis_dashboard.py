@@ -3,7 +3,6 @@ from pathlib import Path
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import html
-import re
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
@@ -52,10 +51,6 @@ def extract_between(text, start_patterns, stop_patterns=None, max_lines=120):
 
 
 def md_to_html(md):
-    """
-    依存パッケージなしの簡易Markdown変換。
-    iPhoneで読みやすい表示を優先する。
-    """
     out = []
     in_ul = False
 
@@ -115,23 +110,32 @@ def main():
     buy = newest("cis_buy_alert_*.md")
     weekly = newest("cis_t04_weekly_report_*.md")
     monthly = newest("buy_zone_monthly_review_*.md")
+    ratings = newest("ratings_weekly_*.md")
 
     buy_text = read_text(buy)
     weekly_text = read_text(weekly)
     monthly_text = read_text(monthly)
+    ratings_text = read_text(ratings)
+
+    ratings_summary = extract_between(
+        ratings_text,
+        ["## iPhoneでまず見るところ", "## サマリー", "サマリー"],
+        ["## 古い/未取得", "## 上昇余地"],
+        max_lines=60,
+    )
 
     buy_summary = extract_between(
         buy_text,
         ["## 今日のサマリー", "今日のサマリー"],
-        ["## 詳細", "## 見送り", "## 条件", "## 価格", "## 本命から", "## 見送り・その他"],
-        max_lines=80,
+        ["## まず見る候補"],
+        max_lines=50,
     )
 
     buy_candidates = extract_between(
         buy_text,
         ["## まず見る候補・全件", "まず見る候補・全件", "まず見る候補"],
         ["## 詳細"],
-        max_lines=90,
+        max_lines=120,
     )
 
     weekly_summary = extract_between(
@@ -151,6 +155,7 @@ def main():
     copy_latest(buy, "buy_alert_latest.md")
     copy_latest(weekly, "weekly_report_latest.md")
     copy_latest(monthly, "buy_zone_monthly_review_latest.md")
+    copy_latest(ratings, "ratings_latest.md")
 
     css = """
 :root {
@@ -169,17 +174,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.55;
 }
-header {
-  margin-bottom: 14px;
-}
-h1 {
-  font-size: 24px;
-  margin: 0 0 4px;
-}
-.sub {
-  color: var(--muted);
-  font-size: 13px;
-}
+header { margin-bottom: 14px; }
+h1 { font-size: 24px; margin: 0 0 4px; }
+.sub { color: var(--muted); font-size: 13px; }
 .card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -188,37 +185,14 @@ h1 {
   margin: 12px 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
-h2 {
-  font-size: 19px;
-  margin: 0 0 8px;
-}
-h3 {
-  font-size: 17px;
-  margin: 12px 0 6px;
-}
-h4 {
-  font-size: 15px;
-  margin: 10px 0 4px;
-}
-p {
-  margin: 6px 0;
-}
-ul {
-  padding-left: 18px;
-  margin: 6px 0 10px;
-}
-li {
-  margin: 5px 0;
-}
-a {
-  color: #0f62fe;
-  text-decoration: none;
-}
-.links {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-}
+h2 { font-size: 19px; margin: 0 0 8px; }
+h3 { font-size: 17px; margin: 12px 0 6px; }
+h4 { font-size: 15px; margin: 10px 0 4px; }
+p { margin: 6px 0; }
+ul { padding-left: 18px; margin: 6px 0 10px; }
+li { margin: 5px 0; }
+a { color: #0f62fe; text-decoration: none; }
+.links { display: grid; grid-template-columns: 1fr; gap: 8px; }
 .linkbtn {
   display: block;
   padding: 10px 12px;
@@ -235,11 +209,7 @@ a {
   background: #eef2ff;
   margin-bottom: 8px;
 }
-.footer {
-  color: var(--muted);
-  font-size: 12px;
-  padding: 12px 2px 28px;
-}
+.footer { color: var(--muted); font-size: 12px; padding: 12px 2px 28px; }
 """
 
     html_body = f"""<!doctype html>
@@ -265,6 +235,12 @@ a {
   </section>
 
   <section class="card">
+    <span class="badge">レーティング品質</span>
+    <h2>TradingView / 代替レーティング更新状況</h2>
+    {md_to_html(ratings_summary)}
+  </section>
+
+  <section class="card">
     <span class="badge">土曜見る</span>
     <h2>週間騰落まとめ</h2>
     {md_to_html(weekly_summary)}
@@ -280,6 +256,7 @@ a {
     <h2>詳細リンク</h2>
     <div class="links">
       <a class="linkbtn" href="latest/buy_alert_latest.md">最新の買い場アラート全文</a>
+      <a class="linkbtn" href="latest/ratings_latest.md">最新のレーティング更新全文</a>
       <a class="linkbtn" href="latest/weekly_report_latest.md">最新の週間騰落全文</a>
       <a class="linkbtn" href="latest/buy_zone_monthly_review_latest.md">最新の月次レビュー全文</a>
       <a class="linkbtn" href="https://github.com/69wmjpm6j2-alt/chappy-investment-system/actions">GitHub Actions</a>

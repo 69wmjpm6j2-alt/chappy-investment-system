@@ -4,15 +4,13 @@ import pandas as pd
 import yfinance as yf
 from cis_common import DATA, OUT, today_jst, active_watchlist, append_health
 
-# 判定ルール
 SCALE_HARD_HIGH_RATIO = 10.0
 SCALE_SOFT_HIGH_RATIO = 4.0
 SCALE_HARD_LOW_RATIO = 0.25
-NEAR_TOLERANCE_PCT = 1.0  # 0〜1%程度の微小到達は「近接」に逃がす
+NEAR_TOLERANCE_PCT = 1.0
 
-# 表示・優先度ルール
 MICROCAP_SIZE_LIMIT = {"KITT", "OPTX", "POET", "AXTI", "RGTI"}
-LOW_PRIORITY_PROBE = {"8410.T", "7821.T"}  # 低ボラ/試金石/優先度を落とす打診枠
+LOW_PRIORITY_PROBE = {"8410.T", "7821.T"}
 SCALE_SENSITIVE_TICKERS = {"NOW", "RGTI", "MSTR", "POET", "KITT", "AXTI", "OPTX", "SPCX"}
 
 SPECIAL_STATUS_DISPLAY = {
@@ -35,7 +33,7 @@ def is_blank(x):
     except Exception:
         pass
     s = str(x).strip().lower()
-    return s == "" or s in {"nan", "none", "null"}
+    return s == "" or s in {"nan", "none", "null", "na", "n/a", "--", "—"}
 
 
 def safe_float(x):
@@ -118,39 +116,126 @@ def get_price_snapshot(ticker):
         return None
 
 
+def load_ratings():
+    p = DATA / "ratings_master.csv"
+    if not p.exists():
+        return pd.DataFrame(columns=["ticker"])
+    try:
+        return pd.read_csv(p)
+    except Exception:
+        return pd.DataFrame(columns=["ticker"])
+
+
+def rating_record(ratings, ticker):
+    if ratings.empty or "ticker" not in ratings.columns:
+        return None
+    rr = ratings[ratings["ticker"].astype(str).eq(str(ticker))]
+    if rr.empty:
+        return None
+    return rr.iloc[0].to_dict()
+
+
+def rating_freshness_suffix(r):
+    if r is None:
+        return ""
+    status = str(r.get("status", ""))
+    source = str(r.get("source_used", ""))
+    rating_date = r.get("rating_date", "")
+    stale_days = r.get("stale_days", "")
+    freshness = str(r.get("freshness", ""))
+
+    if status in {"not_applicable_non_us", "not_applicable_etf", "watch_only"}:
+        return ""
+
+    if freshness == "fresh":
+        return f" / 更新 {rating_date}" if not is_blank(rating_date) else ""
+
+    if freshness == "manual":
+        return f" / 手動補完 {rating_date}" if not is_blank(rating_date) else " / 手動補完"
+
+    if freshness in {"cache_ok", "cache_stale"} or "previous_cache" in source:
+        days = "—" if is_blank(stale_days) else str(int(float(stale_days)))
+        label = "前回値" if freshness == "cache_ok" else "古い前回値"
+        return f" / {label} {rating_date or '日付不明'}（{days}日経過）"
+
+    return ""
+
+
 def rating_line(ratings, ticker, market, asset_type):
     if market == "JP":
         return "レーティング：国内株は任意補完待ち"
     if asset_type == "etf":
         return "レーティング：対象外（ETF）"
 
-    if ratings.empty or "ticker" not in ratings.columns:
-        return "レーティング：未更新"
+    r = rating_record(ratings, ticker)
+    if r is None:
+        return "レーティング：未取得（ratings_masterに行なし）"
 
-    rr = ratings[ratings["ticker"].astype(str).eq(str(ticker))]
-    if rr.empty:
-        return "レーティング：未更新"
-
-    r = rr.iloc[0]
+    source = r.get("source_used", "未取得")
     analyst_count = r.get("analyst_count", "")
     consensus = r.get("consensus", "")
     avg_target = r.get("avg_target", "")
     upside = r.get("upside_pct", "")
-    source_used = r.get("source_used", "")
     status = str(r.get("status", "")).strip()
+    note = str(r.get("note", "")).strip()
 
-    values = [source_used, analyst_count, consensus, avg_target, upside]
-    if all(is_blank(v) for v in values):
-        if status in {"not_applicable", "ETF_no_analyst_required"}:
+    if all(is_blank(v) for v in [analyst_count, consensus, avg_target, upside]):
+        if status in {"not_applicable_non_us", "not_applicable_etf", "watch_only"}:
             return "レーティング：対象外"
-        return "レーティング：未更新"
+        suffix = rating_freshness_suffix(r)
+        return f"レーティング：未取得 / status={status}{suffix}"
 
-    source = "未更新" if is_blank(source_used) else str(source_used)
     ac = "—" if is_blank(analyst_count) else str(analyst_count)
     con = "—" if is_blank(consensus) else str(consensus)
     tgt = fmt_num(avg_target)
     up = fmt_pct(upside)
-    return f"レーティング：{source} / {ac}人 / {con} / 平均目標 {tgt} / 乖離 {up}"
+    suffix = rating_freshness_suffix(r)
+    return f"レーティング：{source} / {ac}人 / {con} / 平均目標 {tgt} / 乖離 {up}{suffix}"
+
+
+def rating_brief(ratings, ticker, market, asset_type):
+    if market == "JP":
+        return "評：国内任意"
+    if asset_type == "etf":
+        return "評：ETF対象外"
+
+    r = rating_record(ratings, ticker)
+    if r is None:
+        return "評：未取得"
+
+    status = str(r.get("status", ""))
+    source = str(r.get("source_used", ""))
+    analyst_count = r.get("analyst_count", "")
+    consensus = r.get("consensus", "")
+    avg_target = r.get("avg_target", "")
+    up = r.get("upside_pct", "")
+    freshness = str(r.get("freshness", ""))
+    stale_days = r.get("stale_days", "")
+
+    if all(is_blank(v) for v in [analyst_count, consensus, avg_target, up]):
+        if status in {"not_applicable_non_us", "not_applicable_etf", "watch_only"}:
+            return "評：対象外"
+        return f"評：未取得({status})"
+
+    if source.startswith("TradingView"):
+        src = "TV"
+    elif "Yahoo" in source:
+        src = "YF"
+    elif "previous_cache" in source:
+        src = "前回"
+    else:
+        src = source.replace(" fallback", "")[:8]
+
+    ac = "—" if is_blank(analyst_count) else str(analyst_count)
+    con = "—" if is_blank(consensus) else str(consensus)
+    age = ""
+    if freshness in {"cache_ok", "cache_stale"} or "previous_cache" in source:
+        days = "—" if is_blank(stale_days) else str(int(float(stale_days)))
+        age = f" {days}日古"
+        if freshness == "cache_stale":
+            age = f" 古い{days}日"
+
+    return f"評：{src}{age} {ac}人 {con} 目標{fmt_num(avg_target)} 乖離{fmt_pct(up)}"
 
 
 def basis_display(status):
@@ -244,7 +329,11 @@ def card_sort_key(card):
 
 
 def short_line(card):
-    return f"{card['ticker']}｜{card['name']}｜判定：{card['decision']}｜現在値：{fmt_num(card['price'])}｜本命：{fmt_num(card['core'])}｜{distance_label(card['price'], card['core'], '本命')}"
+    return (
+        f"{card['ticker']}｜{card['name']}｜判定：{card['decision']}｜"
+        f"現在値：{fmt_num(card['price'])}｜本命：{fmt_num(card['core'])}｜"
+        f"{distance_label(card['price'], card['core'], '本命')}｜{card['rating_brief']}"
+    )
 
 
 def add_quick_section(lines, title, cards):
@@ -260,9 +349,7 @@ def add_quick_section(lines, title, cards):
 def main():
     wl = active_watchlist()
     bz = pd.read_csv(DATA / "buy_zone_master.csv")
-
-    ratings_path = DATA / "ratings_master.csv"
-    ratings = pd.read_csv(ratings_path) if ratings_path.exists() else pd.DataFrame(columns=["ticker"])
+    ratings = load_ratings()
 
     health = []
     cards = []
@@ -277,7 +364,6 @@ def main():
         if b.empty:
             probe = core = strong = None
             raw_basis_status = "missing"
-            basis_reason = "buy_zone_masterに行がない"
             health.append([ticker, market, "ERROR", "基準未設定", "buy_zone_master", "missing row"])
         else:
             b = b.iloc[0]
@@ -285,7 +371,6 @@ def main():
             core = safe_float(b.get("core_price", ""))
             strong = safe_float(b.get("strong_price", ""))
             raw_basis_status = str(b.get("status", ""))
-            basis_reason = "" if is_blank(b.get("basis_reason", "")) else str(b.get("basis_reason", ""))
 
         snap = get_price_snapshot(ticker) if asset_type != "watch_only" else None
         if snap is None:
@@ -302,15 +387,14 @@ def main():
 
         note_parts = []
 
-        # v1.3.1特殊ステータスは価格ロジックより優先
         if raw_basis_status in SPECIAL_STATUS_DISPLAY:
             decision = SPECIAL_STATUS_DISPLAY[raw_basis_status]
             if raw_basis_status == "scale_rebase_pending_v1_3_1":
                 note_parts.append("通常買い場判定から一時除外。価格スケール/分割/逆分割/取得ソース確認待ち。")
-                health.append([ticker, market, "INFO", "価格スケール確認待ち", "buy_zone_master", basis_reason])
+                health.append([ticker, market, "INFO", "価格スケール確認待ち", "buy_zone_master", "basis status"])
             elif raw_basis_status == "conditional_no_price_signal_v1_3_1":
                 note_parts.append("通常買い場判定から除外。条件確認後のみ判断。")
-                health.append([ticker, market, "INFO", "条件確認待ち", "buy_zone_master", basis_reason])
+                health.append([ticker, market, "INFO", "条件確認待ち", "buy_zone_master", "basis status"])
             elif raw_basis_status == "watch_only":
                 note_parts.append("取引可能ティッカー未確認。価格判定しない。")
         else:
@@ -340,6 +424,7 @@ def main():
         dist = distance_pct(price, core)
         ratio = None if price is None or core is None or core == 0 else price / core
         rline = rating_line(ratings, ticker, market, asset_type)
+        rbrief = rating_brief(ratings, ticker, market, asset_type)
         note = " / ".join([n for n in note_parts if n])
 
         card = {
@@ -359,6 +444,7 @@ def main():
             "gap_ratio": ratio,
             "decision": decision,
             "rating": rline,
+            "rating_brief": rbrief,
             "basis_status": raw_basis_status,
             "basis_display": basis_display(raw_basis_status),
             "note": note,
@@ -370,7 +456,6 @@ def main():
 
     cards = sorted(cards, key=card_sort_key)
 
-    # 優先度別に全件表示する
     main_buy_cards = [c for c in cards if c["decision"] in {"強く買いたい", "本命買い"} and c["ticker"] not in MICROCAP_SIZE_LIMIT]
     probe_cards_all = [c for c in cards if c["decision"] == "打診買い" and c["ticker"] not in MICROCAP_SIZE_LIMIT]
     low_priority_cards = [c for c in probe_cards_all if c["ticker"] in LOW_PRIORITY_PROBE]
@@ -413,7 +498,7 @@ def main():
         f"実行日：{today} JST",
         "対象：監視リスト全銘柄",
         "ルール：buy_zone_master.csvを読むだけ。毎日ゴールをずらさない。",
-        "v4.1対応：まず見る候補を全件表示し、本命買い/打診買い/近接/低優先/超小型を分離。",
+        "v4.2対応：まず見る候補を全件表示し、本命買い/打診買い/近接/低優先/超小型を分離。候補行にもレーティングを表示。",
         "",
         "## 今日のサマリー",
         f"本命買い以上：{len(main_buy_cards)}件",
@@ -478,7 +563,7 @@ def main():
     with open(csv_path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=[
             "ticker", "market", "name", "theme", "asset_type", "price", "price_date", "daily_pct", "daily_diff",
-            "probe", "core", "strong", "distance", "gap_ratio", "decision", "rating",
+            "probe", "core", "strong", "distance", "gap_ratio", "decision", "rating", "rating_brief",
             "basis_status", "basis_display", "note"
         ])
         writer.writeheader()
