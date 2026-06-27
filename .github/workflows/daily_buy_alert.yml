@@ -1,0 +1,37 @@
+name: CIS D03 Buy Alert
+
+on:
+  workflow_dispatch:
+  schedule:
+    # JST 08:00 = UTC 23:00
+    - cron: "0 23 * * 0-4"
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run buy alert
+        run: python scripts/cis_buy_alert.py
+
+      - name: Commit output and data
+        run: |
+          git config user.name "cis-bot"
+          git config user.email "cis-bot@example.com"
+          git add output/ data/
+          git commit -m "CIS buy alert update" || echo "No changes"
+          git push
