@@ -92,3 +92,9 @@
 2026-06-27T22:28:43.579543+09:00,W04_ratings,4368.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
 2026-06-27T22:28:43.579547+09:00,W04_ratings,9432.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
 2026-06-27T22:28:43.579552+09:00,W04_ratings,W04,US,WARN,coverage_low,ratings_master,US stock rating coverage 0.0%
+2026-06-27T22:29:59.070326+09:00,D03_buy_alert,EWY,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-06-27T22:29:59.070347+09:00,D03_buy_alert,PL,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-06-27T22:29:59.070353+09:00,D03_buy_alert,MSTR,US,INFO,条件確認待ち,buy_zone_master,basis status
+2026-06-27T22:29:59.070358+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-06-27T22:29:59.070363+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-06-27T22:29:59.070367+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
