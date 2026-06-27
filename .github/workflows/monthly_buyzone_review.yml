@@ -1,0 +1,38 @@
+name: CIS M01 Buy Zone Monthly Review
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Monthly review: JST 08:00 around the 28th = UTC 23:00 on the 27th
+    - cron: "0 23 27 * *"
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run monthly buy zone review
+        run: python scripts/cis_buyzone_monthly_review.py
+
+      - name: Commit monthly review output
+        run: |
+          git config user.name "cis-bot"
+          git config user.email "cis-bot@example.com"
+          git add output/
+          git add data/data_health_log.csv || true
+          git commit -m "CIS monthly buy zone review" || echo "No changes"
+          git push
