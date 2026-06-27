@@ -3,6 +3,7 @@ import csv
 import html as html_lib
 import json
 import os
+from pathlib import Path
 import re
 import time
 import urllib.request
