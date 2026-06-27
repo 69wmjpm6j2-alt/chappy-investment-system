@@ -1,1 +1,7 @@
 ﻿run_datetime,task,ticker,market,severity,status,source,message
+2026-06-27T19:32:25.558306+09:00,D03_buy_alert,NBIS,US,INFO,高値圏/基準再点検候補,buy_zone_master/yfinance,本命価格の4.62倍。価格異常とは断定せず、高値圏/基準再点検候補として扱う。
+2026-06-27T19:32:25.558327+09:00,D03_buy_alert,PL,US,INFO,高値圏/基準再点検候補,buy_zone_master/yfinance,本命価格の7.73倍。価格異常とは断定せず、高値圏/基準再点検候補として扱う。
+2026-06-27T19:32:25.558334+09:00,D03_buy_alert,AXTI,US,WARN,価格スケール要確認,buy_zone_master/yfinance,価格スケール要確認（現在値/本命=35.08倍）
+2026-06-27T19:32:25.558340+09:00,D03_buy_alert,COHR,US,INFO,高値圏/基準再点検候補,buy_zone_master/yfinance,本命価格の6.34倍。価格異常とは断定せず、高値圏/基準再点検候補として扱う。
+2026-06-27T19:32:25.558345+09:00,D03_buy_alert,OPTX,US,WARN,価格スケール要確認,buy_zone_master/yfinance,価格スケール要確認（現在値/本命=13.20倍）
+2026-06-27T19:32:25.558350+09:00,D03_buy_alert,5401.T,JP,WARN,価格スケール要確認,buy_zone_master/yfinance,価格スケール要確認（現在値/本命=0.20倍）
