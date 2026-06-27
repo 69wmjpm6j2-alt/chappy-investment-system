@@ -19,7 +19,7 @@ from cis_common import DATA, OUT, active_watchlist, append_health
 JST = ZoneInfo("Asia/Tokyo")
 
 TV_SCANNER_ENDPOINT = "https://scanner.tradingview.com/america/scan"
-USER_AGENT = "Mozilla/5.0 (compatible; CIS-TradingView-Ratings/0.5)"
+USER_AGENT = "Mozilla/5.0 (compatible; CIS-TradingView-Ratings/0.6.3)"
 
 TV_REFRESH_DAYS = 30
 TV_CACHE_OLD_DAYS = 60
@@ -50,6 +50,13 @@ RATINGS_COLUMNS = [
     "tv_analyst_count_target",
     "tv_consensus",
     "tv_analyst_count_rating",
+    "tv_rating_consensus",
+    "tv_rating_total_count",
+    "tv_strong_buy_count",
+    "tv_buy_count",
+    "tv_hold_count",
+    "tv_sell_count",
+    "tv_strong_sell_count",
     "source_quality",
     "freshness",
     "stale_days",
@@ -260,6 +267,158 @@ def request_json(url, payload=None, timeout=18):
     return json.loads(request_text(url, payload=payload, timeout=timeout))
 
 
+
+def rating_breakdown_total(bd):
+    vals = [
+        safe_intish(bd.get("tv_strong_buy_count")),
+        safe_intish(bd.get("tv_buy_count")),
+        safe_intish(bd.get("tv_hold_count")),
+        safe_intish(bd.get("tv_sell_count")),
+        safe_intish(bd.get("tv_strong_sell_count")),
+    ]
+    if all(v is None for v in vals):
+        return None
+    return sum(v or 0 for v in vals)
+
+
+def consensus_from_breakdown(bd):
+    labels = [
+        ("Strong Buy", safe_intish(bd.get("tv_strong_buy_count")) or 0),
+        ("Buy", safe_intish(bd.get("tv_buy_count")) or 0),
+        ("Neutral", safe_intish(bd.get("tv_hold_count")) or 0),
+        ("Sell", safe_intish(bd.get("tv_sell_count")) or 0),
+        ("Strong Sell", safe_intish(bd.get("tv_strong_sell_count")) or 0),
+    ]
+    total = sum(v for _, v in labels)
+    if total <= 0:
+        return None
+    max_v = max(v for _, v in labels)
+    winners = [label for label, v in labels if v == max_v]
+    return winners[0] if winners else None
+
+
+def extract_count_near_label(text, label_patterns):
+    """
+    TradingViewのHTML/本文から、ラベル近傍の人数を拾う。
+    例: Strong Buy 16 / 強い買い 16 / 16 Strong Buy
+    """
+    for label in label_patterns:
+        patterns = [
+            # 誤カウント防止のため、ラベルと数字が近接している場合だけ採用する。
+            rf"{label}\s*[:：]?\s*(\d[\d,]*)\b",
+            rf"(\d[\d,]*)\s*(?:ratings?|analysts?)?\s*{label}\b",
+        ]
+        for pat in patterns:
+            m = re.search(pat, text, flags=re.I | re.S)
+            if m:
+                v = safe_intish(m.group(1))
+                if v is not None:
+                    return v
+    return None
+
+
+def json_rating_count(raw_html, keys):
+    joined = "|".join(re.escape(k) for k in keys)
+    patterns = [
+        rf'"(?:{joined})"\s*:\s*(\d[\d,]*)',
+        rf'"(?:{joined})"\s*:\s*\{{[^{{}}]*?"raw"\s*:\s*(\d[\d,]*)',
+        rf'"(?:{joined})"\s*:\s*\{{[^{{}}]*?"value"\s*:\s*(\d[\d,]*)',
+        rf'"(?:{joined})"\s*:\s*\{{[^{{}}]*?"count"\s*:\s*(\d[\d,]*)',
+    ]
+    return first_regex_int(raw_html, patterns)
+
+
+def extract_rating_breakdown(raw_html, clean_text):
+    """
+    TradingViewのアナリスト評価内訳を抽出。
+    取れない場合はNoneを残す。Yahoo等の代替値は使わない。
+    """
+    # JSON系の候補
+    strong_buy = json_rating_count(raw_html, [
+        "strong_buy", "strongBuy", "strongBuyCount", "strong_buy_count",
+        "StrongBuy", "STRONG_BUY", "recommendationStrongBuy",
+    ])
+    buy = json_rating_count(raw_html, [
+        "buyCount", "buy_count", "recommendationBuy", "ratingBuyCount", "analystBuyCount",
+    ])
+    hold = json_rating_count(raw_html, [
+        "holdCount", "neutralCount", "hold_count", "neutral_count",
+        "recommendationHold", "ratingHoldCount", "ratingNeutralCount", "analystHoldCount",
+    ])
+    sell = json_rating_count(raw_html, [
+        "sellCount", "sell_count", "recommendationSell", "ratingSellCount", "analystSellCount",
+    ])
+    strong_sell = json_rating_count(raw_html, [
+        "strong_sell", "strongSell", "strongSellCount", "strong_sell_count",
+        "StrongSell", "STRONG_SELL", "recommendationStrongSell",
+    ])
+
+    # 本文系の候補。Strong Buyを先に取り、BuyはStrong Buyに引っ張られないように周辺文も見る。
+    text = clean_text
+
+    if strong_buy is None:
+        strong_buy = extract_count_near_label(text, [
+            r"Strong\s*Buy", r"StrongBuy", r"強い買い", r"強気買い"
+        ])
+
+    if strong_sell is None:
+        strong_sell = extract_count_near_label(text, [
+            r"Strong\s*Sell", r"StrongSell", r"強い売り", r"強気売り"
+        ])
+
+    # Strong Buy/Sell の断片を消してからBuy/Sellを探す。
+    # 日本語UIの「強い買い」「強い売り」も消さないと、Buy/Sell側が強い買い/売りの人数を拾ってしまう。
+    text_wo_strong = text
+    strong_patterns = [
+        r"Strong\s*Buy", r"StrongBuy", r"強い買い", r"強気買い",
+        r"Strong\s*Sell", r"StrongSell", r"強い売り", r"強気売り",
+    ]
+    for sp in strong_patterns:
+        text_wo_strong = re.sub(rf"{sp}\s*[:：]?\s*\d[\d,]*", " ", text_wo_strong, flags=re.I)
+        text_wo_strong = re.sub(rf"\d[\d,]*\s*(?:ratings?|analysts?)?\s*{sp}", " ", text_wo_strong, flags=re.I)
+
+    if buy is None:
+        buy = extract_count_near_label(text_wo_strong, [
+            r"\bBuy\b", r"買い"
+        ])
+
+    if hold is None:
+        hold = extract_count_near_label(text, [
+            r"\bNeutral\b", r"\bHold\b", r"中立", r"保有"
+        ])
+
+    if sell is None:
+        sell = extract_count_near_label(text_wo_strong, [
+            r"\bSell\b", r"売り"
+        ])
+
+    bd = {
+        "tv_strong_buy_count": strong_buy,
+        "tv_buy_count": buy,
+        "tv_hold_count": hold,
+        "tv_sell_count": sell,
+        "tv_strong_sell_count": strong_sell,
+    }
+    total = rating_breakdown_total(bd)
+    bd["tv_rating_total_count"] = total
+    bd["tv_rating_consensus"] = consensus_from_breakdown(bd)
+    return bd
+
+
+
+def is_complete_breakdown(bd):
+    return all(
+        safe_intish(bd.get(k)) is not None
+        for k in [
+            "tv_strong_buy_count",
+            "tv_buy_count",
+            "tv_hold_count",
+            "tv_sell_count",
+            "tv_strong_sell_count",
+        ]
+    )
+
+
 def clean_html_text(raw_html: str) -> str:
     s = re.sub(r"<script\b[^>]*>.*?</script>", " ", raw_html, flags=re.I | re.S)
     s = re.sub(r"<style\b[^>]*>.*?</style>", " ", s, flags=re.I | re.S)
@@ -389,6 +548,14 @@ def extract_forecast_from_html(raw_html, current_price=None):
         r"(\d[\d,]*)\s+analysts?.{0,120}Analyst rating",
     ])
 
+    breakdown = extract_rating_breakdown(raw_html, text)
+
+    # 内訳が取れた場合は評価人数/コンセンサスを優先補完
+    if breakdown.get("tv_rating_total_count") is not None:
+        count_rating = breakdown.get("tv_rating_total_count")
+    if is_blank(consensus) and breakdown.get("tv_rating_consensus"):
+        consensus = breakdown.get("tv_rating_consensus")
+
     ok, reason = valid_target_pack(current_price, avg, high, low)
     if not ok:
         avg = high = low = None
@@ -396,7 +563,19 @@ def extract_forecast_from_html(raw_html, current_price=None):
     else:
         note = ""
 
-    source_quality = "TV_FULL" if avg is not None else ("TV_PARTIAL" if consensus or count_target or count_rating else "TV_MISSING")
+    has_breakdown = is_complete_breakdown(breakdown)
+    if not has_breakdown and breakdown.get("tv_rating_total_count") is not None:
+        note = (note + " / " if note else "") + "rating breakdown incomplete; not marked PLUS"
+    if avg is not None and has_breakdown:
+        source_quality = "TV_FULL_PLUS"
+    elif avg is not None:
+        source_quality = "TV_FULL"
+    elif has_breakdown:
+        source_quality = "TV_PARTIAL_PLUS"
+    elif consensus or count_target or count_rating:
+        source_quality = "TV_PARTIAL"
+    else:
+        source_quality = "TV_MISSING"
 
     return {
         "source_quality": source_quality,
@@ -407,6 +586,13 @@ def extract_forecast_from_html(raw_html, current_price=None):
         "tv_analyst_count_target": count_target,
         "tv_consensus": consensus,
         "tv_analyst_count_rating": count_rating,
+        "tv_rating_consensus": breakdown.get("tv_rating_consensus"),
+        "tv_rating_total_count": breakdown.get("tv_rating_total_count"),
+        "tv_strong_buy_count": breakdown.get("tv_strong_buy_count"),
+        "tv_buy_count": breakdown.get("tv_buy_count"),
+        "tv_hold_count": breakdown.get("tv_hold_count"),
+        "tv_sell_count": breakdown.get("tv_sell_count"),
+        "tv_strong_sell_count": breakdown.get("tv_strong_sell_count"),
         "note": note,
     }
 
@@ -504,6 +690,13 @@ def scanner_lookup(ticker):
                     "tv_consensus": None if is_blank(consensus) else str(consensus),
                     "tv_analyst_count_target": count,
                     "tv_analyst_count_rating": count,
+                    "tv_rating_consensus": None,
+                    "tv_rating_total_count": None,
+                    "tv_strong_buy_count": None,
+                    "tv_buy_count": None,
+                    "tv_hold_count": None,
+                    "tv_sell_count": None,
+                    "tv_strong_sell_count": None,
                     "source_quality": "TV_FULL" if avg is not None else ("TV_PARTIAL" if consensus or count else "TV_MISSING"),
                     "status": "scanner_ok",
                     "note": "",
@@ -600,8 +793,37 @@ def normalize_previous(prev):
 
     rating_date = prev.get("rating_date") or prev.get("attempt_date") or prev.get("last_attempt_date") or ""
 
-    if avg is None and is_blank(consensus) and count_target is None and count_rating is None:
+    strong_buy = safe_intish(prev.get("tv_strong_buy_count"))
+    buy_count = safe_intish(prev.get("tv_buy_count"))
+    hold_count = safe_intish(prev.get("tv_hold_count"))
+    sell_count = safe_intish(prev.get("tv_sell_count"))
+    strong_sell = safe_intish(prev.get("tv_strong_sell_count"))
+    bd = {
+        "tv_strong_buy_count": strong_buy,
+        "tv_buy_count": buy_count,
+        "tv_hold_count": hold_count,
+        "tv_sell_count": sell_count,
+        "tv_strong_sell_count": strong_sell,
+    }
+    total = safe_intish(prev.get("tv_rating_total_count"))
+    if total is None:
+        total = rating_breakdown_total(bd)
+    rating_consensus = prev.get("tv_rating_consensus")
+    if is_blank(rating_consensus):
+        rating_consensus = consensus_from_breakdown(bd)
+
+    complete_bd = is_complete_breakdown(bd)
+    if avg is None and is_blank(consensus) and count_target is None and count_rating is None and total is None:
         return None
+
+    q = prev.get("source_quality", "")
+    # PLUSは5分類が全部揃った場合だけ。古い/壊れたPLUSは降格する。
+    if str(q) in {"TV_FULL_PLUS", "TV_PARTIAL_PLUS"} and not complete_bd:
+        q = "TV_FULL" if avg is not None else "TV_PARTIAL"
+    if avg is not None and complete_bd and str(q) == "TV_FULL":
+        q = "TV_FULL_PLUS"
+    if avg is None and complete_bd and str(q) == "TV_PARTIAL":
+        q = "TV_PARTIAL_PLUS"
 
     return {
         "rating_date": rating_date,
@@ -614,7 +836,14 @@ def normalize_previous(prev):
         "tv_analyst_count_target": count_target,
         "tv_consensus": None if is_blank(consensus) else str(consensus),
         "tv_analyst_count_rating": count_rating,
-        "source_quality": prev.get("source_quality", ""),
+        "tv_rating_consensus": None if is_blank(rating_consensus) else str(rating_consensus),
+        "tv_rating_total_count": total,
+        "tv_strong_buy_count": strong_buy,
+        "tv_buy_count": buy_count,
+        "tv_hold_count": hold_count,
+        "tv_sell_count": sell_count,
+        "tv_strong_sell_count": strong_sell,
+        "source_quality": q,
         "note": prev.get("note", ""),
     }
 
@@ -628,30 +857,33 @@ def has_partial_tv(prev_norm):
         not is_blank(prev_norm.get("tv_consensus"))
         or prev_norm.get("tv_analyst_count_target") is not None
         or prev_norm.get("tv_analyst_count_rating") is not None
+        or prev_norm.get("tv_rating_total_count") is not None
     ))
 
 
-def derived_quality_from_age(has_full, has_partial, rating_date):
+def derived_quality_from_age(has_full, has_partial, rating_date, previous_quality=""):
     if has_full:
         age = days_since(rating_date)
         if age is None:
             return "TV_CACHE"
         if age <= TV_REFRESH_DAYS:
-            return "TV_FULL"
+            return "TV_FULL_PLUS" if str(previous_quality) == "TV_FULL_PLUS" else "TV_FULL"
         if age <= TV_CACHE_OLD_DAYS:
             return "TV_CACHE"
         if age <= TV_STALE_DAYS:
             return "TV_CACHE_OLD"
         return "TV_STALE"
     if has_partial:
-        return "TV_PARTIAL"
+        return "TV_PARTIAL_PLUS" if str(previous_quality) == "TV_PARTIAL_PLUS" else "TV_PARTIAL"
     return "TV_MISSING"
 
 
 def next_due_from_quality(source_quality, rating_date):
-    if source_quality in {"TV_FULL", "TV_CACHE", "TV_CACHE_OLD", "TV_STALE"}:
+    if source_quality in {"TV_FULL", "TV_FULL_PLUS", "TV_CACHE", "TV_CACHE_OLD", "TV_STALE"}:
         return add_days(rating_date or today_jst(), TV_REFRESH_DAYS)
     if source_quality == "TV_PARTIAL":
+        return add_days(today_jst(), PARTIAL_RETRY_DAYS)
+    if source_quality == "TV_PARTIAL_PLUS":
         return add_days(today_jst(), PARTIAL_RETRY_DAYS)
     if source_quality == "TV_MISSING":
         return add_days(today_jst(), MISSING_RETRY_DAYS)
@@ -717,12 +949,14 @@ def forecast_url_candidates(ticker, tv_symbol, forecast_url):
         urls.append(tv_symbol_to_url(tv_symbol, "forecast"))
         urls.append(tv_symbol_to_url(tv_symbol, "forecast_price_target"))
 
-    # Last-resort exchange guesses.
-    t = str(ticker).upper().replace(".", "-")
-    for ex in US_EXCHANGES:
-        slug = f"{ex}-{t}"
-        urls.append(f"https://www.tradingview.com/symbols/{slug}/forecast/")
-        urls.append(f"https://www.tradingview.com/symbols/{slug}/forecast-price-target/")
+    # Last-resort exchange guesses are expensive and can cause workflow timeouts.
+    # Use them only when symbol_map/scanner/previous did not resolve a TV symbol.
+    if not forecast_url and not tv_symbol:
+        t = str(ticker).upper().replace(".", "-")
+        for ex in US_EXCHANGES:
+            slug = f"{ex}-{t}"
+            urls.append(f"https://www.tradingview.com/symbols/{slug}/forecast/")
+            urls.append(f"https://www.tradingview.com/symbols/{slug}/forecast-price-target/")
 
     # Preserve order, remove duplicates.
     seen = set()
@@ -736,7 +970,9 @@ def forecast_url_candidates(ticker, tv_symbol, forecast_url):
 
 def fetch_tradingview_forecast(ticker, tv_symbol, forecast_url, current_price):
     errors = []
+    best_full = None
     best_partial = None
+    best_partial_plus = None
 
     for url in forecast_url_candidates(ticker, tv_symbol, forecast_url):
         try:
@@ -746,8 +982,18 @@ def fetch_tradingview_forecast(ticker, tv_symbol, forecast_url, current_price):
             parsed["status"] = "forecast_page_ok"
             parsed["note"] = parsed.get("note", "")
 
-            if parsed["source_quality"] == "TV_FULL":
+            if parsed["source_quality"] == "TV_FULL_PLUS":
                 return parsed
+
+            if parsed["source_quality"] == "TV_FULL":
+                if best_full is None:
+                    best_full = parsed
+                continue
+
+            if parsed["source_quality"] == "TV_PARTIAL_PLUS":
+                if best_partial_plus is None:
+                    best_partial_plus = parsed
+                continue
 
             if parsed["source_quality"] == "TV_PARTIAL" and best_partial is None:
                 best_partial = parsed
@@ -756,6 +1002,32 @@ def fetch_tradingview_forecast(ticker, tv_symbol, forecast_url, current_price):
             errors.append(f"{url}: {str(e)[:120]}")
         finally:
             time.sleep(0.25)
+
+    if best_full is not None:
+        # 別URLで評価内訳だけ取れた場合は、targetとbreakdownを合成する。
+        if best_partial_plus is not None:
+            for k in [
+                "tv_rating_consensus",
+                "tv_rating_total_count",
+                "tv_strong_buy_count",
+                "tv_buy_count",
+                "tv_hold_count",
+                "tv_sell_count",
+                "tv_strong_sell_count",
+            ]:
+                best_full[k] = best_partial_plus.get(k)
+            if is_blank(best_full.get("tv_consensus")):
+                best_full["tv_consensus"] = best_partial_plus.get("tv_consensus") or best_partial_plus.get("tv_rating_consensus")
+            if is_blank(best_full.get("tv_analyst_count_rating")):
+                best_full["tv_analyst_count_rating"] = best_partial_plus.get("tv_analyst_count_rating") or best_partial_plus.get("tv_rating_total_count")
+            best_full["source_quality"] = "TV_FULL_PLUS"
+            best_full["note"] = (best_full.get("note", "") + " / target and rating breakdown merged from TV pages").strip(" /")
+        return best_full
+
+    if best_partial_plus is not None:
+        if errors:
+            best_partial_plus["note"] = (best_partial_plus.get("note", "") + " / " + " / ".join(errors[:2])).strip(" /")
+        return best_partial_plus
 
     if best_partial is not None:
         if errors:
@@ -774,6 +1046,13 @@ def fetch_tradingview_forecast(ticker, tv_symbol, forecast_url, current_price):
         "tv_analyst_count_target": None,
         "tv_consensus": None,
         "tv_analyst_count_rating": None,
+        "tv_rating_consensus": None,
+        "tv_rating_total_count": None,
+        "tv_strong_buy_count": None,
+        "tv_buy_count": None,
+        "tv_hold_count": None,
+        "tv_sell_count": None,
+        "tv_strong_sell_count": None,
     }
 
 
@@ -785,7 +1064,25 @@ def merge_with_previous(attempt_result, prev_norm):
     """
     current_quality = attempt_result.get("source_quality", "TV_MISSING")
 
-    if current_quality == "TV_FULL":
+    if current_quality in {"TV_FULL", "TV_FULL_PLUS"}:
+        if current_quality == "TV_FULL" and prev_norm and prev_norm.get("source_quality") == "TV_FULL_PLUS" and is_complete_breakdown(prev_norm):
+            attempt_result = dict(attempt_result)
+            for k in [
+                "tv_rating_consensus",
+                "tv_rating_total_count",
+                "tv_strong_buy_count",
+                "tv_buy_count",
+                "tv_hold_count",
+                "tv_sell_count",
+                "tv_strong_sell_count",
+            ]:
+                attempt_result[k] = prev_norm.get(k)
+            if is_blank(attempt_result.get("tv_consensus")):
+                attempt_result["tv_consensus"] = prev_norm.get("tv_consensus") or prev_norm.get("tv_rating_consensus")
+            if is_blank(attempt_result.get("tv_analyst_count_rating")):
+                attempt_result["tv_analyst_count_rating"] = prev_norm.get("tv_analyst_count_rating") or prev_norm.get("tv_rating_total_count")
+            attempt_result["source_quality"] = "TV_FULL_PLUS"
+            attempt_result["note"] = (str(attempt_result.get("note", "")) + " / rating breakdown kept from previous TV_FULL_PLUS").strip(" /")
         return {
             "use_previous": False,
             "rating_date": today_jst(),
@@ -794,7 +1091,7 @@ def merge_with_previous(attempt_result, prev_norm):
 
     if has_full_tv(prev_norm):
         rating_date = prev_norm.get("rating_date") or ""
-        q = derived_quality_from_age(True, False, rating_date)
+        q = derived_quality_from_age(True, False, rating_date, prev_norm.get("source_quality", ""))
         note = f"今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality={current_quality}; {attempt_result.get('note','')}"
         return {
             "use_previous": True,
@@ -809,9 +1106,16 @@ def merge_with_previous(attempt_result, prev_norm):
             "tv_analyst_count_target": prev_norm.get("tv_analyst_count_target"),
             "tv_consensus": prev_norm.get("tv_consensus"),
             "tv_analyst_count_rating": prev_norm.get("tv_analyst_count_rating"),
+            "tv_rating_consensus": prev_norm.get("tv_rating_consensus"),
+            "tv_rating_total_count": prev_norm.get("tv_rating_total_count"),
+            "tv_strong_buy_count": prev_norm.get("tv_strong_buy_count"),
+            "tv_buy_count": prev_norm.get("tv_buy_count"),
+            "tv_hold_count": prev_norm.get("tv_hold_count"),
+            "tv_sell_count": prev_norm.get("tv_sell_count"),
+            "tv_strong_sell_count": prev_norm.get("tv_strong_sell_count"),
         }
 
-    if current_quality == "TV_PARTIAL":
+    if current_quality in {"TV_PARTIAL", "TV_PARTIAL_PLUS"}:
         return {
             "use_previous": False,
             "rating_date": today_jst(),
@@ -823,7 +1127,7 @@ def merge_with_previous(attempt_result, prev_norm):
         return {
             "use_previous": True,
             "rating_date": rating_date,
-            "source_quality": "TV_PARTIAL",
+            "source_quality": derived_quality_from_age(False, True, rating_date, prev_norm.get("source_quality", "")),
             "status": "kept_previous_tv_partial",
             "note": f"今回未取得のため前回TV_PARTIALを保持。{attempt_result.get('note','')}",
             "forecast_url": prev_norm.get("forecast_url") or attempt_result.get("forecast_url", ""),
@@ -833,6 +1137,13 @@ def merge_with_previous(attempt_result, prev_norm):
             "tv_analyst_count_target": prev_norm.get("tv_analyst_count_target"),
             "tv_consensus": prev_norm.get("tv_consensus"),
             "tv_analyst_count_rating": prev_norm.get("tv_analyst_count_rating"),
+            "tv_rating_consensus": prev_norm.get("tv_rating_consensus"),
+            "tv_rating_total_count": prev_norm.get("tv_rating_total_count"),
+            "tv_strong_buy_count": prev_norm.get("tv_strong_buy_count"),
+            "tv_buy_count": prev_norm.get("tv_buy_count"),
+            "tv_hold_count": prev_norm.get("tv_hold_count"),
+            "tv_sell_count": prev_norm.get("tv_sell_count"),
+            "tv_strong_sell_count": prev_norm.get("tv_strong_sell_count"),
         }
 
     return {
@@ -848,7 +1159,7 @@ def build_row_from_previous(meta, prev_norm):
     has_full = has_full_tv(prev_norm)
     has_partial = has_partial_tv(prev_norm)
     rating_date = prev_norm.get("rating_date") if prev_norm else ""
-    source_quality = derived_quality_from_age(has_full, has_partial, rating_date)
+    source_quality = derived_quality_from_age(has_full, has_partial, rating_date, prev_norm.get("source_quality", "") if prev_norm else "")
     stale = days_since(rating_date)
 
     avg = safe_float(prev_norm.get("tv_avg_target")) if prev_norm else None
@@ -876,6 +1187,13 @@ def build_row_from_previous(meta, prev_norm):
         "tv_analyst_count_target": prev_norm.get("tv_analyst_count_target") if prev_norm else None,
         "tv_consensus": prev_norm.get("tv_consensus") if prev_norm else None,
         "tv_analyst_count_rating": prev_norm.get("tv_analyst_count_rating") if prev_norm else None,
+        "tv_rating_consensus": prev_norm.get("tv_rating_consensus") if prev_norm else None,
+        "tv_rating_total_count": prev_norm.get("tv_rating_total_count") if prev_norm else None,
+        "tv_strong_buy_count": prev_norm.get("tv_strong_buy_count") if prev_norm else None,
+        "tv_buy_count": prev_norm.get("tv_buy_count") if prev_norm else None,
+        "tv_hold_count": prev_norm.get("tv_hold_count") if prev_norm else None,
+        "tv_sell_count": prev_norm.get("tv_sell_count") if prev_norm else None,
+        "tv_strong_sell_count": prev_norm.get("tv_strong_sell_count") if prev_norm else None,
         "source_quality": source_quality,
         "freshness": "skipped_cache",
         "stale_days": stale,
@@ -908,6 +1226,13 @@ def build_not_applicable_row(meta, reason):
         "tv_analyst_count_target": None,
         "tv_consensus": None,
         "tv_analyst_count_rating": None,
+        "tv_rating_consensus": None,
+        "tv_rating_total_count": None,
+        "tv_strong_buy_count": None,
+        "tv_buy_count": None,
+        "tv_hold_count": None,
+        "tv_sell_count": None,
+        "tv_strong_sell_count": None,
         "source_quality": "NOT_APPLICABLE",
         "freshness": "not_applicable",
         "stale_days": None,
@@ -926,15 +1251,15 @@ def build_attempt_row(meta, previous_df, symbol_map):
     attempt = fetch_tradingview_forecast(ticker, tv_symbol, forecast_url, current)
 
     # Scanner補助：Forecastページがpartial/missingのときだけ、TV判断やtv_symbolを補う。
-    if attempt.get("source_quality") != "TV_FULL":
+    if attempt.get("source_quality") not in {"TV_FULL", "TV_FULL_PLUS"}:
         sc = scanner_lookup(ticker)
         if is_blank(tv_symbol) and not is_blank(sc.get("tv_symbol")):
             tv_symbol = sc.get("tv_symbol")
             forecast_url = tv_symbol_to_url(tv_symbol)
 
-        if attempt.get("source_quality") == "TV_MISSING" and sc.get("source_quality") == "TV_PARTIAL":
+        if attempt.get("source_quality") == "TV_MISSING" and sc.get("source_quality") in {"TV_PARTIAL", "TV_PARTIAL_PLUS"}:
             attempt.update({
-                "source_quality": "TV_PARTIAL",
+                "source_quality": sc.get("source_quality", "TV_PARTIAL"),
                 "tv_consensus": sc.get("tv_consensus"),
                 "tv_analyst_count_target": sc.get("tv_analyst_count_target"),
                 "tv_analyst_count_rating": sc.get("tv_analyst_count_rating"),
@@ -944,20 +1269,38 @@ def build_attempt_row(meta, previous_df, symbol_map):
             })
 
         # scannerでtargetまで取れる場合はFULLとして採用。ただしForecastページ優先。
-        if attempt.get("source_quality") != "TV_FULL" and sc.get("source_quality") == "TV_FULL":
-            attempt.update({
-                "source_quality": "TV_FULL",
-                "current_price": current or sc.get("current_price"),
-                "tv_avg_target": sc.get("tv_avg_target"),
-                "tv_high_target": sc.get("tv_high_target"),
-                "tv_low_target": sc.get("tv_low_target"),
-                "tv_consensus": sc.get("tv_consensus"),
-                "tv_analyst_count_target": sc.get("tv_analyst_count_target"),
-                "tv_analyst_count_rating": sc.get("tv_analyst_count_rating"),
-                "forecast_url": forecast_url or tv_symbol_to_url(tv_symbol),
-                "status": "scanner_full",
-                "note": "ForecastページではなくscannerからTV_FULL取得。",
-            })
+        if attempt.get("source_quality") not in {"TV_FULL", "TV_FULL_PLUS"} and sc.get("source_quality") in {"TV_FULL", "TV_FULL_PLUS"}:
+            if attempt.get("source_quality") == "TV_PARTIAL_PLUS" and is_complete_breakdown(attempt):
+                # Forecastページで評価内訳、scannerで目標株価を取得できた場合は合成する。
+                attempt.update({
+                    "source_quality": "TV_FULL_PLUS",
+                    "current_price": current or sc.get("current_price"),
+                    "tv_avg_target": sc.get("tv_avg_target"),
+                    "tv_high_target": sc.get("tv_high_target"),
+                    "tv_low_target": sc.get("tv_low_target"),
+                    "tv_analyst_count_target": sc.get("tv_analyst_count_target"),
+                    "forecast_url": forecast_url or tv_symbol_to_url(tv_symbol),
+                    "status": "forecast_breakdown_scanner_target_merged",
+                    "note": "Forecastページの評価内訳とscannerのTV目標株価を合成。",
+                })
+                if is_blank(attempt.get("tv_consensus")):
+                    attempt["tv_consensus"] = sc.get("tv_consensus") or attempt.get("tv_rating_consensus")
+                if is_blank(attempt.get("tv_analyst_count_rating")):
+                    attempt["tv_analyst_count_rating"] = attempt.get("tv_rating_total_count")
+            else:
+                attempt.update({
+                    "source_quality": sc.get("source_quality", "TV_FULL"),
+                    "current_price": current or sc.get("current_price"),
+                    "tv_avg_target": sc.get("tv_avg_target"),
+                    "tv_high_target": sc.get("tv_high_target"),
+                    "tv_low_target": sc.get("tv_low_target"),
+                    "tv_consensus": sc.get("tv_consensus"),
+                    "tv_analyst_count_target": sc.get("tv_analyst_count_target"),
+                    "tv_analyst_count_rating": sc.get("tv_analyst_count_rating"),
+                    "forecast_url": forecast_url or tv_symbol_to_url(tv_symbol),
+                    "status": "scanner_full",
+                    "note": "ForecastページではなくscannerからTV_FULL取得。",
+                })
 
     merged = merge_with_previous(attempt, prev_norm)
     rating_date = merged.get("rating_date") or ""
@@ -968,8 +1311,8 @@ def build_attempt_row(meta, previous_df, symbol_map):
     low = safe_float(merged.get("tv_low_target"))
 
     source_quality = merged.get("source_quality", "TV_MISSING")
-    if source_quality == "TV_FULL" and stale is not None:
-        source_quality = derived_quality_from_age(True, False, rating_date)
+    if source_quality in {"TV_FULL", "TV_FULL_PLUS"} and stale is not None:
+        source_quality = derived_quality_from_age(True, False, rating_date, source_quality)
 
     row = {
         "ticker": ticker,
@@ -992,6 +1335,13 @@ def build_attempt_row(meta, previous_df, symbol_map):
         "tv_analyst_count_target": merged.get("tv_analyst_count_target"),
         "tv_consensus": merged.get("tv_consensus"),
         "tv_analyst_count_rating": merged.get("tv_analyst_count_rating"),
+        "tv_rating_consensus": merged.get("tv_rating_consensus"),
+        "tv_rating_total_count": merged.get("tv_rating_total_count"),
+        "tv_strong_buy_count": merged.get("tv_strong_buy_count"),
+        "tv_buy_count": merged.get("tv_buy_count"),
+        "tv_hold_count": merged.get("tv_hold_count"),
+        "tv_sell_count": merged.get("tv_sell_count"),
+        "tv_strong_sell_count": merged.get("tv_strong_sell_count"),
         "source_quality": source_quality,
         "freshness": "attempted",
         "stale_days": stale,
@@ -1011,6 +1361,29 @@ def build_attempt_row(meta, previous_df, symbol_map):
         })
 
     return row, symbol_map
+
+
+
+def complete_breakdown_row(r):
+    return all(not is_blank(r.get(k)) for k in [
+        "tv_strong_buy_count",
+        "tv_buy_count",
+        "tv_hold_count",
+        "tv_sell_count",
+        "tv_strong_sell_count",
+    ])
+
+
+def breakdown_report_text(r):
+    if not complete_breakdown_row(r):
+        return "内訳 —"
+    return (
+        f"内訳 強買{fmt_num(r.get('tv_strong_buy_count'))}/"
+        f"買{fmt_num(r.get('tv_buy_count'))}/"
+        f"中{fmt_num(r.get('tv_hold_count'))}/"
+        f"売{fmt_num(r.get('tv_sell_count'))}/"
+        f"強売{fmt_num(r.get('tv_strong_sell_count'))}"
+    )
 
 
 def main():
@@ -1057,7 +1430,7 @@ def main():
         rows.append(row)
 
         level = "INFO"
-        if row["source_quality"] in {"TV_MISSING", "TV_PARTIAL", "TV_STALE"}:
+        if row["source_quality"] in {"TV_MISSING", "TV_PARTIAL", "TV_PARTIAL_PLUS", "TV_CACHE_OLD", "TV_STALE"}:
             level = "WARN"
 
         health.append([
@@ -1094,33 +1467,36 @@ def main():
         probe += timedelta(days=1)
 
     lines = [
-        "【CIS-W04｜TradingViewレーティング更新 v0.5】",
+        "【CIS-W04｜TradingViewレーティング更新 v0.6.3】",
         f"実行日：{today_jst()} JST",
         f"実行モード：{mode}",
         f"単独銘柄：{one_ticker or '—'}",
         "",
         "## TradingViewレーティング品質",
+        f"TV_FULL_PLUS：{counts.get('TV_FULL_PLUS', 0)}件",
         f"TV_FULL：{counts.get('TV_FULL', 0)}件",
         f"TV_CACHE：{counts.get('TV_CACHE', 0)}件",
         f"TV_CACHE_OLD：{counts.get('TV_CACHE_OLD', 0)}件",
         f"TV_STALE：{counts.get('TV_STALE', 0)}件",
+        f"TV_PARTIAL_PLUS：{counts.get('TV_PARTIAL_PLUS', 0)}件",
         f"TV_PARTIAL：{counts.get('TV_PARTIAL', 0)}件",
         f"TV_MISSING：{counts.get('TV_MISSING', 0)}件",
         f"目標株価カバレッジ：{target_count}/{total}件（{target_cov:.1%}）",
+        f"評価内訳カバレッジ：{int(us.apply(complete_breakdown_row, axis=1).sum())}/{total}件",
         f"今回取得試行：{attempted}件",
         f"今回スキップ：{skipped}件",
         f"次回月次再確認目安：{next_monthly or '—'}",
         "",
         "## 重要ルール",
         "- D03は毎日TradingViewへアクセスしない。ratings_master.csvを読むだけ。",
-        "- W04は週1でTV_MISSING/TV_PARTIALだけ再挑戦し、月1で全米国株を再確認する。",
+        "- W04は週1でTV_MISSING/TV_PARTIAL/TV_PARTIAL_PLUSだけ再挑戦し、月1で全米国株を再確認する。",
         "- 一度TV_FULLで取れた値は、次回失敗しても消さない。",
         "- Yahoo Finance由来のレーティング/目標株価はD03のレーティング欄に出さない。",
         "",
         "## 確認が必要な銘柄",
     ]
 
-    needs = us[us["source_quality"].isin(["TV_PARTIAL", "TV_MISSING", "TV_CACHE_OLD", "TV_STALE"])].copy()
+    needs = us[us["source_quality"].isin(["TV_PARTIAL", "TV_PARTIAL_PLUS", "TV_MISSING", "TV_CACHE_OLD", "TV_STALE"])].copy()
     if needs.empty:
         lines.append("該当なし")
     else:
@@ -1149,15 +1525,16 @@ def main():
                 f"- {r['ticker']}｜{r['name']}｜{r['source_quality']}｜"
                 f"{count if not is_blank(count) else '—'}人｜"
                 f"{r['tv_consensus'] if not is_blank(r['tv_consensus']) else '—'}｜"
+                f"{breakdown_report_text(r)}｜"
                 f"平均目標 {fmt_num(r['tv_avg_target'])}｜乖離 {fmt_pct(r['tv_upside_pct'])}{age}"
             )
 
     lines.extend([
         "",
-        "## TV_PARTIAL（判断のみ・平均目標未取得）",
+        "## TV_PARTIAL / TV_PARTIAL_PLUS（判断/内訳のみ・平均目標未取得）",
     ])
 
-    partial = us[us["source_quality"].eq("TV_PARTIAL")].copy()
+    partial = us[us["source_quality"].isin(["TV_PARTIAL", "TV_PARTIAL_PLUS"])].copy()
     if partial.empty:
         lines.append("該当なし")
     else:

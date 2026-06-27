@@ -143,14 +143,57 @@ def rating_record(ratings, ticker):
     return rr.iloc[0].to_dict()
 
 
+
+def fmt_count(x):
+    v = safe_float(x)
+    if v is None:
+        return "—"
+    return str(int(v))
+
+
+def rating_breakdown_short(r):
+    total = safe_float(r.get("tv_rating_total_count"))
+    sb = r.get("tv_strong_buy_count")
+    b = r.get("tv_buy_count")
+    h = r.get("tv_hold_count")
+    s = r.get("tv_sell_count")
+    ss = r.get("tv_strong_sell_count")
+    if total is None or any(is_blank(v) for v in [sb, b, h, s, ss]):
+        return ""
+    # 候補行では短く。売り/強売が0なら省略。
+    parts = [f"強買{fmt_count(sb)}", f"買{fmt_count(b)}", f"中{fmt_count(h)}"]
+    if safe_float(s) not in {None, 0.0} or safe_float(ss) not in {None, 0.0}:
+        parts += [f"売{fmt_count(s)}", f"強売{fmt_count(ss)}"]
+    return "/".join(parts)
+
+
+def rating_breakdown_full(r):
+    total = safe_float(r.get("tv_rating_total_count"))
+    if total is None or any(is_blank(r.get(k)) for k in [
+        "tv_strong_buy_count", "tv_buy_count", "tv_hold_count", "tv_sell_count", "tv_strong_sell_count"
+    ]):
+        return ""
+    return (
+        f"評価内訳：強い買い{fmt_count(r.get('tv_strong_buy_count'))} / "
+        f"買い{fmt_count(r.get('tv_buy_count'))} / "
+        f"中立{fmt_count(r.get('tv_hold_count'))} / "
+        f"売り{fmt_count(r.get('tv_sell_count'))} / "
+        f"強い売り{fmt_count(r.get('tv_strong_sell_count'))}"
+    )
+
+
 def rating_values(r):
     avg = safe_float(r.get("tv_avg_target"))
     high = safe_float(r.get("tv_high_target"))
     low = safe_float(r.get("tv_low_target"))
     consensus = r.get("tv_consensus")
+    if is_blank(consensus):
+        consensus = r.get("tv_rating_consensus")
     count = r.get("tv_analyst_count_target")
     if is_blank(count):
         count = r.get("tv_analyst_count_rating")
+    if is_blank(count):
+        count = r.get("tv_rating_total_count")
     quality = str(r.get("source_quality", "TV_MISSING"))
     stale = r.get("stale_days", "")
     rating_date = r.get("rating_date", "")
@@ -171,18 +214,20 @@ def rating_brief(ratings, ticker, market, asset_type, current_price):
 
     con = "—" if is_blank(consensus) else str(consensus)
     cnt = "—" if is_blank(count) else str(count)
+    bd = rating_breakdown_short(r)
+    label = bd if bd else f"{cnt}人 {con}"
     age = ""
     if quality in {"TV_CACHE", "TV_CACHE_OLD", "TV_STALE"}:
         days = "—" if is_blank(stale) else str(int(float(stale)))
         age = f" / {days}日古"
 
     if avg is not None:
-        return f"評：{quality} {cnt}人 {con} 平均{fmt_num(avg)} 乖離{fmt_pct(upside(current_price, avg))}{age}"
+        return f"評：{quality} {label} 平均{fmt_num(avg)} 乖離{fmt_pct(upside(current_price, avg))}{age}"
 
-    if quality == "TV_PARTIAL" or not is_blank(consensus) or not is_blank(count):
-        return f"評：TV_PARTIAL {cnt}人 {con} 平均目標未取得"
+    if quality in {"TV_PARTIAL", "TV_PARTIAL_PLUS"} or not is_blank(consensus) or not is_blank(count):
+        return f"評：{quality} {label} 平均目標未取得"
 
-    return f"評：TV_MISSING"
+    return "評：TV_MISSING"
 
 
 def rating_line(ratings, ticker, market, asset_type, current_price):
@@ -199,21 +244,30 @@ def rating_line(ratings, ticker, market, asset_type, current_price):
 
     con = "—" if is_blank(consensus) else str(consensus)
     cnt = "—" if is_blank(count) else str(count)
+    bd_short = rating_breakdown_short(r)
+    bd_full = rating_breakdown_full(r)
+    label = bd_short if bd_short else f"{cnt}人 / {con}"
     age = ""
     if quality in {"TV_CACHE", "TV_CACHE_OLD", "TV_STALE"}:
         days = "—" if is_blank(stale) else str(int(float(stale)))
         age = f" / {days}日古"
-    elif quality == "TV_FULL":
+    elif quality in {"TV_FULL", "TV_FULL_PLUS"}:
         age = f" / 基準日 {rating_date}" if not is_blank(rating_date) else ""
 
     if avg is not None:
-        return (
-            f"レーティング：{quality} / {cnt}人 / {con} / "
+        base = (
+            f"レーティング：{quality} / {label} / "
             f"平均目標 {fmt_num(avg)} / 乖離 {fmt_pct(upside(current_price, avg))}{age}"
         )
+        if bd_full:
+            return base + f" / {bd_full}"
+        return base
 
-    if quality == "TV_PARTIAL" or not is_blank(consensus) or not is_blank(count):
-        return f"レーティング：TV_PARTIAL / {cnt}人 / {con} / 平均目標 未取得 / 乖離 —"
+    if quality in {"TV_PARTIAL", "TV_PARTIAL_PLUS"} or not is_blank(consensus) or not is_blank(count):
+        base = f"レーティング：{quality} / {label} / 平均目標 未取得 / 乖離 —"
+        if bd_full:
+            return base + f" / {bd_full}"
+        return base
 
     return "レーティング：TV_MISSING"
 
@@ -478,7 +532,7 @@ def main():
         f"実行日：{today} JST",
         "対象：監視リスト全銘柄",
         "ルール：buy_zone_master.csvを読むだけ。毎日ゴールをずらさない。",
-        "v4.5対応：D03はTradingViewへアクセスしない。保存済みTV情報を読み、現在値で乖離率を再計算。",
+        "v4.6.3対応：D03はTradingViewへアクセスしない。保存済みTV情報を読み、評価内訳と現在値ベース乖離率を表示。",
         "",
         "## 今日のサマリー",
         f"本命買い以上：{len(main_buy_cards)}件",
