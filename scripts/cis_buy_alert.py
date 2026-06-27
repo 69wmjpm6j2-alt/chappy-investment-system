@@ -8,9 +8,11 @@ from cis_common import DATA, OUT, today_jst, active_watchlist, append_health
 SCALE_HARD_HIGH_RATIO = 10.0
 SCALE_SOFT_HIGH_RATIO = 4.0
 SCALE_HARD_LOW_RATIO = 0.25
-NEAR_TOLERANCE_PCT = 1.0  # 0〜1%程度の微小到達は「本命近接」に逃がす
+NEAR_TOLERANCE_PCT = 1.0  # 0〜1%程度の微小到達は「近接」に逃がす
 
+# 表示・優先度ルール
 MICROCAP_SIZE_LIMIT = {"KITT", "OPTX", "POET", "AXTI", "RGTI"}
+LOW_PRIORITY_PROBE = {"8410.T", "7821.T"}  # 低ボラ/試金石/優先度を落とす打診枠
 SCALE_SENSITIVE_TICKERS = {"NOW", "RGTI", "MSTR", "POET", "KITT", "AXTI", "OPTX", "SPCX"}
 
 SPECIAL_STATUS_DISPLAY = {
@@ -178,8 +180,6 @@ def base_decision(price, probe, core, strong):
     if core is None:
         return "基準未設定"
 
-    dist_core = distance_pct(price, core)
-
     if strong is not None and price <= strong:
         dist_strong = distance_pct(price, strong)
         if dist_strong is not None and -NEAR_TOLERANCE_PCT <= dist_strong <= 0:
@@ -187,6 +187,7 @@ def base_decision(price, probe, core, strong):
         return "強く買いたい"
 
     if price <= core:
+        dist_core = distance_pct(price, core)
         if dist_core is not None and -NEAR_TOLERANCE_PCT <= dist_core <= 0:
             return "本命近接"
         return "本命買い"
@@ -237,16 +238,23 @@ def card_sort_key(card):
         "監視のみ": 12,
     }
     decision = str(card["decision"])
-    if decision.startswith("価格スケール要確認"):
-        key = "価格スケール要確認"
-    else:
-        key = decision
+    key = "価格スケール要確認" if decision.startswith("価格スケール要確認") else decision
     dist = safe_float(card.get("distance"))
     return (order.get(key, 99), 999999 if dist is None else dist, card["ticker"])
 
 
 def short_line(card):
     return f"{card['ticker']}｜{card['name']}｜判定：{card['decision']}｜現在値：{fmt_num(card['price'])}｜本命：{fmt_num(card['core'])}｜{distance_label(card['price'], card['core'], '本命')}"
+
+
+def add_quick_section(lines, title, cards):
+    lines.append(title)
+    if not cards:
+        lines.append("該当なし")
+    else:
+        for c in cards:
+            lines.append(f"- {short_line(c)}")
+    lines.append("")
 
 
 def main():
@@ -294,7 +302,7 @@ def main():
 
         note_parts = []
 
-        # v1.3.1の特殊ステータスは価格ロジックより優先する
+        # v1.3.1特殊ステータスは価格ロジックより優先
         if raw_basis_status in SPECIAL_STATUS_DISPLAY:
             decision = SPECIAL_STATUS_DISPLAY[raw_basis_status]
             if raw_basis_status == "scale_rebase_pending_v1_3_1":
@@ -323,6 +331,9 @@ def main():
         if ticker in MICROCAP_SIZE_LIMIT:
             note_parts.append("超小型/高ボラ枠。判定が出ても投資サイズ制限。")
 
+        if ticker in LOW_PRIORITY_PROBE and decision == "打診買い":
+            note_parts.append("低優先打診。毎朝の最優先候補からは分離。")
+
         if ticker in SCALE_SENSITIVE_TICKERS and not str(decision).startswith("価格スケール要確認") and decision != "価格スケール確認待ち":
             note_parts.append("日次価格桁チェック対象。")
 
@@ -336,6 +347,7 @@ def main():
             "market": market,
             "name": meta.get("name", ""),
             "theme": meta.get("theme", ""),
+            "asset_type": asset_type,
             "price": price,
             "price_date": price_date,
             "daily_pct": daily_pct,
@@ -358,19 +370,21 @@ def main():
 
     cards = sorted(cards, key=card_sort_key)
 
-    today = today_jst()
-    report_path = OUT / f"cis_buy_alert_{today}.md"
-    csv_path = OUT / f"cis_buy_alert_{today}.csv"
-
-    action_decisions = {"強く買いたい", "本命買い", "打診買い"}
-    near_decisions = {"強く買いたい近接", "本命近接", "打診近接"}
-    action_cards = [c for c in cards if c["decision"] in action_decisions]
-    near_cards = [c for c in cards if c["decision"] in near_decisions]
+    # 優先度別に全件表示する
+    main_buy_cards = [c for c in cards if c["decision"] in {"強く買いたい", "本命買い"} and c["ticker"] not in MICROCAP_SIZE_LIMIT]
+    probe_cards_all = [c for c in cards if c["decision"] == "打診買い" and c["ticker"] not in MICROCAP_SIZE_LIMIT]
+    low_priority_cards = [c for c in probe_cards_all if c["ticker"] in LOW_PRIORITY_PROBE]
+    probe_cards = [c for c in probe_cards_all if c["ticker"] not in LOW_PRIORITY_PROBE]
+    microcap_cards = [c for c in cards if c["decision"] in {"強く買いたい", "本命買い", "打診買い", "強く買いたい近接", "本命近接", "打診近接"} and c["ticker"] in MICROCAP_SIZE_LIMIT]
+    near_cards = [c for c in cards if c["decision"] in {"強く買いたい近接", "本命近接", "打診近接"} and c["ticker"] not in MICROCAP_SIZE_LIMIT]
     condition_cards = [c for c in cards if c["decision"] in {"条件確認待ち", "価格スケール確認待ち"}]
     warning_cards = [c for c in cards if str(c["decision"]).startswith("価格スケール要確認")]
     far_cards = [
         c for c in cards
-        if c not in action_cards
+        if c not in main_buy_cards
+        and c not in probe_cards
+        and c not in low_priority_cards
+        and c not in microcap_cards
         and c not in near_cards
         and c not in condition_cards
         and c not in warning_cards
@@ -379,12 +393,19 @@ def main():
     ]
     other_cards = [
         c for c in cards
-        if c not in action_cards
+        if c not in main_buy_cards
+        and c not in probe_cards
+        and c not in low_priority_cards
+        and c not in microcap_cards
         and c not in near_cards
         and c not in condition_cards
         and c not in warning_cards
         and c not in far_cards
     ]
+
+    today = today_jst()
+    report_path = OUT / f"cis_buy_alert_{today}.md"
+    csv_path = OUT / f"cis_buy_alert_{today}.csv"
 
     lines = [
         "🆕【今日の更新はここから】",
@@ -392,38 +413,30 @@ def main():
         f"実行日：{today} JST",
         "対象：監視リスト全銘柄",
         "ルール：buy_zone_master.csvを読むだけ。毎日ゴールをずらさない。",
-        "v1.3.1対応：条件確認待ち/価格スケール確認待ちを通常買い場から分離。",
-        "近接ルール：0〜1%程度の微小到達は本命買いではなく近接として分離。",
+        "v4.1対応：まず見る候補を全件表示し、本命買い/打診買い/近接/低優先/超小型を分離。",
         "",
         "## 今日のサマリー",
-        f"買い場判定：{len(action_cards)}件",
+        f"本命買い以上：{len(main_buy_cards)}件",
+        f"打診買い：{len(probe_cards)}件",
+        f"低優先打診：{len(low_priority_cards)}件",
+        f"超小型・サイズ制限：{len(microcap_cards)}件",
         f"近接：{len(near_cards)}件",
         f"条件/価格スケール確認待ち：{len(condition_cards)}件",
         f"価格スケール要確認：{len(warning_cards)}件",
         f"本命から大きく遠い銘柄：{len(far_cards)}件",
         f"見送り・その他：{len(other_cards)}件",
         "",
+        "## まず見る候補・全件",
     ]
 
-    if action_cards:
-        lines.append("## まず見る候補")
-        for c in action_cards[:10]:
-            lines.append(f"- {short_line(c)}")
-        lines.append("")
+    add_quick_section(lines, "### 最優先：本命買い以上", main_buy_cards)
+    add_quick_section(lines, "### 次点：打診買い", probe_cards)
+    add_quick_section(lines, "### 低優先打診", low_priority_cards)
+    add_quick_section(lines, "### 超小型・サイズ制限", microcap_cards)
+    add_quick_section(lines, "### 近接", near_cards)
+    add_quick_section(lines, "### 条件確認待ち・価格スケール確認待ち", condition_cards)
 
-    if near_cards:
-        lines.append("## 近接候補")
-        for c in near_cards[:10]:
-            lines.append(f"- {short_line(c)}")
-        lines.append("")
-
-    if condition_cards:
-        lines.append("## 条件確認待ち・価格スケール確認待ち")
-        for c in condition_cards[:10]:
-            lines.append(f"- {short_line(c)}")
-        lines.append("")
-
-    def add_section(title, section_cards):
+    def add_detail_section(title, section_cards):
         lines.append(title)
         if not section_cards:
             lines.append("該当なし")
@@ -450,18 +463,21 @@ def main():
                 lines.append(f"注意：{c['note']}")
             lines.append("")
 
-    add_section("## 買い場判定", action_cards)
-    add_section("## 近接", near_cards)
-    add_section("## 条件確認待ち・価格スケール確認待ち", condition_cards)
-    add_section("## 価格スケール要確認", warning_cards)
-    add_section("## 本命から大きく遠い銘柄", far_cards)
-    add_section("## 見送り・その他", other_cards)
+    add_detail_section("## 詳細：最優先・本命買い以上", main_buy_cards)
+    add_detail_section("## 詳細：打診買い", probe_cards)
+    add_detail_section("## 詳細：低優先打診", low_priority_cards)
+    add_detail_section("## 詳細：超小型・サイズ制限", microcap_cards)
+    add_detail_section("## 詳細：近接", near_cards)
+    add_detail_section("## 詳細：条件確認待ち・価格スケール確認待ち", condition_cards)
+    add_detail_section("## 詳細：価格スケール要確認", warning_cards)
+    add_detail_section("## 詳細：本命から大きく遠い銘柄", far_cards)
+    add_detail_section("## 見送り・その他", other_cards)
 
     report_path.write_text("\n".join(lines), encoding="utf-8")
 
     with open(csv_path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=[
-            "ticker", "market", "name", "theme", "price", "price_date", "daily_pct", "daily_diff",
+            "ticker", "market", "name", "theme", "asset_type", "price", "price_date", "daily_pct", "daily_diff",
             "probe", "core", "strong", "distance", "gap_ratio", "decision", "rating",
             "basis_status", "basis_display", "note"
         ])
