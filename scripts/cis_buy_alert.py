@@ -40,7 +40,7 @@ def safe_float(x):
     if is_blank(x):
         return None
     try:
-        return float(x)
+        return float(str(x).replace(",", ""))
     except Exception:
         return None
 
@@ -78,6 +78,14 @@ def distance_label(price, target, target_name):
     if pct < 0:
         return f"{target_name}到達済み：{abs(pct):.2f}%下回り"
     return f"{target_name}到達済み：0.00%"
+
+
+def upside(current, target):
+    c = safe_float(current)
+    t = safe_float(target)
+    if c is None or t is None or c == 0:
+        return None
+    return (t - c) / c * 100
 
 
 def get_price_snapshot(ticker):
@@ -135,65 +143,21 @@ def rating_record(ratings, ticker):
     return rr.iloc[0].to_dict()
 
 
-def rating_freshness_suffix(r):
-    if r is None:
-        return ""
-    status = str(r.get("status", ""))
-    source = str(r.get("source_used", ""))
+def rating_values(r):
+    avg = safe_float(r.get("tv_avg_target"))
+    high = safe_float(r.get("tv_high_target"))
+    low = safe_float(r.get("tv_low_target"))
+    consensus = r.get("tv_consensus")
+    count = r.get("tv_analyst_count_target")
+    if is_blank(count):
+        count = r.get("tv_analyst_count_rating")
+    quality = str(r.get("source_quality", "TV_MISSING"))
+    stale = r.get("stale_days", "")
     rating_date = r.get("rating_date", "")
-    stale_days = r.get("stale_days", "")
-    freshness = str(r.get("freshness", ""))
-
-    if status in {"not_applicable_non_us", "not_applicable_etf", "watch_only"}:
-        return ""
-
-    if freshness == "fresh":
-        return f" / 更新 {rating_date}" if not is_blank(rating_date) else ""
-
-    if freshness == "manual":
-        return f" / 手動補完 {rating_date}" if not is_blank(rating_date) else " / 手動補完"
-
-    if freshness in {"cache_ok", "cache_stale"} or "previous_cache" in source:
-        days = "—" if is_blank(stale_days) else str(int(float(stale_days)))
-        label = "前回値" if freshness == "cache_ok" else "古い前回値"
-        return f" / {label} {rating_date or '日付不明'}（{days}日経過）"
-
-    return ""
+    return avg, high, low, consensus, count, quality, stale, rating_date
 
 
-def rating_line(ratings, ticker, market, asset_type):
-    if market == "JP":
-        return "レーティング：国内株は任意補完待ち"
-    if asset_type == "etf":
-        return "レーティング：対象外（ETF）"
-
-    r = rating_record(ratings, ticker)
-    if r is None:
-        return "レーティング：未取得（ratings_masterに行なし）"
-
-    source = r.get("source_used", "未取得")
-    analyst_count = r.get("analyst_count", "")
-    consensus = r.get("consensus", "")
-    avg_target = r.get("avg_target", "")
-    upside = r.get("upside_pct", "")
-    status = str(r.get("status", "")).strip()
-    note = str(r.get("note", "")).strip()
-
-    if all(is_blank(v) for v in [analyst_count, consensus, avg_target, upside]):
-        if status in {"not_applicable_non_us", "not_applicable_etf", "watch_only"}:
-            return "レーティング：対象外"
-        suffix = rating_freshness_suffix(r)
-        return f"レーティング：未取得 / status={status}{suffix}"
-
-    ac = "—" if is_blank(analyst_count) else str(analyst_count)
-    con = "—" if is_blank(consensus) else str(consensus)
-    tgt = fmt_num(avg_target)
-    up = fmt_pct(upside)
-    suffix = rating_freshness_suffix(r)
-    return f"レーティング：{source} / {ac}人 / {con} / 平均目標 {tgt} / 乖離 {up}{suffix}"
-
-
-def rating_brief(ratings, ticker, market, asset_type):
+def rating_brief(ratings, ticker, market, asset_type, current_price):
     if market == "JP":
         return "評：国内任意"
     if asset_type == "etf":
@@ -201,41 +165,57 @@ def rating_brief(ratings, ticker, market, asset_type):
 
     r = rating_record(ratings, ticker)
     if r is None:
-        return "評：未取得"
+        return "評：TV_MISSING"
 
-    status = str(r.get("status", ""))
-    source = str(r.get("source_used", ""))
-    analyst_count = r.get("analyst_count", "")
-    consensus = r.get("consensus", "")
-    avg_target = r.get("avg_target", "")
-    up = r.get("upside_pct", "")
-    freshness = str(r.get("freshness", ""))
-    stale_days = r.get("stale_days", "")
+    avg, high, low, consensus, count, quality, stale, rating_date = rating_values(r)
 
-    if all(is_blank(v) for v in [analyst_count, consensus, avg_target, up]):
-        if status in {"not_applicable_non_us", "not_applicable_etf", "watch_only"}:
-            return "評：対象外"
-        return f"評：未取得({status})"
-
-    if source.startswith("TradingView"):
-        src = "TV"
-    elif "Yahoo" in source:
-        src = "YF"
-    elif "previous_cache" in source:
-        src = "前回"
-    else:
-        src = source.replace(" fallback", "")[:8]
-
-    ac = "—" if is_blank(analyst_count) else str(analyst_count)
     con = "—" if is_blank(consensus) else str(consensus)
+    cnt = "—" if is_blank(count) else str(count)
     age = ""
-    if freshness in {"cache_ok", "cache_stale"} or "previous_cache" in source:
-        days = "—" if is_blank(stale_days) else str(int(float(stale_days)))
-        age = f" {days}日古"
-        if freshness == "cache_stale":
-            age = f" 古い{days}日"
+    if quality in {"TV_CACHE", "TV_CACHE_OLD", "TV_STALE"}:
+        days = "—" if is_blank(stale) else str(int(float(stale)))
+        age = f" / {days}日古"
 
-    return f"評：{src}{age} {ac}人 {con} 目標{fmt_num(avg_target)} 乖離{fmt_pct(up)}"
+    if avg is not None:
+        return f"評：{quality} {cnt}人 {con} 平均{fmt_num(avg)} 乖離{fmt_pct(upside(current_price, avg))}{age}"
+
+    if quality == "TV_PARTIAL" or not is_blank(consensus) or not is_blank(count):
+        return f"評：TV_PARTIAL {cnt}人 {con} 平均目標未取得"
+
+    return f"評：TV_MISSING"
+
+
+def rating_line(ratings, ticker, market, asset_type, current_price):
+    if market == "JP":
+        return "レーティング：国内株は任意補完待ち"
+    if asset_type == "etf":
+        return "レーティング：対象外（ETF）"
+
+    r = rating_record(ratings, ticker)
+    if r is None:
+        return "レーティング：TV_MISSING"
+
+    avg, high, low, consensus, count, quality, stale, rating_date = rating_values(r)
+
+    con = "—" if is_blank(consensus) else str(consensus)
+    cnt = "—" if is_blank(count) else str(count)
+    age = ""
+    if quality in {"TV_CACHE", "TV_CACHE_OLD", "TV_STALE"}:
+        days = "—" if is_blank(stale) else str(int(float(stale)))
+        age = f" / {days}日古"
+    elif quality == "TV_FULL":
+        age = f" / 基準日 {rating_date}" if not is_blank(rating_date) else ""
+
+    if avg is not None:
+        return (
+            f"レーティング：{quality} / {cnt}人 / {con} / "
+            f"平均目標 {fmt_num(avg)} / 乖離 {fmt_pct(upside(current_price, avg))}{age}"
+        )
+
+    if quality == "TV_PARTIAL" or not is_blank(consensus) or not is_blank(count):
+        return f"レーティング：TV_PARTIAL / {cnt}人 / {con} / 平均目標 未取得 / 乖離 —"
+
+    return "レーティング：TV_MISSING"
 
 
 def basis_display(status):
@@ -423,8 +403,8 @@ def main():
 
         dist = distance_pct(price, core)
         ratio = None if price is None or core is None or core == 0 else price / core
-        rline = rating_line(ratings, ticker, market, asset_type)
-        rbrief = rating_brief(ratings, ticker, market, asset_type)
+        rline = rating_line(ratings, ticker, market, asset_type, price)
+        rbrief = rating_brief(ratings, ticker, market, asset_type, price)
         note = " / ".join([n for n in note_parts if n])
 
         card = {
@@ -498,7 +478,7 @@ def main():
         f"実行日：{today} JST",
         "対象：監視リスト全銘柄",
         "ルール：buy_zone_master.csvを読むだけ。毎日ゴールをずらさない。",
-        "v4.2対応：まず見る候補を全件表示し、本命買い/打診買い/近接/低優先/超小型を分離。候補行にもレーティングを表示。",
+        "v4.5対応：D03はTradingViewへアクセスしない。保存済みTV情報を読み、現在値で乖離率を再計算。",
         "",
         "## 今日のサマリー",
         f"本命買い以上：{len(main_buy_cards)}件",

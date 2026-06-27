@@ -119,9 +119,9 @@ def main():
 
     ratings_summary = extract_between(
         ratings_text,
-        ["## iPhoneでまず見るところ", "## サマリー", "サマリー"],
-        ["## 古い/未取得", "## 上昇余地"],
-        max_lines=60,
+        ["## TradingViewレーティング品質", "TradingViewレーティング品質"],
+        ["## 重要ルール", "## 確認が必要"],
+        max_lines=80,
     )
 
     buy_summary = extract_between(
@@ -235,8 +235,8 @@ a { color: #0f62fe; text-decoration: none; }
   </section>
 
   <section class="card">
-    <span class="badge">レーティング品質</span>
-    <h2>TradingView / 代替レーティング更新状況</h2>
+    <span class="badge">TradingView</span>
+    <h2>TradingViewレーティング品質</h2>
     {md_to_html(ratings_summary)}
   </section>
 
@@ -256,7 +256,7 @@ a { color: #0f62fe; text-decoration: none; }
     <h2>詳細リンク</h2>
     <div class="links">
       <a class="linkbtn" href="latest/buy_alert_latest.md">最新の買い場アラート全文</a>
-      <a class="linkbtn" href="latest/ratings_latest.md">最新のレーティング更新全文</a>
+      <a class="linkbtn" href="latest/ratings_latest.md">最新のTradingViewレーティング全文</a>
       <a class="linkbtn" href="latest/weekly_report_latest.md">最新の週間騰落全文</a>
       <a class="linkbtn" href="latest/buy_zone_monthly_review_latest.md">最新の月次レビュー全文</a>
       <a class="linkbtn" href="https://github.com/69wmjpm6j2-alt/chappy-investment-system/actions">GitHub Actions</a>
@@ -264,7 +264,7 @@ a { color: #0f62fe; text-decoration: none; }
   </section>
 
   <div class="footer">
-    CIS DashboardはGitHub Actionsで自動更新。buy_zone_master.csvは人間確認なしに自動上書きしない。
+    CIS DashboardはGitHub Actionsで自動更新。D03はTradingViewへ毎日アクセスせず、保存済みTV情報を読む。
   </div>
 </body>
 </html>

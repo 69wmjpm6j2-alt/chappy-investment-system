@@ -1,8 +1,12 @@
 
+import csv
+import html as html_lib
 import json
+import os
+import re
 import time
 import urllib.request
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 
 import pandas as pd
@@ -13,80 +17,101 @@ from cis_common import DATA, OUT, active_watchlist, append_health
 
 JST = ZoneInfo("Asia/Tokyo")
 
-TV_ENDPOINT = "https://scanner.tradingview.com/america/scan"
+TV_SCANNER_ENDPOINT = "https://scanner.tradingview.com/america/scan"
+USER_AGENT = "Mozilla/5.0 (compatible; CIS-TradingView-Ratings/0.5)"
+
+TV_REFRESH_DAYS = 30
+TV_CACHE_OLD_DAYS = 60
+TV_STALE_DAYS = 90
+PARTIAL_RETRY_DAYS = 7
+MISSING_RETRY_DAYS = 7
 
 US_EXCHANGES = ["NASDAQ", "NYSE", "AMEX", "OTC"]
-MIN_US_RATING_COVERAGE_WARN = 0.35
-CACHE_STALE_DAYS = 14
-CACHE_EXPIRE_DAYS = 45
 
-# TradingView scannerは非公式利用のため、列名変更に備えて複数候補を試す。
-TV_COLUMN_SETS = [
+RATINGS_COLUMNS = [
+    "ticker",
+    "tv_symbol",
+    "forecast_url",
+    "market",
+    "asset_type",
+    "name",
+    "theme",
+    "last_attempt_date",
+    "rating_date",
+    "next_refresh_due",
+    "current_price",
+    "tv_avg_target",
+    "tv_high_target",
+    "tv_low_target",
+    "tv_upside_pct",
+    "tv_high_upside_pct",
+    "tv_low_upside_pct",
+    "tv_analyst_count_target",
+    "tv_consensus",
+    "tv_analyst_count_rating",
+    "source_quality",
+    "freshness",
+    "stale_days",
+    "status",
+    "note",
+]
+
+SYMBOL_MAP_COLUMNS = [
+    "ticker",
+    "tv_symbol",
+    "forecast_url",
+    "last_verified",
+    "source",
+    "status",
+    "note",
+]
+
+TV_SCANNER_COLUMN_SETS = [
     [
-        "name", "description", "close", "currency", "exchange",
+        "name", "description", "close", "exchange",
         "target_price_average", "target_price_high", "target_price_low",
         "target_price_recommendation", "number_of_analysts",
     ],
     [
-        "name", "description", "close", "currency", "exchange",
+        "name", "description", "close", "exchange",
         "PriceTarget.Average", "PriceTarget.High", "PriceTarget.Low",
         "AnalystRating", "AnalystRating.count",
     ],
     [
-        "name", "description", "close", "currency", "exchange",
+        "name", "description", "close", "exchange",
         "price_target_average", "price_target_high", "price_target_low",
         "recommendation_mark", "analyst_count",
     ],
 ]
 
-OUTPUT_COLUMNS = [
-    "attempt_date",
-    "rating_date",
-    "ticker",
-    "market",
-    "name",
-    "theme",
-    "asset_type",
-    "current_price",
-    "analyst_count",
-    "consensus",
-    "avg_target",
-    "high_target",
-    "low_target",
-    "upside_pct",
-    "high_upside_pct",
-    "low_upside_pct",
-    "source_used",
-    "tv_symbol",
-    "status",
-    "freshness",
-    "stale_days",
-    "note",
-]
 
-
-def today_jst():
+def today_jst() -> str:
     return datetime.now(JST).date().isoformat()
 
 
-def parse_date(x):
-    if is_blank(x):
-        return None
-    try:
-        return pd.to_datetime(str(x)).date()
-    except Exception:
-        return None
+def today_date() -> date:
+    return datetime.now(JST).date()
 
 
-def days_between(d1, d2):
-    a = parse_date(d1)
-    b = parse_date(d2)
-    if a is None or b is None:
-        return None
-    return (a - b).days
+def is_first_saturday_jst() -> bool:
+    d = today_date()
+    return d.weekday() == 5 and 1 <= d.day <= 7
 
 
-def is_blank(x):
+def mode_from_env() -> str:
+    mode = (os.getenv("MODE") or os.getenv("mode") or "auto").strip().lower()
+    if mode not in {"auto", "missing", "monthly", "full", "single"}:
+        return "auto"
+    if mode == "auto":
+        return "monthly" if is_first_saturday_jst() else "missing"
+    return mode
+
+
+def env_ticker() -> str:
+    return (os.getenv("TICKER") or os.getenv("ticker") or "").strip().upper()
+
+
+def is_blank(x) -> bool:
     if x is None:
         return True
     try:
@@ -102,7 +127,8 @@ def safe_float(x):
     if is_blank(x):
         return None
     try:
-        return float(x)
+        s = str(x).replace(",", "").replace("$", "").strip()
+        return float(s)
     except Exception:
         return None
 
@@ -111,9 +137,32 @@ def safe_intish(x):
     if is_blank(x):
         return None
     try:
-        return int(float(x))
+        return int(float(str(x).replace(",", "").strip()))
     except Exception:
-        return str(x)
+        return None
+
+
+def parse_date(x):
+    if is_blank(x):
+        return None
+    try:
+        return pd.to_datetime(str(x)).date()
+    except Exception:
+        return None
+
+
+def add_days(iso_date, days):
+    d = parse_date(iso_date)
+    if d is None:
+        d = today_date()
+    return (d + timedelta(days=days)).isoformat()
+
+
+def days_since(iso_date):
+    d = parse_date(iso_date)
+    if d is None:
+        return None
+    return (today_date() - d).days
 
 
 def fmt_num(x):
@@ -140,31 +189,6 @@ def upside(current, target):
     return (t - c) / c * 100
 
 
-def valid_target_pack(current, avg, high, low):
-    c = safe_float(current)
-    a = safe_float(avg)
-    h = safe_float(high)
-    l = safe_float(low)
-
-    if a is None:
-        return True, ""
-
-    if a <= 0:
-        return False, "avg_target <= 0"
-
-    if c is not None and c > 0:
-        ratio = a / c
-        if ratio > 10:
-            return False, f"avg_target/current too high: {ratio:.2f}x"
-        if ratio < 0.1:
-            return False, f"avg_target/current too low: {ratio:.2f}x"
-
-    if h is not None and l is not None and h < l:
-        return False, "high_target < low_target"
-
-    return True, ""
-
-
 def current_price_yf(ticker):
     try:
         hist = yf.Ticker(ticker).history(period="7d", interval="1d", auto_adjust=False)
@@ -178,13 +202,39 @@ def current_price_yf(ticker):
         return None
 
 
-def post_json(url, payload=None, timeout=18):
+def valid_target_pack(current, avg, high=None, low=None):
+    c = safe_float(current)
+    a = safe_float(avg)
+    h = safe_float(high)
+    l = safe_float(low)
+
+    if a is None:
+        return True, ""
+
+    if a <= 0:
+        return False, "avg target <= 0"
+
+    if c is not None and c > 0:
+        ratio = a / c
+        if ratio > 10:
+            return False, f"avg target/current too high: {ratio:.2f}x"
+        if ratio < 0.1:
+            return False, f"avg target/current too low: {ratio:.2f}x"
+
+    if h is not None and l is not None and h < l:
+        return False, "high target < low target"
+
+    return True, ""
+
+
+def request_text(url, payload=None, timeout=18):
     if payload is None:
         req = urllib.request.Request(
             url,
             headers={
-                "User-Agent": "Mozilla/5.0 CIS/1.0",
-                "Accept": "application/json,text/plain,*/*",
+                "User-Agent": USER_AGENT,
+                "Accept": "text/html,application/json,text/plain,*/*",
+                "Accept-Language": "en-US,en;q=0.9",
             },
             method="GET",
         )
@@ -195,74 +245,200 @@ def post_json(url, payload=None, timeout=18):
             data=data,
             headers={
                 "Content-Type": "application/json",
-                "User-Agent": "Mozilla/5.0 CIS/1.0",
+                "User-Agent": USER_AGENT,
                 "Accept": "application/json,text/plain,*/*",
+                "Accept-Language": "en-US,en;q=0.9",
             },
             method="POST",
         )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return json.loads(resp.read().decode("utf-8", errors="replace"))
+        return resp.read().decode("utf-8", errors="replace")
 
 
-def first_value(row, keys):
-    for k in keys:
-        v = row.get(k)
-        if not is_blank(v):
-            return v
+def request_json(url, payload=None, timeout=18):
+    return json.loads(request_text(url, payload=payload, timeout=timeout))
+
+
+def clean_html_text(raw_html: str) -> str:
+    s = re.sub(r"<script\b[^>]*>.*?</script>", " ", raw_html, flags=re.I | re.S)
+    s = re.sub(r"<style\b[^>]*>.*?</style>", " ", s, flags=re.I | re.S)
+    s = re.sub(r"<[^>]+>", " ", s)
+    s = html_lib.unescape(s)
+    s = re.sub(r"\s+", " ", s)
+    return s.strip()
+
+
+def first_regex_number(text, patterns):
+    for pat in patterns:
+        m = re.search(pat, text, flags=re.I | re.S)
+        if m:
+            for g in m.groups():
+                v = safe_float(g)
+                if v is not None:
+                    return v
     return None
 
 
-def candidate_tv_symbols(ticker):
-    t = ticker.upper()
-    return [f"{ex}:{t}" for ex in US_EXCHANGES]
+def first_regex_int(text, patterns):
+    for pat in patterns:
+        m = re.search(pat, text, flags=re.I | re.S)
+        if m:
+            for g in m.groups():
+                v = safe_intish(g)
+                if v is not None:
+                    return v
+    return None
 
 
-def extract_tv_row(item, columns):
-    vals = item.get("d", [])
-    row = {columns[i]: vals[i] if i < len(vals) else None for i in range(len(columns))}
-    row["_tv_symbol"] = item.get("s", "")
-    return row
+def first_regex_consensus(text):
+    patterns = [
+        r"Analyst rating.{0,80}\b(Strong\s*Buy|StrongBuy|Buy|Neutral|Hold|Sell|Strong\s*Sell|StrongSell)\b",
+        r"\b(Strong\s*Buy|StrongBuy|Buy|Neutral|Hold|Sell|Strong\s*Sell|StrongSell)\b.{0,80}Analyst rating",
+        r'"(?:target_price_recommendation|recommendation_mark|AnalystRating|analystRating|recommendationKey)"\s*:\s*"([^"]+)"',
+        r'"(?:target_price_recommendation|recommendation_mark|AnalystRating|analystRating|recommendationKey)"\s*:\s*\{"[^"]*"\s*:\s*"([^"]+)"',
+    ]
+    for pat in patterns:
+        m = re.search(pat, text, flags=re.I | re.S)
+        if m:
+            val = str(m.group(1)).strip()
+            if val:
+                return val.replace("StrongBuy", "Strong Buy").replace("StrongSell", "Strong Sell")
+    return None
 
 
-def normalize_tv_result(row):
-    avg = first_value(row, ["target_price_average", "PriceTarget.Average", "price_target_average"])
-    high = first_value(row, ["target_price_high", "PriceTarget.High", "price_target_high"])
-    low = first_value(row, ["target_price_low", "PriceTarget.Low", "price_target_low"])
-    count = first_value(row, ["number_of_analysts", "AnalystRating.count", "analyst_count"])
-    consensus = first_value(row, ["target_price_recommendation", "AnalystRating", "recommendation_mark"])
-    close = first_value(row, ["close"])
+def json_key_number(text, keys):
+    joined = "|".join(re.escape(k) for k in keys)
+    patterns = [
+        rf'"(?:{joined})"\s*:\s*([-+]?\d[\d,]*(?:\.\d+)?)',
+        rf'"(?:{joined})"\s*:\s*\{{[^{{}}]*?"raw"\s*:\s*([-+]?\d[\d,]*(?:\.\d+)?)',
+        rf'"(?:{joined})"\s*:\s*\{{[^{{}}]*?"value"\s*:\s*([-+]?\d[\d,]*(?:\.\d+)?)',
+    ]
+    return first_regex_number(text, patterns)
+
+
+def json_key_int(text, keys):
+    joined = "|".join(re.escape(k) for k in keys)
+    patterns = [
+        rf'"(?:{joined})"\s*:\s*(\d[\d,]*)',
+        rf'"(?:{joined})"\s*:\s*\{{[^{{}}]*?"raw"\s*:\s*(\d[\d,]*)',
+        rf'"(?:{joined})"\s*:\s*\{{[^{{}}]*?"value"\s*:\s*(\d[\d,]*)',
+    ]
+    return first_regex_int(text, patterns)
+
+
+def extract_forecast_from_html(raw_html, current_price=None):
+    text = clean_html_text(raw_html)
+
+    avg = json_key_number(raw_html, [
+        "target_price_average", "targetPriceAverage", "priceTargetAverage",
+        "priceTargetMean", "targetMeanPrice", "averagePriceTarget",
+        "avgTargetPrice", "averageTargetPrice", "target_price_avg",
+    ])
+
+    high = json_key_number(raw_html, [
+        "target_price_high", "targetPriceHigh", "priceTargetHigh",
+        "targetHighPrice", "highTargetPrice", "target_price_max",
+    ])
+
+    low = json_key_number(raw_html, [
+        "target_price_low", "targetPriceLow", "priceTargetLow",
+        "targetLowPrice", "lowTargetPrice", "target_price_min",
+    ])
+
+    count_target = json_key_int(raw_html, [
+        "number_of_analysts", "numberOfAnalysts", "analystCount",
+        "analystsCount", "targetPriceAnalysts", "priceTargetAnalystCount",
+    ])
+
+    consensus = first_regex_consensus(raw_html) or first_regex_consensus(text)
+
+    # Text fallback. Avoid treating current price as target by validating later.
+    if avg is None:
+        avg = first_regex_number(text, [
+            r"Price target\s+([$]?\d[\d,]*(?:\.\d+)?)",
+            r"Average price target(?: is| of)?\s+([$]?\d[\d,]*(?:\.\d+)?)",
+            r"average target price(?: is| of)?\s+([$]?\d[\d,]*(?:\.\d+)?)",
+            r"mean target(?: price)?(?: is| of)?\s+([$]?\d[\d,]*(?:\.\d+)?)",
+        ])
+
+    if high is None:
+        high = first_regex_number(text, [
+            r"(?:max|maximum|high) estimate(?: of| is)?\s+([$]?\d[\d,]*(?:\.\d+)?)",
+            r"high forecast(?: of| is)?\s+([$]?\d[\d,]*(?:\.\d+)?)",
+            r"highest price target(?: of| is)?\s+([$]?\d[\d,]*(?:\.\d+)?)",
+        ])
+
+    if low is None:
+        low = first_regex_number(text, [
+            r"(?:min|minimum|low) estimate(?: of| is)?\s+([$]?\d[\d,]*(?:\.\d+)?)",
+            r"low forecast(?: of| is)?\s+([$]?\d[\d,]*(?:\.\d+)?)",
+            r"lowest price target(?: of| is)?\s+([$]?\d[\d,]*(?:\.\d+)?)",
+        ])
+
+    if count_target is None:
+        count_target = first_regex_int(text, [
+            r"(\d[\d,]*)\s+analysts?\s+offering\s+1[- ]year price forecasts?",
+            r"Based on\s+(\d[\d,]*)\s+analysts?",
+            r"(\d[\d,]*)\s+analysts?.{0,80}price target",
+        ])
+
+    count_rating = first_regex_int(text, [
+        r"Analyst rating.{0,120}based on\s+(\d[\d,]*)\s+analysts?",
+        r"Based on\s+(\d[\d,]*)\s+analysts?.{0,120}Analyst rating",
+        r"(\d[\d,]*)\s+analysts?.{0,120}Analyst rating",
+    ])
+
+    ok, reason = valid_target_pack(current_price, avg, high, low)
+    if not ok:
+        avg = high = low = None
+        note = f"invalid forecast target discarded: {reason}"
+    else:
+        note = ""
+
+    source_quality = "TV_FULL" if avg is not None else ("TV_PARTIAL" if consensus or count_target or count_rating else "TV_MISSING")
 
     return {
-        "source": "TradingView",
-        "current_price": safe_float(close),
-        "analyst_count": safe_intish(count),
-        "consensus": None if is_blank(consensus) else str(consensus),
-        "avg_target": safe_float(avg),
-        "high_target": safe_float(high),
-        "low_target": safe_float(low),
-        "tv_symbol": row.get("_tv_symbol", ""),
-        "status": "tv_ok",
-        "note": "",
+        "source_quality": source_quality,
+        "current_price": current_price,
+        "tv_avg_target": avg,
+        "tv_high_target": high,
+        "tv_low_target": low,
+        "tv_analyst_count_target": count_target,
+        "tv_consensus": consensus,
+        "tv_analyst_count_rating": count_rating,
+        "note": note,
     }
 
 
-def has_rating_payload(result):
-    return any(
-        not is_blank(result.get(k))
-        for k in ["analyst_count", "consensus", "avg_target", "high_target", "low_target"]
-    )
+def tv_symbol_to_url(tv_symbol: str, page="forecast") -> str:
+    if ":" not in str(tv_symbol):
+        return ""
+    ex, ticker = tv_symbol.split(":", 1)
+    slug = f"{ex}-{ticker}".replace(".", "-").upper()
+    if page == "forecast_price_target":
+        return f"https://www.tradingview.com/symbols/{slug}/forecast-price-target/"
+    return f"https://www.tradingview.com/symbols/{slug}/forecast/"
 
 
-def tradingview_scan_one(ticker):
-    ticker_u = ticker.upper()
+def scanner_symbol_candidates(ticker):
+    t = str(ticker).upper()
+    return [f"{ex}:{t}" for ex in US_EXCHANGES]
+
+
+def scanner_lookup(ticker):
+    """
+    scannerは主目的ではなく補助。
+    tv_symbol特定と、判断だけ取得できる場合のpartial補助に使う。
+    """
+    ticker_u = str(ticker).upper()
     last_error = ""
 
-    for columns in TV_COLUMN_SETS:
+    for columns in TV_SCANNER_COLUMN_SETS:
         payloads = [
             {
                 "filter": [],
                 "options": {"lang": "en"},
-                "symbols": {"tickers": candidate_tv_symbols(ticker_u), "query": {"types": []}},
+                "symbols": {"tickers": scanner_symbol_candidates(ticker_u), "query": {"types": []}},
                 "columns": columns,
                 "range": [0, 20],
             },
@@ -278,17 +454,19 @@ def tradingview_scan_one(ticker):
 
         for payload in payloads:
             try:
-                js = post_json(TV_ENDPOINT, payload)
+                js = request_json(TV_SCANNER_ENDPOINT, payload=payload, timeout=18)
                 data = js.get("data", [])
                 if not data:
                     continue
 
                 candidates = []
                 for item in data:
-                    row = extract_tv_row(item, columns)
-                    sym = str(row.get("_tv_symbol", "")).upper()
+                    vals = item.get("d", [])
+                    row = {columns[i]: vals[i] if i < len(vals) else None for i in range(len(columns))}
+                    sym = str(item.get("s", ""))
+                    row["_tv_symbol"] = sym
                     row_name = str(row.get("name", "")).upper()
-                    if row_name == ticker_u or sym.endswith(":" + ticker_u):
+                    if row_name == ticker_u or sym.upper().endswith(":" + ticker_u):
                         candidates.append(row)
 
                 if not candidates:
@@ -296,588 +474,709 @@ def tradingview_scan_one(ticker):
 
                 def score(row):
                     sym = str(row.get("_tv_symbol", "")).upper()
-                    for i, ex in enumerate(["NASDAQ", "NYSE", "AMEX", "OTC"]):
+                    for i, ex in enumerate(US_EXCHANGES):
                         if sym.startswith(ex + ":"):
                             return i
                     return 99
 
-                result = normalize_tv_result(sorted(candidates, key=score)[0])
+                row = sorted(candidates, key=score)[0]
 
-                if not has_rating_payload(result):
-                    continue
+                def fv(keys):
+                    for k in keys:
+                        if k in row and not is_blank(row[k]):
+                            return row[k]
+                    return None
 
-                if safe_float(result.get("current_price")) is None:
-                    result["current_price"] = current_price_yf(ticker)
+                avg = safe_float(fv(["target_price_average", "PriceTarget.Average", "price_target_average"]))
+                high = safe_float(fv(["target_price_high", "PriceTarget.High", "price_target_high"]))
+                low = safe_float(fv(["target_price_low", "PriceTarget.Low", "price_target_low"]))
+                consensus = fv(["target_price_recommendation", "AnalystRating", "recommendation_mark"])
+                count = safe_intish(fv(["number_of_analysts", "AnalystRating.count", "analyst_count"]))
+                current = safe_float(fv(["close"]))
 
-                ok, reason = valid_target_pack(
-                    result.get("current_price"),
-                    result.get("avg_target"),
-                    result.get("high_target"),
-                    result.get("low_target"),
-                )
-                if not ok:
-                    result["source"] = None
-                    result["status"] = "tv_invalid_target"
-                    result["note"] = reason
-                    return result
-
-                return result
+                return {
+                    "tv_symbol": row.get("_tv_symbol", ""),
+                    "current_price": current,
+                    "tv_avg_target": avg,
+                    "tv_high_target": high,
+                    "tv_low_target": low,
+                    "tv_consensus": None if is_blank(consensus) else str(consensus),
+                    "tv_analyst_count_target": count,
+                    "tv_analyst_count_rating": count,
+                    "source_quality": "TV_FULL" if avg is not None else ("TV_PARTIAL" if consensus or count else "TV_MISSING"),
+                    "status": "scanner_ok",
+                    "note": "",
+                }
 
             except Exception as e:
                 last_error = str(e)[:220]
-                continue
             finally:
                 time.sleep(0.15)
 
     return {
-        "source": None,
-        "status": "tv_unavailable",
-        "note": last_error or "TradingView scanner returned no usable analyst forecast fields",
+        "tv_symbol": "",
+        "source_quality": "TV_MISSING",
+        "status": "scanner_missing",
+        "note": last_error or "scanner returned no matching symbol",
     }
 
 
-def yahoo_yfinance_fallback(ticker):
-    current = current_price_yf(ticker)
-
-    try:
-        t = yf.Ticker(ticker)
-        info = {}
+def load_csv(path: Path, columns):
+    if path.exists():
         try:
-            info = t.get_info()
+            return pd.read_csv(path)
         except Exception:
-            try:
-                info = t.info
-            except Exception:
-                info = {}
-
-        current = safe_float(info.get("currentPrice")) or safe_float(info.get("regularMarketPrice")) or current
-        avg = safe_float(info.get("targetMeanPrice"))
-        high = safe_float(info.get("targetHighPrice"))
-        low = safe_float(info.get("targetLowPrice"))
-        count = safe_intish(info.get("numberOfAnalystOpinions"))
-        rec = info.get("recommendationKey") or info.get("recommendationMean")
-
-        ok, reason = valid_target_pack(current, avg, high, low)
-        if not ok:
-            return {
-                "source": "Yahoo Finance fallback",
-                "current_price": current,
-                "analyst_count": None,
-                "consensus": None,
-                "avg_target": None,
-                "high_target": None,
-                "low_target": None,
-                "tv_symbol": "",
-                "status": "yf_invalid_target",
-                "note": reason,
-            }
-
-        if any(not is_blank(v) for v in [avg, high, low, count, rec]):
-            return {
-                "source": "Yahoo Finance fallback",
-                "current_price": current,
-                "analyst_count": count,
-                "consensus": None if is_blank(rec) else str(rec),
-                "avg_target": avg,
-                "high_target": high,
-                "low_target": low,
-                "tv_symbol": "",
-                "status": "yf_ok",
-                "note": "TradingView未取得のためYahoo fallback",
-            }
-
-        return {
-            "source": "Yahoo Finance fallback",
-            "current_price": current,
-            "analyst_count": None,
-            "consensus": None,
-            "avg_target": None,
-            "high_target": None,
-            "low_target": None,
-            "tv_symbol": "",
-            "status": "yf_no_rating",
-            "note": "Yahoo yfinance returned no analyst forecast fields",
-        }
-
-    except Exception as e:
-        return {
-            "source": "Yahoo Finance fallback",
-            "current_price": current,
-            "analyst_count": None,
-            "consensus": None,
-            "avg_target": None,
-            "high_target": None,
-            "low_target": None,
-            "tv_symbol": "",
-            "status": "yf_error",
-            "note": str(e)[:220],
-        }
+            return pd.DataFrame(columns=columns)
+    return pd.DataFrame(columns=columns)
 
 
-def yahoo_direct_fallback(ticker):
+def save_symbol_map(df):
+    p = DATA / "tv_symbol_map.csv"
+    df = df.copy()
+    for col in SYMBOL_MAP_COLUMNS:
+        if col not in df.columns:
+            df[col] = ""
+    df = df[SYMBOL_MAP_COLUMNS]
+    df.to_csv(p, index=False, encoding="utf-8-sig")
+
+
+def symbol_map_row(symbol_map, ticker):
+    if symbol_map.empty or "ticker" not in symbol_map.columns:
+        return None
+    hit = symbol_map[symbol_map["ticker"].astype(str).eq(str(ticker))]
+    if hit.empty:
+        return None
+    return hit.iloc[0].to_dict()
+
+
+def upsert_symbol_map(symbol_map, row):
+    if symbol_map.empty or "ticker" not in symbol_map.columns:
+        symbol_map = pd.DataFrame(columns=SYMBOL_MAP_COLUMNS)
+
+    ticker = str(row.get("ticker", ""))
+    rest = symbol_map[~symbol_map["ticker"].astype(str).eq(ticker)].copy()
+    new_row = {col: row.get(col, "") for col in SYMBOL_MAP_COLUMNS}
+    return pd.concat([rest, pd.DataFrame([new_row])], ignore_index=True)
+
+
+def previous_row(previous_df, ticker):
+    if previous_df.empty or "ticker" not in previous_df.columns:
+        return None
+    hit = previous_df[previous_df["ticker"].astype(str).eq(str(ticker))]
+    if hit.empty:
+        return None
+    return hit.iloc[0].to_dict()
+
+
+def normalize_previous(prev):
     """
-    yfinanceが空のときの追加fallback。
-    Yahoo quoteSummaryのfinancialDataを直接読む。
+    v0.5以前のratings_masterがあっても、使えるTV情報だけ拾う。
     """
-    current = current_price_yf(ticker)
-    url = f"https://query2.finance.yahoo.com/v10/finance/quoteSummary/{ticker}?modules=financialData"
-    try:
-        js = post_json(url, payload=None, timeout=15)
-        result = js.get("quoteSummary", {}).get("result", [])
-        if not result:
-            return {
-                "source": "Yahoo direct fallback",
-                "current_price": current,
-                "analyst_count": None,
-                "consensus": None,
-                "avg_target": None,
-                "high_target": None,
-                "low_target": None,
-                "tv_symbol": "",
-                "status": "yd_no_result",
-                "note": "Yahoo direct returned no result",
-            }
-
-        fd = result[0].get("financialData", {})
-        def raw_field(name):
-            v = fd.get(name)
-            if isinstance(v, dict):
-                return v.get("raw")
-            return v
-
-        avg = safe_float(raw_field("targetMeanPrice"))
-        high = safe_float(raw_field("targetHighPrice"))
-        low = safe_float(raw_field("targetLowPrice"))
-        count = safe_intish(raw_field("numberOfAnalystOpinions"))
-        rec = raw_field("recommendationKey") or raw_field("recommendationMean")
-        current = safe_float(raw_field("currentPrice")) or current
-
-        ok, reason = valid_target_pack(current, avg, high, low)
-        if not ok:
-            return {
-                "source": "Yahoo direct fallback",
-                "current_price": current,
-                "analyst_count": None,
-                "consensus": None,
-                "avg_target": None,
-                "high_target": None,
-                "low_target": None,
-                "tv_symbol": "",
-                "status": "yd_invalid_target",
-                "note": reason,
-            }
-
-        if any(not is_blank(v) for v in [avg, high, low, count, rec]):
-            return {
-                "source": "Yahoo direct fallback",
-                "current_price": current,
-                "analyst_count": count,
-                "consensus": None if is_blank(rec) else str(rec),
-                "avg_target": avg,
-                "high_target": high,
-                "low_target": low,
-                "tv_symbol": "",
-                "status": "yd_ok",
-                "note": "TradingView/yfinance未取得のためYahoo direct fallback",
-            }
-
-        return {
-            "source": "Yahoo direct fallback",
-            "current_price": current,
-            "analyst_count": None,
-            "consensus": None,
-            "avg_target": None,
-            "high_target": None,
-            "low_target": None,
-            "tv_symbol": "",
-            "status": "yd_no_rating",
-            "note": "Yahoo direct returned no analyst forecast fields",
-        }
-
-    except Exception as e:
-        return {
-            "source": "Yahoo direct fallback",
-            "current_price": current,
-            "analyst_count": None,
-            "consensus": None,
-            "avg_target": None,
-            "high_target": None,
-            "low_target": None,
-            "tv_symbol": "",
-            "status": "yd_error",
-            "note": str(e)[:220],
-        }
-
-
-def manual_override_row(ticker):
-    """
-    任意の手動補完ファイル。存在しなければ使わない。
-    data/ratings_manual.csv に ticker, rating_date, analyst_count, consensus, avg_target等を置ける。
-    """
-    path = DATA / "ratings_manual.csv"
-    if not path.exists():
-        return None
-    try:
-        df = pd.read_csv(path)
-        if "ticker" not in df.columns:
-            return None
-        hit = df[df["ticker"].astype(str).eq(str(ticker))]
-        if hit.empty:
-            return None
-        r = hit.iloc[0].to_dict()
-        if is_blank(r.get("avg_target")) and is_blank(r.get("analyst_count")) and is_blank(r.get("consensus")):
-            return None
-
-        current = safe_float(r.get("current_price")) or current_price_yf(ticker)
-        avg = safe_float(r.get("avg_target"))
-        high = safe_float(r.get("high_target"))
-        low = safe_float(r.get("low_target"))
-        ok, reason = valid_target_pack(current, avg, high, low)
-        if not ok:
-            return {
-                "source": "Manual override",
-                "current_price": current,
-                "analyst_count": None,
-                "consensus": None,
-                "avg_target": None,
-                "high_target": None,
-                "low_target": None,
-                "tv_symbol": "",
-                "status": "manual_invalid_target",
-                "note": reason,
-            }
-
-        return {
-            "source": r.get("source_used") or "Manual override",
-            "rating_date": r.get("rating_date") or r.get("attempt_date") or today_jst(),
-            "current_price": current,
-            "analyst_count": safe_intish(r.get("analyst_count")),
-            "consensus": r.get("consensus"),
-            "avg_target": avg,
-            "high_target": high,
-            "low_target": low,
-            "tv_symbol": r.get("tv_symbol", ""),
-            "status": "manual_override",
-            "note": r.get("note", "手動補完"),
-        }
-    except Exception:
+    if not prev:
         return None
 
+    avg = safe_float(prev.get("tv_avg_target"))
+    if avg is None:
+        avg = safe_float(prev.get("avg_target"))
 
-def previous_cache_row(ticker, previous_df):
-    if previous_df is None or previous_df.empty or "ticker" not in previous_df.columns:
-        return None
-    old = previous_df[previous_df["ticker"].astype(str).eq(str(ticker))]
-    if old.empty:
-        return None
-    r = old.iloc[0].to_dict()
-    if is_blank(r.get("avg_target")) and is_blank(r.get("analyst_count")) and is_blank(r.get("consensus")):
-        return None
-    return r
+    high = safe_float(prev.get("tv_high_target"))
+    if high is None:
+        high = safe_float(prev.get("high_target"))
 
+    low = safe_float(prev.get("tv_low_target"))
+    if low is None:
+        low = safe_float(prev.get("low_target"))
 
-def build_base_row(meta):
+    consensus = prev.get("tv_consensus")
+    if is_blank(consensus):
+        consensus = prev.get("consensus")
+
+    count_target = safe_intish(prev.get("tv_analyst_count_target"))
+    if count_target is None:
+        count_target = safe_intish(prev.get("analyst_count"))
+
+    count_rating = safe_intish(prev.get("tv_analyst_count_rating"))
+
+    rating_date = prev.get("rating_date") or prev.get("attempt_date") or prev.get("last_attempt_date") or ""
+
+    if avg is None and is_blank(consensus) and count_target is None and count_rating is None:
+        return None
+
     return {
-        "attempt_date": today_jst(),
+        "rating_date": rating_date,
+        "last_attempt_date": prev.get("last_attempt_date") or prev.get("attempt_date") or "",
+        "tv_symbol": prev.get("tv_symbol", ""),
+        "forecast_url": prev.get("forecast_url", ""),
+        "tv_avg_target": avg,
+        "tv_high_target": high,
+        "tv_low_target": low,
+        "tv_analyst_count_target": count_target,
+        "tv_consensus": None if is_blank(consensus) else str(consensus),
+        "tv_analyst_count_rating": count_rating,
+        "source_quality": prev.get("source_quality", ""),
+        "note": prev.get("note", ""),
+    }
+
+
+def has_full_tv(prev_norm):
+    return bool(prev_norm and safe_float(prev_norm.get("tv_avg_target")) is not None)
+
+
+def has_partial_tv(prev_norm):
+    return bool(prev_norm and safe_float(prev_norm.get("tv_avg_target")) is None and (
+        not is_blank(prev_norm.get("tv_consensus"))
+        or prev_norm.get("tv_analyst_count_target") is not None
+        or prev_norm.get("tv_analyst_count_rating") is not None
+    ))
+
+
+def derived_quality_from_age(has_full, has_partial, rating_date):
+    if has_full:
+        age = days_since(rating_date)
+        if age is None:
+            return "TV_CACHE"
+        if age <= TV_REFRESH_DAYS:
+            return "TV_FULL"
+        if age <= TV_CACHE_OLD_DAYS:
+            return "TV_CACHE"
+        if age <= TV_STALE_DAYS:
+            return "TV_CACHE_OLD"
+        return "TV_STALE"
+    if has_partial:
+        return "TV_PARTIAL"
+    return "TV_MISSING"
+
+
+def next_due_from_quality(source_quality, rating_date):
+    if source_quality in {"TV_FULL", "TV_CACHE", "TV_CACHE_OLD", "TV_STALE"}:
+        return add_days(rating_date or today_jst(), TV_REFRESH_DAYS)
+    if source_quality == "TV_PARTIAL":
+        return add_days(today_jst(), PARTIAL_RETRY_DAYS)
+    if source_quality == "TV_MISSING":
+        return add_days(today_jst(), MISSING_RETRY_DAYS)
+    return ""
+
+
+def should_attempt(mode, ticker, meta, prev_norm):
+    asset_type = str(meta.get("asset_type", ""))
+    market = str(meta.get("market", ""))
+    if market != "US" or asset_type in {"etf", "watch_only"}:
+        return False
+
+    one = env_ticker()
+    if mode == "single":
+        return bool(one and ticker.upper() == one)
+
+    if mode in {"monthly", "full"}:
+        return True
+
+    # missing retry: TV_MISSING / TV_PARTIAL only. TV_FULL/cacheは触らない。
+    if has_full_tv(prev_norm):
+        return False
+    return True
+
+
+def resolve_tv_symbol(ticker, symbol_map, prev_norm):
+    # 1. symbol_map
+    m = symbol_map_row(symbol_map, ticker)
+    if m and not is_blank(m.get("tv_symbol")):
+        return str(m.get("tv_symbol")), str(m.get("forecast_url") or tv_symbol_to_url(m.get("tv_symbol"))), "symbol_map", symbol_map
+
+    # 2. previous ratings
+    if prev_norm and not is_blank(prev_norm.get("tv_symbol")):
+        tvs = str(prev_norm.get("tv_symbol"))
+        return tvs, str(prev_norm.get("forecast_url") or tv_symbol_to_url(tvs)), "previous", symbol_map
+
+    # 3. scanner
+    sc = scanner_lookup(ticker)
+    tvs = sc.get("tv_symbol", "")
+    if not is_blank(tvs):
+        url = tv_symbol_to_url(tvs)
+        new_map_row = {
+            "ticker": ticker,
+            "tv_symbol": tvs,
+            "forecast_url": url,
+            "last_verified": today_jst(),
+            "source": "scanner",
+            "status": sc.get("status", ""),
+            "note": sc.get("note", ""),
+        }
+        symbol_map = upsert_symbol_map(symbol_map, new_map_row)
+        return tvs, url, "scanner", symbol_map
+
+    # 4. fallback candidate URL is handled by fetch loop
+    return "", "", "missing", symbol_map
+
+
+def forecast_url_candidates(ticker, tv_symbol, forecast_url):
+    urls = []
+    if forecast_url:
+        urls.append(forecast_url)
+    if tv_symbol:
+        urls.append(tv_symbol_to_url(tv_symbol, "forecast"))
+        urls.append(tv_symbol_to_url(tv_symbol, "forecast_price_target"))
+
+    # Last-resort exchange guesses.
+    t = str(ticker).upper().replace(".", "-")
+    for ex in US_EXCHANGES:
+        slug = f"{ex}-{t}"
+        urls.append(f"https://www.tradingview.com/symbols/{slug}/forecast/")
+        urls.append(f"https://www.tradingview.com/symbols/{slug}/forecast-price-target/")
+
+    # Preserve order, remove duplicates.
+    seen = set()
+    out = []
+    for u in urls:
+        if u and u not in seen:
+            seen.add(u)
+            out.append(u)
+    return out
+
+
+def fetch_tradingview_forecast(ticker, tv_symbol, forecast_url, current_price):
+    errors = []
+    best_partial = None
+
+    for url in forecast_url_candidates(ticker, tv_symbol, forecast_url):
+        try:
+            raw = request_text(url, timeout=20)
+            parsed = extract_forecast_from_html(raw, current_price=current_price)
+            parsed["forecast_url"] = url
+            parsed["status"] = "forecast_page_ok"
+            parsed["note"] = parsed.get("note", "")
+
+            if parsed["source_quality"] == "TV_FULL":
+                return parsed
+
+            if parsed["source_quality"] == "TV_PARTIAL" and best_partial is None:
+                best_partial = parsed
+
+        except Exception as e:
+            errors.append(f"{url}: {str(e)[:120]}")
+        finally:
+            time.sleep(0.25)
+
+    if best_partial is not None:
+        if errors:
+            best_partial["note"] = (best_partial.get("note", "") + " / " + " / ".join(errors[:2])).strip(" /")
+        return best_partial
+
+    return {
+        "source_quality": "TV_MISSING",
+        "forecast_url": forecast_url or "",
+        "status": "forecast_page_missing",
+        "note": " / ".join(errors[:3]) if errors else "forecast page returned no usable fields",
+        "current_price": current_price,
+        "tv_avg_target": None,
+        "tv_high_target": None,
+        "tv_low_target": None,
+        "tv_analyst_count_target": None,
+        "tv_consensus": None,
+        "tv_analyst_count_rating": None,
+    }
+
+
+def merge_with_previous(attempt_result, prev_norm):
+    """
+    今回取得がTV_FULLなら新規採用。
+    TV_PARTIAL/MISSINGなら、過去TV_FULLがある場合は過去値を保持し、品質を年齢で分類。
+    過去がpartialだけならpartialを更新/保持。
+    """
+    current_quality = attempt_result.get("source_quality", "TV_MISSING")
+
+    if current_quality == "TV_FULL":
+        return {
+            "use_previous": False,
+            "rating_date": today_jst(),
+            **attempt_result,
+        }
+
+    if has_full_tv(prev_norm):
+        rating_date = prev_norm.get("rating_date") or ""
+        q = derived_quality_from_age(True, False, rating_date)
+        note = f"今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality={current_quality}; {attempt_result.get('note','')}"
+        return {
+            "use_previous": True,
+            "rating_date": rating_date,
+            "source_quality": q,
+            "status": "kept_previous_tv_full",
+            "note": note,
+            "forecast_url": prev_norm.get("forecast_url") or attempt_result.get("forecast_url", ""),
+            "tv_avg_target": prev_norm.get("tv_avg_target"),
+            "tv_high_target": prev_norm.get("tv_high_target"),
+            "tv_low_target": prev_norm.get("tv_low_target"),
+            "tv_analyst_count_target": prev_norm.get("tv_analyst_count_target"),
+            "tv_consensus": prev_norm.get("tv_consensus"),
+            "tv_analyst_count_rating": prev_norm.get("tv_analyst_count_rating"),
+        }
+
+    if current_quality == "TV_PARTIAL":
+        return {
+            "use_previous": False,
+            "rating_date": today_jst(),
+            **attempt_result,
+        }
+
+    if has_partial_tv(prev_norm):
+        rating_date = prev_norm.get("rating_date") or ""
+        return {
+            "use_previous": True,
+            "rating_date": rating_date,
+            "source_quality": "TV_PARTIAL",
+            "status": "kept_previous_tv_partial",
+            "note": f"今回未取得のため前回TV_PARTIALを保持。{attempt_result.get('note','')}",
+            "forecast_url": prev_norm.get("forecast_url") or attempt_result.get("forecast_url", ""),
+            "tv_avg_target": None,
+            "tv_high_target": None,
+            "tv_low_target": None,
+            "tv_analyst_count_target": prev_norm.get("tv_analyst_count_target"),
+            "tv_consensus": prev_norm.get("tv_consensus"),
+            "tv_analyst_count_rating": prev_norm.get("tv_analyst_count_rating"),
+        }
+
+    return {
+        "use_previous": False,
         "rating_date": "",
-        "ticker": str(meta["ticker"]),
+        **attempt_result,
+    }
+
+
+def build_row_from_previous(meta, prev_norm):
+    ticker = str(meta["ticker"])
+    current = current_price_yf(ticker)
+    has_full = has_full_tv(prev_norm)
+    has_partial = has_partial_tv(prev_norm)
+    rating_date = prev_norm.get("rating_date") if prev_norm else ""
+    source_quality = derived_quality_from_age(has_full, has_partial, rating_date)
+    stale = days_since(rating_date)
+
+    avg = safe_float(prev_norm.get("tv_avg_target")) if prev_norm else None
+    high = safe_float(prev_norm.get("tv_high_target")) if prev_norm else None
+    low = safe_float(prev_norm.get("tv_low_target")) if prev_norm else None
+
+    return {
+        "ticker": ticker,
+        "tv_symbol": prev_norm.get("tv_symbol", "") if prev_norm else "",
+        "forecast_url": prev_norm.get("forecast_url", "") if prev_norm else "",
         "market": str(meta.get("market", "")),
+        "asset_type": str(meta.get("asset_type", "")),
         "name": str(meta.get("name", "")),
         "theme": str(meta.get("theme", "")),
-        "asset_type": str(meta.get("asset_type", "")),
-        "current_price": None,
-        "analyst_count": None,
-        "consensus": None,
-        "avg_target": None,
-        "high_target": None,
-        "low_target": None,
-        "upside_pct": None,
-        "high_upside_pct": None,
-        "low_upside_pct": None,
-        "source_used": "未取得",
-        "tv_symbol": "",
-        "status": "unprocessed",
-        "freshness": "missing",
-        "stale_days": None,
-        "note": "",
-    }
-
-
-def fill_row_from_result(row, result, freshness="fresh"):
-    current = safe_float(result.get("current_price"))
-    avg = safe_float(result.get("avg_target"))
-    high = safe_float(result.get("high_target"))
-    low = safe_float(result.get("low_target"))
-    rating_date = result.get("rating_date") or today_jst()
-    stale = days_between(today_jst(), rating_date)
-
-    row.update({
-        "rating_date": rating_date,
+        "last_attempt_date": prev_norm.get("last_attempt_date", "") if prev_norm else "",
+        "rating_date": rating_date or "",
+        "next_refresh_due": next_due_from_quality(source_quality, rating_date),
         "current_price": current,
-        "analyst_count": result.get("analyst_count"),
-        "consensus": result.get("consensus"),
-        "avg_target": avg,
-        "high_target": high,
-        "low_target": low,
-        "upside_pct": upside(current, avg),
-        "high_upside_pct": upside(current, high),
-        "low_upside_pct": upside(current, low),
-        "source_used": result.get("source") or "未取得",
-        "tv_symbol": result.get("tv_symbol", ""),
-        "status": result.get("status", ""),
-        "freshness": freshness,
+        "tv_avg_target": avg,
+        "tv_high_target": high,
+        "tv_low_target": low,
+        "tv_upside_pct": upside(current, avg),
+        "tv_high_upside_pct": upside(current, high),
+        "tv_low_upside_pct": upside(current, low),
+        "tv_analyst_count_target": prev_norm.get("tv_analyst_count_target") if prev_norm else None,
+        "tv_consensus": prev_norm.get("tv_consensus") if prev_norm else None,
+        "tv_analyst_count_rating": prev_norm.get("tv_analyst_count_rating") if prev_norm else None,
+        "source_quality": source_quality,
+        "freshness": "skipped_cache",
         "stale_days": stale,
-        "note": result.get("note", ""),
-    })
-    return row
-
-
-def fill_from_cache(row, old, new_status, new_note):
-    rating_date = old.get("rating_date") or old.get("attempt_date") or ""
-    stale = days_between(today_jst(), rating_date)
-
-    for key in OUTPUT_COLUMNS:
-        if key in old and key not in {"attempt_date", "status", "freshness", "stale_days", "note", "source_used"}:
-            row[key] = old[key]
-
-    row["attempt_date"] = today_jst()
-    row["rating_date"] = rating_date
-    row["source_used"] = f"previous_cache({old.get('source_used', 'unknown')})"
-    row["status"] = "cached_previous_stale" if stale is not None and stale > CACHE_STALE_DAYS else "cached_previous"
-    row["freshness"] = "cache_stale" if stale is not None and stale > CACHE_STALE_DAYS else "cache_ok"
-    row["stale_days"] = stale
-    row["note"] = f"今回未取得のため前回値を維持。前回日付={rating_date or '不明'}。new_status={new_status}; {new_note}"
-    return row
-
-
-def build_row(meta, previous_df):
-    row = build_base_row(meta)
-    ticker = row["ticker"]
-    market = row["market"]
-    asset_type = row["asset_type"]
-
-    if asset_type == "watch_only":
-        row.update({
-            "rating_date": "",
-            "source_used": "N/A",
-            "status": "watch_only",
-            "freshness": "not_applicable",
-            "note": "取引可能ティッカー未確認",
-        })
-        return row
-
-    if market != "US":
-        row.update({
-            "current_price": current_price_yf(ticker),
-            "rating_date": "",
-            "source_used": "N/A",
-            "status": "not_applicable_non_us",
-            "freshness": "not_applicable",
-            "note": "米国株以外はW04対象外",
-        })
-        return row
-
-    if asset_type == "etf":
-        row.update({
-            "current_price": current_price_yf(ticker),
-            "rating_date": "",
-            "source_used": "N/A",
-            "status": "not_applicable_etf",
-            "freshness": "not_applicable",
-            "note": "ETFはアナリスト目標株価対象外",
-        })
-        return row
-
-    # 1. TradingView
-    tv = tradingview_scan_one(ticker)
-    if tv.get("source") == "TradingView":
-        return fill_row_from_result(row, tv, freshness="fresh")
-
-    # 2. Yahoo via yfinance
-    yf_result = yahoo_yfinance_fallback(ticker)
-    if yf_result.get("status") == "yf_ok":
-        if tv.get("note"):
-            yf_result["note"] = f"{yf_result.get('note','')} / TV: {tv.get('note')}"
-        return fill_row_from_result(row, yf_result, freshness="fresh")
-
-    # 3. Yahoo direct
-    yd_result = yahoo_direct_fallback(ticker)
-    if yd_result.get("status") == "yd_ok":
-        notes = []
-        if tv.get("note"):
-            notes.append(f"TV: {tv.get('note')}")
-        if yf_result.get("note"):
-            notes.append(f"YF: {yf_result.get('note')}")
-        if notes:
-            yd_result["note"] = f"{yd_result.get('note','')} / " + " / ".join(notes)
-        return fill_row_from_result(row, yd_result, freshness="fresh")
-
-    # 4. Manual override
-    manual = manual_override_row(ticker)
-    if manual is not None and manual.get("status") == "manual_override":
-        return fill_row_from_result(row, manual, freshness="manual")
-
-    # 5. Previous cache
-    old = previous_cache_row(ticker, previous_df)
-    combined_status = f"tv={tv.get('status')}; yf={yf_result.get('status')}; yd={yd_result.get('status')}"
-    combined_note = " / ".join([n for n in [tv.get("note"), yf_result.get("note"), yd_result.get("note")] if n])
-    if old is not None:
-        return fill_from_cache(row, old, combined_status, combined_note)
-
-    # 6. Missing
-    result = {
-        "source": "未取得",
-        "current_price": current_price_yf(ticker),
-        "analyst_count": None,
-        "consensus": None,
-        "avg_target": None,
-        "high_target": None,
-        "low_target": None,
-        "tv_symbol": "",
-        "status": "missing_all_sources",
-        "note": combined_note or combined_status,
-        "rating_date": "",
+        "status": "skipped_recent_or_not_due",
+        "note": "今回は再取得対象外。保存済みTradingView情報を使用。",
     }
-    return fill_row_from_result(row, result, freshness="missing")
+
+
+def build_not_applicable_row(meta, reason):
+    ticker = str(meta["ticker"])
+    current = current_price_yf(ticker) if str(meta.get("asset_type", "")) != "watch_only" else None
+    return {
+        "ticker": ticker,
+        "tv_symbol": "",
+        "forecast_url": "",
+        "market": str(meta.get("market", "")),
+        "asset_type": str(meta.get("asset_type", "")),
+        "name": str(meta.get("name", "")),
+        "theme": str(meta.get("theme", "")),
+        "last_attempt_date": "",
+        "rating_date": "",
+        "next_refresh_due": "",
+        "current_price": current,
+        "tv_avg_target": None,
+        "tv_high_target": None,
+        "tv_low_target": None,
+        "tv_upside_pct": None,
+        "tv_high_upside_pct": None,
+        "tv_low_upside_pct": None,
+        "tv_analyst_count_target": None,
+        "tv_consensus": None,
+        "tv_analyst_count_rating": None,
+        "source_quality": "NOT_APPLICABLE",
+        "freshness": "not_applicable",
+        "stale_days": None,
+        "status": "not_applicable",
+        "note": reason,
+    }
+
+
+def build_attempt_row(meta, previous_df, symbol_map):
+    ticker = str(meta["ticker"])
+    prev_norm = normalize_previous(previous_row(previous_df, ticker))
+
+    current = current_price_yf(ticker)
+    tv_symbol, forecast_url, symbol_source, symbol_map = resolve_tv_symbol(ticker, symbol_map, prev_norm)
+
+    attempt = fetch_tradingview_forecast(ticker, tv_symbol, forecast_url, current)
+
+    # Scanner補助：Forecastページがpartial/missingのときだけ、TV判断やtv_symbolを補う。
+    if attempt.get("source_quality") != "TV_FULL":
+        sc = scanner_lookup(ticker)
+        if is_blank(tv_symbol) and not is_blank(sc.get("tv_symbol")):
+            tv_symbol = sc.get("tv_symbol")
+            forecast_url = tv_symbol_to_url(tv_symbol)
+
+        if attempt.get("source_quality") == "TV_MISSING" and sc.get("source_quality") == "TV_PARTIAL":
+            attempt.update({
+                "source_quality": "TV_PARTIAL",
+                "tv_consensus": sc.get("tv_consensus"),
+                "tv_analyst_count_target": sc.get("tv_analyst_count_target"),
+                "tv_analyst_count_rating": sc.get("tv_analyst_count_rating"),
+                "forecast_url": forecast_url or tv_symbol_to_url(tv_symbol),
+                "status": "scanner_partial",
+                "note": f"Forecastページ未取得。scanner判断のみ。{attempt.get('note','')}",
+            })
+
+        # scannerでtargetまで取れる場合はFULLとして採用。ただしForecastページ優先。
+        if attempt.get("source_quality") != "TV_FULL" and sc.get("source_quality") == "TV_FULL":
+            attempt.update({
+                "source_quality": "TV_FULL",
+                "current_price": current or sc.get("current_price"),
+                "tv_avg_target": sc.get("tv_avg_target"),
+                "tv_high_target": sc.get("tv_high_target"),
+                "tv_low_target": sc.get("tv_low_target"),
+                "tv_consensus": sc.get("tv_consensus"),
+                "tv_analyst_count_target": sc.get("tv_analyst_count_target"),
+                "tv_analyst_count_rating": sc.get("tv_analyst_count_rating"),
+                "forecast_url": forecast_url or tv_symbol_to_url(tv_symbol),
+                "status": "scanner_full",
+                "note": "ForecastページではなくscannerからTV_FULL取得。",
+            })
+
+    merged = merge_with_previous(attempt, prev_norm)
+    rating_date = merged.get("rating_date") or ""
+    stale = days_since(rating_date)
+
+    avg = safe_float(merged.get("tv_avg_target"))
+    high = safe_float(merged.get("tv_high_target"))
+    low = safe_float(merged.get("tv_low_target"))
+
+    source_quality = merged.get("source_quality", "TV_MISSING")
+    if source_quality == "TV_FULL" and stale is not None:
+        source_quality = derived_quality_from_age(True, False, rating_date)
+
+    row = {
+        "ticker": ticker,
+        "tv_symbol": tv_symbol or (prev_norm.get("tv_symbol", "") if prev_norm else ""),
+        "forecast_url": merged.get("forecast_url") or forecast_url or "",
+        "market": str(meta.get("market", "")),
+        "asset_type": str(meta.get("asset_type", "")),
+        "name": str(meta.get("name", "")),
+        "theme": str(meta.get("theme", "")),
+        "last_attempt_date": today_jst(),
+        "rating_date": rating_date,
+        "next_refresh_due": next_due_from_quality(source_quality, rating_date),
+        "current_price": current,
+        "tv_avg_target": avg,
+        "tv_high_target": high,
+        "tv_low_target": low,
+        "tv_upside_pct": upside(current, avg),
+        "tv_high_upside_pct": upside(current, high),
+        "tv_low_upside_pct": upside(current, low),
+        "tv_analyst_count_target": merged.get("tv_analyst_count_target"),
+        "tv_consensus": merged.get("tv_consensus"),
+        "tv_analyst_count_rating": merged.get("tv_analyst_count_rating"),
+        "source_quality": source_quality,
+        "freshness": "attempted",
+        "stale_days": stale,
+        "status": merged.get("status", attempt.get("status", "")),
+        "note": merged.get("note", ""),
+    }
+
+    if row["tv_symbol"]:
+        symbol_map = upsert_symbol_map(symbol_map, {
+            "ticker": ticker,
+            "tv_symbol": row["tv_symbol"],
+            "forecast_url": row["forecast_url"] or tv_symbol_to_url(row["tv_symbol"]),
+            "last_verified": today_jst(),
+            "source": symbol_source,
+            "status": row["status"],
+            "note": row["note"][:200],
+        })
+
+    return row, symbol_map
 
 
 def main():
     OUT.mkdir(exist_ok=True)
     (OUT / "latest").mkdir(exist_ok=True)
 
-    previous_path = DATA / "ratings_master.csv"
-    previous_df = pd.read_csv(previous_path) if previous_path.exists() else pd.DataFrame(columns=OUTPUT_COLUMNS)
+    mode = mode_from_env()
+    one_ticker = env_ticker()
+
+    previous_df = load_csv(DATA / "ratings_master.csv", RATINGS_COLUMNS)
+    symbol_map = load_csv(DATA / "tv_symbol_map.csv", SYMBOL_MAP_COLUMNS)
 
     wl = active_watchlist()
+
     rows = []
     health = []
+    attempted = 0
+    skipped = 0
 
     for _, meta in wl.iterrows():
-        row = build_row(meta, previous_df)
+        ticker = str(meta["ticker"])
+        market = str(meta.get("market", ""))
+        asset_type = str(meta.get("asset_type", ""))
+
+        if market != "US":
+            row = build_not_applicable_row(meta, "米国株以外はTradingView W04対象外")
+            rows.append(row)
+            continue
+
+        if asset_type in {"etf", "watch_only"}:
+            row = build_not_applicable_row(meta, "ETF/watch_onlyはTradingViewアナリスト予測対象外")
+            rows.append(row)
+            continue
+
+        prev_norm = normalize_previous(previous_row(previous_df, ticker))
+
+        if should_attempt(mode, ticker, meta, prev_norm):
+            row, symbol_map = build_attempt_row(meta, previous_df, symbol_map)
+            attempted += 1
+        else:
+            row = build_row_from_previous(meta, prev_norm)
+            skipped += 1
+
         rows.append(row)
 
-        status = row.get("status", "")
-        if status in {
-            "tv_ok", "yf_ok", "yd_ok", "manual_override",
-            "cached_previous", "cached_previous_stale",
-            "not_applicable_non_us", "not_applicable_etf", "watch_only"
-        }:
-            level = "INFO"
-        else:
+        level = "INFO"
+        if row["source_quality"] in {"TV_MISSING", "TV_PARTIAL", "TV_STALE"}:
             level = "WARN"
 
         health.append([
-            row["ticker"],
-            row["market"],
+            ticker,
+            market,
             level,
-            "ratings_update",
-            row["source_used"],
-            f"{status}: freshness={row.get('freshness')}; stale_days={row.get('stale_days')}; {row.get('note','')}",
+            "tv_ratings",
+            row["source_quality"],
+            f"mode={mode}; status={row['status']}; stale_days={row.get('stale_days')}; {row.get('note','')}",
         ])
 
-    df = pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
+    append_health("W04_tv_ratings", health)
 
-    us_stock = df[(df["market"] == "US") & (~df["asset_type"].isin(["etf", "watch_only"]))]
-    covered = us_stock[us_stock["upside_pct"].notna()]
-    coverage = (len(covered) / len(us_stock)) if len(us_stock) else 0.0
+    df = pd.DataFrame(rows, columns=RATINGS_COLUMNS)
+    df.to_csv(DATA / "ratings_master.csv", index=False, encoding="utf-8-sig")
+    save_symbol_map(symbol_map)
 
-    if coverage < MIN_US_RATING_COVERAGE_WARN:
-        health.append([
-            "W04",
-            "US",
-            "WARN",
-            "coverage_low",
-            "ratings_master",
-            f"US stock rating coverage {coverage:.1%}",
-        ])
+    us = df[(df["market"] == "US") & (~df["asset_type"].isin(["etf", "watch_only"]))]
+    counts = us["source_quality"].value_counts().to_dict()
+    target_count = int(us["tv_avg_target"].notna().sum())
+    total = len(us)
+    target_cov = (target_count / total) if total else 0.0
 
-    append_health("W04_ratings", health)
-
-    data_path = DATA / "ratings_master.csv"
     report_path = OUT / f"ratings_weekly_{today_jst()}.md"
     latest_path = OUT / "latest" / "ratings_latest.md"
 
-    df.to_csv(data_path, index=False, encoding="utf-8-sig")
-
-    tv_ok = int((df["status"] == "tv_ok").sum())
-    yf_ok = int((df["status"] == "yf_ok").sum())
-    yd_ok = int((df["status"] == "yd_ok").sum())
-    cached = int(df["status"].isin(["cached_previous", "cached_previous_stale"]).sum())
-    stale = int((df["status"] == "cached_previous_stale").sum())
-    missing = int(df[(df["market"] == "US") & (~df["asset_type"].isin(["etf", "watch_only"])) & (df["upside_pct"].isna())].shape[0])
+    next_monthly = ""
+    d = today_date()
+    probe = d
+    for _ in range(45):
+        if probe.weekday() == 5 and 1 <= probe.day <= 7 and probe > d:
+            next_monthly = probe.isoformat()
+            break
+        probe += timedelta(days=1)
 
     lines = [
-        "【CIS-W04｜TradingViewレーティング週次更新】",
+        "【CIS-W04｜TradingViewレーティング更新 v0.5】",
         f"実行日：{today_jst()} JST",
+        f"実行モード：{mode}",
+        f"単独銘柄：{one_ticker or '—'}",
         "",
-        "## iPhoneでまず見るところ",
-        f"米国株カバレッジ：{len(covered)}/{len(us_stock)}件（{coverage:.1%}）",
-        f"TradingView取得：{tv_ok}件",
-        f"Yahoo yfinance取得：{yf_ok}件",
-        f"Yahoo direct取得：{yd_ok}件",
-        f"前回キャッシュ維持：{cached}件（うち14日超：{stale}件）",
-        f"未取得：{missing}件",
+        "## TradingViewレーティング品質",
+        f"TV_FULL：{counts.get('TV_FULL', 0)}件",
+        f"TV_CACHE：{counts.get('TV_CACHE', 0)}件",
+        f"TV_CACHE_OLD：{counts.get('TV_CACHE_OLD', 0)}件",
+        f"TV_STALE：{counts.get('TV_STALE', 0)}件",
+        f"TV_PARTIAL：{counts.get('TV_PARTIAL', 0)}件",
+        f"TV_MISSING：{counts.get('TV_MISSING', 0)}件",
+        f"目標株価カバレッジ：{target_count}/{total}件（{target_cov:.1%}）",
+        f"今回取得試行：{attempted}件",
+        f"今回スキップ：{skipped}件",
+        f"次回月次再確認目安：{next_monthly or '—'}",
         "",
-        "## 古い/未取得で確認が必要",
+        "## 重要ルール",
+        "- D03は毎日TradingViewへアクセスしない。ratings_master.csvを読むだけ。",
+        "- W04は週1でTV_MISSING/TV_PARTIALだけ再挑戦し、月1で全米国株を再確認する。",
+        "- 一度TV_FULLで取れた値は、次回失敗しても消さない。",
+        "- Yahoo Finance由来のレーティング/目標株価はD03のレーティング欄に出さない。",
+        "",
+        "## 確認が必要な銘柄",
     ]
 
-    needs_check = us_stock[
-        (us_stock["upside_pct"].isna())
-        | (us_stock["status"] == "cached_previous_stale")
-    ].copy()
-
-    if needs_check.empty:
+    needs = us[us["source_quality"].isin(["TV_PARTIAL", "TV_MISSING", "TV_CACHE_OLD", "TV_STALE"])].copy()
+    if needs.empty:
         lines.append("該当なし")
     else:
-        for _, r in needs_check.iterrows():
+        for _, r in needs.iterrows():
             lines.append(
-                f"- {r['ticker']}｜{r['name']}｜status={r['status']}｜"
-                f"source={r['source_used']}｜rating_date={r['rating_date'] or '—'}｜"
-                f"経過={r['stale_days'] if not is_blank(r['stale_days']) else '—'}日｜note={r['note']}"
+                f"- {r['ticker']}｜{r['name']}｜{r['source_quality']}｜"
+                f"rating_date={r['rating_date'] or '—'}｜next={r['next_refresh_due'] or '—'}｜note={r['note']}"
             )
 
     lines.extend([
         "",
-        "## 上昇余地が大きい順（米国株・取得済み）",
+        "## 上昇余地が大きい順（TV目標株価あり）",
     ])
 
-    got = us_stock[us_stock["upside_pct"].notna()].copy()
+    got = us[us["tv_avg_target"].notna()].copy()
     if got.empty:
         lines.append("該当なし")
     else:
-        got = got.sort_values("upside_pct", ascending=False)
+        got = got.sort_values("tv_upside_pct", ascending=False)
         for _, r in got.iterrows():
-            stale_txt = ""
+            age = ""
             if not is_blank(r.get("stale_days")):
-                stale_txt = f"｜基準日 {r['rating_date']}（{int(float(r['stale_days']))}日経過）"
+                age = f" / {int(float(r['stale_days']))}日古"
+            count = r["tv_analyst_count_target"] if not is_blank(r["tv_analyst_count_target"]) else r["tv_analyst_count_rating"]
             lines.append(
-                f"- {r['ticker']}｜{r['name']}｜{r['source_used']}｜"
-                f"{r['analyst_count'] if not is_blank(r['analyst_count']) else '—'}人｜"
-                f"{r['consensus'] if not is_blank(r['consensus']) else '—'}｜"
-                f"現在 {fmt_num(r['current_price'])}｜平均目標 {fmt_num(r['avg_target'])}｜"
-                f"乖離 {fmt_pct(r['upside_pct'])}{stale_txt}"
+                f"- {r['ticker']}｜{r['name']}｜{r['source_quality']}｜"
+                f"{count if not is_blank(count) else '—'}人｜"
+                f"{r['tv_consensus'] if not is_blank(r['tv_consensus']) else '—'}｜"
+                f"平均目標 {fmt_num(r['tv_avg_target'])}｜乖離 {fmt_pct(r['tv_upside_pct'])}{age}"
             )
 
     lines.extend([
         "",
-        "## 運用メモ",
-        "- 第一候補はTradingView scanner。",
-        "- TradingViewが取れない銘柄はYahoo yfinance、Yahoo direct、手動補完、前回キャッシュの順に使う。",
-        "- 今回未取得でも前回値があれば previous_cache として保持し、毎回空欄で上書きしない。",
-        "- 前回キャッシュはrating_dateを保持する。14日超は古いレーティングとして表示する。",
-        "- ETFと日本株はW04対象外。",
-        "- W04取得失敗でD03本体は止めない。",
-        "",
+        "## TV_PARTIAL（判断のみ・平均目標未取得）",
     ])
+
+    partial = us[us["source_quality"].eq("TV_PARTIAL")].copy()
+    if partial.empty:
+        lines.append("該当なし")
+    else:
+        for _, r in partial.iterrows():
+            count = r["tv_analyst_count_target"] if not is_blank(r["tv_analyst_count_target"]) else r["tv_analyst_count_rating"]
+            lines.append(
+                f"- {r['ticker']}｜{r['name']}｜"
+                f"{count if not is_blank(count) else '—'}人｜"
+                f"{r['tv_consensus'] if not is_blank(r['tv_consensus']) else '—'}｜平均目標 未取得"
+            )
 
     content = "\n".join(lines)
     report_path.write_text(content, encoding="utf-8")
     latest_path.write_text(content, encoding="utf-8")
 
-    print(f"created {data_path}")
+    print(f"created {DATA / 'ratings_master.csv'}")
+    print(f"created {DATA / 'tv_symbol_map.csv'}")
     print(f"created {report_path}")
     print(f"created {latest_path}")
-    print(f"coverage {coverage:.1%}")
+    print(f"mode={mode}; attempted={attempted}; skipped={skipped}; target_coverage={target_cov:.1%}")
 
 
 if __name__ == "__main__":
