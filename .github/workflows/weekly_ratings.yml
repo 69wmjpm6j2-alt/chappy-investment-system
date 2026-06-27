@@ -1,0 +1,39 @@
+name: CIS W04 Ratings Weekly
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Saturday JST 07:30 = Friday UTC 22:30
+    - cron: "30 22 * * 5"
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run ratings update
+        run: python scripts/cis_ratings_weekly.py
+
+      - name: Commit ratings output
+        run: |
+          git config user.name "cis-bot"
+          git config user.email "cis-bot@example.com"
+          git add data/ratings_master.csv output/
+          git add data/data_health_log.csv || true
+          git commit -m "CIS ratings weekly update" || echo "No changes"
+          git push
