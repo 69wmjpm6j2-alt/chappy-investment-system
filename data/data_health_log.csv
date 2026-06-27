@@ -17,3 +17,78 @@
 2026-06-27T21:16:47.350869+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,AXTIは取得価格と旧基準の乖離が極端。株式分割・逆分割・取得ソースの正当性確認まで通常判定停止。
 2026-06-27T21:16:47.350873+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,COHRは取得価格と旧基準の乖離が大きく、CPOテーマ過熱と価格スケール確認が必要。通常判定停止。
 2026-06-27T21:16:47.350877+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,OPTXは超小型かつ取得価格と旧基準の乖離が極端。価格スケール確認まで通常判定停止。
+2026-06-27T22:28:43.579154+09:00,W04_ratings,AVAV,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579174+09:00,W04_ratings,AXON,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579181+09:00,W04_ratings,AUR,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579186+09:00,W04_ratings,TMDX,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579191+09:00,W04_ratings,NOW,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579195+09:00,W04_ratings,RDW,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579199+09:00,W04_ratings,TRMB,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579206+09:00,W04_ratings,VEEV,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579212+09:00,W04_ratings,PYPL,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579217+09:00,W04_ratings,TEM,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579222+09:00,W04_ratings,FICO,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579226+09:00,W04_ratings,AAOI,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579230+09:00,W04_ratings,OUST,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579234+09:00,W04_ratings,APH,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579238+09:00,W04_ratings,ASPI,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579242+09:00,W04_ratings,NBIS,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579247+09:00,W04_ratings,EWY,US,INFO,ratings_update,N/A,not_applicable_etf: freshness=not_applicable; stale_days=None; ETFはアナリスト目標株価対象外
+2026-06-27T22:28:43.579253+09:00,W04_ratings,ISRG,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579258+09:00,W04_ratings,SPGI,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579262+09:00,W04_ratings,MELI,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579267+09:00,W04_ratings,TMO,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579271+09:00,W04_ratings,META,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579276+09:00,W04_ratings,IONQ,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579280+09:00,W04_ratings,RGTI,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579284+09:00,W04_ratings,SDGR,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579288+09:00,W04_ratings,RXRX,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579293+09:00,W04_ratings,QCOM,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579297+09:00,W04_ratings,HSAI,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579302+09:00,W04_ratings,PL,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579306+09:00,W04_ratings,V,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579311+09:00,W04_ratings,VRTX,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579315+09:00,W04_ratings,DIS,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579319+09:00,W04_ratings,KVYO,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579324+09:00,W04_ratings,DKNG,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579328+09:00,W04_ratings,CRSP,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579332+09:00,W04_ratings,BEAM,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579337+09:00,W04_ratings,ETN,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579341+09:00,W04_ratings,MSTR,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579345+09:00,W04_ratings,POET,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579349+09:00,W04_ratings,KITT,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579353+09:00,W04_ratings,AXTI,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579358+09:00,W04_ratings,COHR,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579362+09:00,W04_ratings,ANET,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579366+09:00,W04_ratings,DDOG,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579370+09:00,W04_ratings,SNOW,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579374+09:00,W04_ratings,OPTX,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579378+09:00,W04_ratings,AEM,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579382+09:00,W04_ratings,ZETA,US,INFO,ratings_update,TradingView,tv_ok: freshness=fresh; stale_days=0; 
+2026-06-27T22:28:43.579386+09:00,W04_ratings,7974.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579392+09:00,W04_ratings,6383.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579397+09:00,W04_ratings,5401.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579402+09:00,W04_ratings,4901.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579407+09:00,W04_ratings,3407.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579412+09:00,W04_ratings,3402.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579416+09:00,W04_ratings,3405.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579421+09:00,W04_ratings,2871.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579426+09:00,W04_ratings,8601.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579430+09:00,W04_ratings,8410.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579435+09:00,W04_ratings,6902.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579440+09:00,W04_ratings,6758.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579444+09:00,W04_ratings,5020.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579473+09:00,W04_ratings,4063.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579495+09:00,W04_ratings,4042.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579500+09:00,W04_ratings,1911.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579505+09:00,W04_ratings,1928.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579509+09:00,W04_ratings,6326.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579514+09:00,W04_ratings,7267.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579519+09:00,W04_ratings,6501.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579524+09:00,W04_ratings,9861.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579529+09:00,W04_ratings,7821.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579533+09:00,W04_ratings,1377.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579538+09:00,W04_ratings,6287.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579543+09:00,W04_ratings,4368.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579547+09:00,W04_ratings,9432.T,JP,INFO,ratings_update,N/A,not_applicable_non_us: freshness=not_applicable; stale_days=None; 米国株以外はW04対象外
+2026-06-27T22:28:43.579552+09:00,W04_ratings,W04,US,WARN,coverage_low,ratings_master,US stock rating coverage 0.0%
