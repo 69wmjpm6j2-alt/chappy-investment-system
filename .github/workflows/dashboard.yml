@@ -1,0 +1,36 @@
+name: CIS D00 iPhone Dashboard
+
+on:
+  workflow_dispatch:
+  schedule:
+    # JST 08:20 = UTC 23:20
+    - cron: "20 23 * * 0-4"
+    # Saturday JST 08:30 = Friday UTC 23:30, after weekly report
+    - cron: "30 23 * * 5"
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build dashboard
+        run: python scripts/cis_dashboard.py
+
+      - name: Commit dashboard
+        run: |
+          git config user.name "cis-bot"
+          git config user.email "cis-bot@example.com"
+          git add docs/
+          git commit -m "CIS dashboard update" || echo "No changes"
+          git push
