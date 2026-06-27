@@ -1,0 +1,37 @@
+name: CIS W01 Weekly Performance
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Saturday 08:00 JST = Friday 23:00 UTC
+    - cron: "0 23 * * 5"
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run weekly performance
+        run: python scripts/cis_prices.py weekly
+
+      - name: Commit output and data
+        run: |
+          git config user.name "cis-bot"
+          git config user.email "cis-bot@example.com"
+          git add output/ data/
+          git commit -m "CIS weekly performance update" || echo "No changes"
+          git push
