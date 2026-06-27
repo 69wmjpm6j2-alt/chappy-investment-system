@@ -1,75 +1,75 @@
-﻿attempt_date,rating_date,ticker,market,name,theme,asset_type,current_price,analyst_count,consensus,avg_target,high_target,low_target,upside_pct,high_upside_pct,low_upside_pct,source_used,tv_symbol,status,freshness,stale_days,note
-2026-06-27,2026-06-27,AVAV,US,AeroVironment,防衛ドローン,stock,137.95,,StrongBuy,,,,,,,TradingView,NASDAQ:AVAV,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,AXON,US,Axon Enterprise,公共安全AI・防衛,stock,464.83,,StrongBuy,,,,,,,TradingView,NASDAQ:AXON,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,AUR,US,Aurora Innovation,自動運転・物流,stock,6.36,,Buy,,,,,,,TradingView,NASDAQ:AUR,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,TMDX,US,TransMedics,移植医療,stock,68.44,,Buy,,,,,,,TradingView,NASDAQ:TMDX,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,NOW,US,ServiceNow,業務AI・SaaS,stock,98.34,,StrongBuy,,,,,,,TradingView,NYSE:NOW,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,RDW,US,Redwire,宇宙インフラ,stock,10.93,,Buy,,,,,,,TradingView,NYSE:RDW,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,TRMB,US,Trimble,測位・建設DX,stock,50.7,,StrongBuy,,,,,,,TradingView,NASDAQ:TRMB,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,VEEV,US,Veeva Systems,ライフサイエンスSaaS,stock,171.36,,Buy,,,,,,,TradingView,NYSE:VEEV,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,PYPL,US,PayPal,決済・フィンテック,stock,44.29,,Neutral,,,,,,,TradingView,NASDAQ:PYPL,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,TEM,US,Tempus AI,AI医療・診断,stock,56.14,,Buy,,,,,,,TradingView,NASDAQ:TEM,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,FICO,US,Fair Isaac,信用スコア・分析,stock,1182.79,,Buy,,,,,,,TradingView,NYSE:FICO,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,AAOI,US,Applied Optoelectronics,光通信・CPO周辺,stock,135.69,,Buy,,,,,,,TradingView,NASDAQ:AAOI,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,OUST,US,Ouster,LiDAR・ロボティクス,stock,42.02,,Buy,,,,,,,TradingView,NASDAQ:OUST,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,APH,US,Amphenol,コネクタ・AIインフラ,stock,163.72,,Buy,,,,,,,TradingView,NYSE:APH,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,ASPI,US,ASP Isotopes,核燃料・同位体,stock,6.17,,StrongBuy,,,,,,,TradingView,NASDAQ:ASPI,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,NBIS,US,Nebius,AIクラウド,stock,240.3,,Buy,,,,,,,TradingView,NASDAQ:NBIS,tv_ok,fresh,0.0,
-2026-06-27,,EWY,US,iShares MSCI South Korea ETF,韓国ETF・半導体,etf,197.27999877929688,,,,,,,,,N/A,,not_applicable_etf,not_applicable,,ETFはアナリスト目標株価対象外
-2026-06-27,2026-06-27,ISRG,US,Intuitive Surgical,医療ロボット,stock,404.7,,Buy,,,,,,,TradingView,NASDAQ:ISRG,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,SPGI,US,S&P Global,指数・格付け,stock,408.16,,StrongBuy,,,,,,,TradingView,NYSE:SPGI,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,MELI,US,MercadoLibre,中南米EC・決済,stock,1675.1,,StrongBuy,,,,,,,TradingView,NASDAQ:MELI,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,TMO,US,Thermo Fisher,ライフサイエンス,stock,513.03,,Buy,,,,,,,TradingView,NYSE:TMO,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,META,US,Meta Platforms,AI・広告・SNS,stock,550.25,,StrongBuy,,,,,,,TradingView,NASDAQ:META,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,IONQ,US,IonQ,量子コンピュータ,stock,49.31,,Buy,,,,,,,TradingView,NYSE:IONQ,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,RGTI,US,Rigetti,量子コンピュータ,stock,18.36,,Buy,,,,,,,TradingView,NASDAQ:RGTI,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,SDGR,US,Schrodinger,AI創薬,stock,16.86,,Buy,,,,,,,TradingView,NASDAQ:SDGR,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,RXRX,US,Recursion,AI創薬,stock,3.52,,Buy,,,,,,,TradingView,NASDAQ:RXRX,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,QCOM,US,Qualcomm,半導体・エッジAI,stock,189.39,,Neutral,,,,,,,TradingView,NASDAQ:QCOM,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,HSAI,US,Hesai,LiDAR,stock,14.8,,StrongBuy,,,,,,,TradingView,NASDAQ:HSAI,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,PL,US,Planet Labs,宇宙データ,stock,27.07,,Buy,,,,,,,TradingView,NYSE:PL,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,V,US,Visa,決済,stock,336.23,,StrongBuy,,,,,,,TradingView,NYSE:V,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,VRTX,US,Vertex Pharma,医薬,stock,491.34,,Buy,,,,,,,TradingView,NASDAQ:VRTX,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,DIS,US,Disney,メディア・IP,stock,98.79,,StrongBuy,,,,,,,TradingView,NYSE:DIS,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,KVYO,US,Klaviyo,マーケSaaS,stock,14.9,,StrongBuy,,,,,,,TradingView,NYSE:KVYO,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,DKNG,US,DraftKings,スポーツベッティング,stock,25.7,,Buy,,,,,,,TradingView,NASDAQ:DKNG,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,CRSP,US,CRISPR Therapeutics,遺伝子編集,stock,54.92,,Buy,,,,,,,TradingView,NASDAQ:CRSP,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,BEAM,US,Beam Therapeutics,遺伝子編集,stock,34.81,,StrongBuy,,,,,,,TradingView,NASDAQ:BEAM,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,ETN,US,Eaton,電力インフラ,stock,402.68,,Buy,,,,,,,TradingView,NYSE:ETN,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,MSTR,US,MicroStrategy,Bitcoin連動,stock,82.31,,StrongBuy,,,,,,,TradingView,NASDAQ:MSTR,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,POET,US,POET Technologies,光電融合・CPO,stock,9.44,,StrongBuy,,,,,,,TradingView,NASDAQ:POET,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,KITT,US,Nauticus Robotics,海洋ロボ・超小型,stock,1.15,,NoRating,,,,,,,TradingView,NASDAQ:KITT,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,AXTI,US,AXT,化合物半導体,stock,70.15,,Buy,,,,,,,TradingView,NASDAQ:AXTI,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,COHR,US,Coherent,光通信・CPO,stock,380.56,,Buy,,,,,,,TradingView,NYSE:COHR,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,ANET,US,Arista Networks,AIネットワーク,stock,157.6,,StrongBuy,,,,,,,TradingView,NYSE:ANET,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,DDOG,US,Datadog,監視SaaS,stock,239.77,,StrongBuy,,,,,,,TradingView,NASDAQ:DDOG,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,SNOW,US,Snowflake,データクラウド,stock,248.96,,StrongBuy,,,,,,,TradingView,NYSE:SNOW,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,OPTX,US,Syntec Optics,精密光学・フォトニクス,stock,10.56,,NoRating,,,,,,,TradingView,NASDAQ:OPTX,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,AEM,US,Agnico Eagle Mines,金鉱株,stock,157.23,,Buy,,,,,,,TradingView,NYSE:AEM,tv_ok,fresh,0.0,
-2026-06-27,2026-06-27,ZETA,US,Zeta Global,マーケAI,stock,18.98,,StrongBuy,,,,,,,TradingView,NYSE:ZETA,tv_ok,fresh,0.0,
-2026-06-27,,7974.T,JP,任天堂,ゲーム・IP,stock,6589.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,6383.T,JP,ダイフク,物流自動化,stock,7163.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,5401.T,JP,日本製鉄,鉄鋼,stock,543.2999877929688,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,4901.T,JP,富士フイルム,ヘルスケア・素材,stock,3436.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,3407.T,JP,旭化成,総合化学,stock,1794.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,3402.T,JP,東レ,素材,stock,1138.5,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,3405.T,JP,クラレ,高機能化学,stock,1686.5,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,2871.T,JP,ニチレイ,食品・冷凍物流,stock,2190.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,8601.T,JP,大和証券G,金融・証券,stock,1596.5,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,8410.T,JP,セブン銀行,銀行・ATM,stock,277.5,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,6902.T,JP,デンソー,自動車部品,stock,1875.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,6758.T,JP,ソニーG,エンタメ・半導体,stock,3199.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,5020.T,JP,ENEOS,エネルギー,stock,1214.5,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,4063.T,JP,信越化学,半導体材料・塩ビ,stock,6835.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,4042.T,JP,東ソー,化学,stock,2930.5,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,1911.T,JP,住友林業,住宅・木材,stock,1375.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,1928.T,JP,積水ハウス,住宅,stock,3340.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,6326.T,JP,クボタ,農機・水インフラ,stock,2751.5,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,7267.T,JP,ホンダ,自動車,stock,1449.5,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,6501.T,JP,日立,インフラ・DX,stock,4478.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,9861.T,JP,吉野家HD,外食,stock,3060.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,7821.T,JP,前田工繊,防災・土木資材,stock,1762.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,1377.T,JP,サカタのタネ,種苗,stock,4185.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,6287.T,JP,サトーHD,自動認識,stock,2370.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,4368.T,JP,扶桑化学,半導体材料,stock,4640.0,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
-2026-06-27,,9432.T,JP,NTT/日本電信電話,通信,stock,144.3000030517578,,,,,,,,,N/A,,not_applicable_non_us,not_applicable,,米国株以外はW04対象外
+﻿ticker,tv_symbol,forecast_url,market,asset_type,name,theme,last_attempt_date,rating_date,next_refresh_due,current_price,tv_avg_target,tv_high_target,tv_low_target,tv_upside_pct,tv_high_upside_pct,tv_low_upside_pct,tv_analyst_count_target,tv_consensus,tv_analyst_count_rating,source_quality,freshness,stale_days,status,note
+AVAV,NASDAQ:AVAV,https://www.tradingview.com/symbols/NASDAQ-AVAV/forecast/,US,stock,AeroVironment,防衛ドローン,2026-06-27,2026-06-27,2026-07-27,137.9499969482422,277.56,400.0,194.0,101.20333899256153,189.96013689661552,40.63066639485854,16.0,,19.0,TV_FULL,attempted,0.0,forecast_page_ok,
+AXON,NASDAQ:AXON,https://www.tradingview.com/symbols/NASDAQ-AXON/forecast/,US,stock,Axon Enterprise,公共安全AI・防衛,2026-06-27,2026-06-27,2026-07-27,464.8299865722656,676.88,825.0,440.0,45.61883259542414,77.48424667773448,-5.341735105208275,17.0,,23.0,TV_FULL,attempted,0.0,forecast_page_ok,
+AUR,NASDAQ:AUR,https://www.tradingview.com/symbols/NASDAQ-AUR/forecast/,US,stock,Aurora Innovation,自動運転・物流,2026-06-27,2026-06-27,2026-07-27,6.360000133514404,11.14,18.0,3.59,75.15722902735644,183.0188619831612,-43.55346030446952,11.0,,14.0,TV_FULL,attempted,0.0,forecast_page_ok,
+TMDX,NASDAQ:TMDX,https://www.tradingview.com/symbols/NASDAQ-TMDX/forecast/,US,stock,TransMedics,移植医療,2026-06-27,2026-06-27,2026-07-27,68.44000244140625,119.1,142.0,80.0,74.0210341195786,107.4809978587755,16.89070301902845,10.0,,12.0,TV_FULL,attempted,0.0,forecast_page_ok,
+NOW,NYSE:NOW,https://www.tradingview.com/symbols/NYSE-NOW/forecast/,US,stock,ServiceNow,業務AI・SaaS,2026-06-27,2026-06-27,2026-07-27,98.33999633789062,140.76,236.0,85.0,43.136063902582066,139.983738853434,-13.5651788027886,41.0,,50.0,TV_FULL,attempted,0.0,forecast_page_ok,
+RDW,NYSE:RDW,https://www.tradingview.com/symbols/NYSE-RDW/forecast/,US,stock,Redwire,宇宙インフラ,2026-06-27,2026-06-27,2026-07-27,10.930000305175781,15.71,24.0,7.0,43.73284136653412,119.57913385084777,-35.956085960169396,7.0,,8.0,TV_FULL,attempted,0.0,forecast_page_ok,
+TRMB,NASDAQ:TRMB,https://www.tradingview.com/symbols/NASDAQ-TRMB/forecast/,US,stock,Trimble,測位・建設DX,2026-06-27,2026-06-27,2026-07-27,50.70000076293945,85.33,94.0,70.0,68.30374500186258,85.40433646050724,38.067059066335176,12.0,,16.0,TV_FULL,attempted,0.0,forecast_page_ok,
+VEEV,NYSE:VEEV,https://www.tradingview.com/symbols/NYSE-VEEV/forecast/,US,stock,Veeva Systems,ライフサイエンスSaaS,2026-06-27,2026-06-27,2026-07-27,171.36000061035156,241.43,340.0,165.0,40.890522373991885,98.41269770599031,-3.7114849367988185,23.0,,29.0,TV_FULL,attempted,0.0,forecast_page_ok,
+PYPL,NASDAQ:PYPL,https://www.tradingview.com/symbols/NASDAQ-PYPL/forecast/,US,stock,PayPal,決済・フィンテック,2026-06-27,2026-06-27,2026-07-27,44.290000915527344,47.21,63.0,32.0,6.592908160110138,42.24429599845242,-27.74892901665909,31.0,,47.0,TV_FULL,attempted,0.0,forecast_page_ok,
+TEM,NASDAQ:TEM,https://www.tradingview.com/symbols/NASDAQ-TEM/forecast/,US,stock,Tempus AI,AI医療・診断,2026-06-27,2026-06-27,2026-07-27,56.13999938964844,66.53,100.0,35.0,18.507304459050918,78.12611522478718,-37.655859671324485,15.0,,19.0,TV_FULL,attempted,0.0,forecast_page_ok,
+FICO,NYSE:FICO,https://www.tradingview.com/symbols/NYSE-FICO/forecast/,US,stock,Fair Isaac,信用スコア・分析,2026-06-27,2026-06-27,2026-07-27,1182.7900390625,1501.05,2400.0,707.0,26.907561817967146,102.91006186544163,-40.22607760880532,20.0,,25.0,TV_FULL,attempted,0.0,forecast_page_ok,
+AAOI,NASDAQ:AAOI,https://www.tradingview.com/symbols/NASDAQ-AAOI/forecast/,US,stock,Applied Optoelectronics,光通信・CPO周辺,2026-06-27,2026-06-27,2026-07-27,135.69000244140625,172.75,260.0,57.5,27.31225358669812,91.6132326051607,-57.623996635397155,6.0,,8.0,TV_FULL,attempted,0.0,forecast_page_ok,
+OUST,NASDAQ:OUST,https://www.tradingview.com/symbols/NASDAQ-OUST/forecast/,US,stock,Ouster,LiDAR・ロボティクス,2026-06-27,2026-06-27,2026-07-27,42.02000045776367,47.29,75.0,32.0,12.541645608817777,78.48643308651583,-23.845788549753248,7.0,,8.0,TV_FULL,attempted,0.0,forecast_page_ok,
+APH,NYSE:APH,https://www.tradingview.com/symbols/NYSE-APH/forecast/,US,stock,Amphenol,コネクタ・AIインフラ,2026-06-27,2026-06-27,2026-07-27,163.72000122070312,184.61,215.0,135.0,12.759588702382233,31.32176789454622,-17.542145740633767,18.0,,23.0,TV_FULL,attempted,0.0,forecast_page_ok,
+ASPI,NASDAQ:ASPI,https://www.tradingview.com/symbols/NASDAQ-ASPI/forecast/,US,stock,ASP Isotopes,核燃料・同位体,2026-06-27,2026-06-27,2026-07-27,6.170000076293945,13.0,15.0,11.0,110.69691797813628,143.1118284363111,78.28200751996147,3.0,,3.0,TV_FULL,attempted,0.0,forecast_page_ok,
+NBIS,NASDAQ:NBIS,https://www.tradingview.com/symbols/NASDAQ-NBIS/forecast/,US,stock,Nebius,AIクラウド,2026-06-27,2026-06-27,2026-07-27,240.3000030517578,257.64,380.0,144.0,7.215978663349139,58.13566174535272,-40.074907128076866,14.0,,17.0,TV_FULL,attempted,0.0,forecast_page_ok,
+EWY,,,US,etf,iShares MSCI South Korea ETF,韓国ETF・半導体,,,,197.27999877929688,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,ETF/watch_onlyはTradingViewアナリスト予測対象外
+ISRG,NASDAQ:ISRG,https://www.tradingview.com/symbols/NASDAQ-ISRG/forecast/,US,stock,Intuitive Surgical,医療ロボット,2026-06-27,2026-06-27,2026-07-27,404.70001220703125,570.19,750.0,366.0,40.89201452959422,85.32245549237211,-9.562641719722409,28.0,,36.0,TV_FULL,attempted,0.0,forecast_page_ok,
+SPGI,NYSE:SPGI,https://www.tradingview.com/symbols/NYSE-SPGI/forecast/,US,stock,S&P Global,指数・格付け,2026-06-27,2026-06-27,2026-07-27,408.1600036621094,532.82,575.0,480.0,30.541943164301085,40.8761257450417,17.600939752382637,22.0,,29.0,TV_FULL,attempted,0.0,forecast_page_ok,
+MELI,NASDAQ:MELI,https://www.tradingview.com/symbols/NASDAQ-MELI/forecast/,US,stock,MercadoLibre,中南米EC・決済,2026-06-27,2026-06-27,2026-07-27,1675.0999755859375,2244.5,2800.0,1750.0,33.99200243047527,67.15420218548931,4.471376365930817,22.0,,26.0,TV_FULL,attempted,0.0,forecast_page_ok,
+TMO,NYSE:TMO,https://www.tradingview.com/symbols/NYSE-TMO/forecast/,US,stock,Thermo Fisher,ライフサイエンス,2026-06-27,2026-06-27,2026-07-27,513.030029296875,595.21,750.0,490.0,16.018549794396144,46.19027292182104,-4.48902169107692,24.0,,31.0,TV_FULL,attempted,0.0,forecast_page_ok,
+META,NASDAQ:META,https://www.tradingview.com/symbols/NASDAQ-META/forecast/,US,stock,Meta Platforms,AI・広告・SNS,2026-06-27,2026-06-27,2026-07-27,550.25,820.27,1015.0,697.47,49.07223989095865,84.46160835983643,26.75511131303953,59.0,,70.0,TV_FULL,attempted,0.0,forecast_page_ok,
+IONQ,NYSE:IONQ,https://www.tradingview.com/symbols/NYSE-IONQ/forecast/,US,stock,IonQ,量子コンピュータ,2026-06-27,2026-06-27,2026-07-27,49.310001373291016,71.32,100.0,48.5,44.635972447226074,102.79861532140507,-1.6426715691185452,11.0,,13.0,TV_FULL,attempted,0.0,forecast_page_ok,
+RGTI,NASDAQ:RGTI,https://www.tradingview.com/symbols/NASDAQ-RGTI/forecast/,US,stock,Rigetti,量子コンピュータ,2026-06-27,2026-06-27,2026-07-27,18.360000610351562,31.0,40.0,20.0,68.84531029112206,117.86491650467363,8.932458252336813,10.0,,13.0,TV_FULL,attempted,0.0,forecast_page_ok,
+SDGR,NASDAQ:SDGR,https://www.tradingview.com/symbols/NASDAQ-SDGR/forecast/,US,stock,Schrodinger,AI創薬,2026-06-27,2026-06-27,2026-07-27,16.860000610351562,20.88,30.0,13.0,23.84341188683155,77.93593661901086,-22.894427465095298,8.0,,8.0,TV_FULL,attempted,0.0,forecast_page_ok,
+RXRX,NASDAQ:RXRX,https://www.tradingview.com/symbols/NASDAQ-RXRX/forecast/,US,stock,Recursion,AI創薬,2026-06-27,2026-06-27,2026-07-27,3.5199999809265137,6.64,10.0,3.0,88.63636465850941,184.09091063028526,-14.772726810914424,7.0,,8.0,TV_FULL,attempted,0.0,forecast_page_ok,
+QCOM,NASDAQ:QCOM,https://www.tradingview.com/symbols/NASDAQ-QCOM/forecast/,US,stock,Qualcomm,半導体・エッジAI,2026-06-27,2026-06-27,2026-07-27,189.38999938964844,221.93,350.0,100.0,17.181477752372874,84.80384451552518,-47.1989015669928,30.0,,40.0,TV_FULL,attempted,0.0,forecast_page_ok,
+HSAI,NASDAQ:HSAI,https://www.tradingview.com/symbols/NASDAQ-HSAI/forecast/,US,stock,Hesai,LiDAR,2026-06-27,2026-06-27,2026-07-27,14.800000190734863,30.45,,,105.74324059172912,,,22.0,,25.0,TV_FULL,attempted,0.0,forecast_page_ok,
+PL,NYSE:PL,https://www.tradingview.com/symbols/NYSE-PL/forecast/,US,stock,Planet Labs,宇宙データ,2026-06-27,2026-06-27,2026-07-27,27.06999969482422,41.0,53.0,22.0,51.45918161143975,95.78869818064163,-18.72921962312989,11.0,,12.0,TV_FULL,attempted,0.0,forecast_page_ok,
+V,NYSE:V,https://www.tradingview.com/symbols/NYSE-V/forecast/,US,stock,Visa,決済,2026-06-27,2026-06-27,2026-07-27,336.2300109863281,402.03,450.0,350.0,19.56993333838585,33.83695247188926,4.095407478136089,33.0,,40.0,TV_FULL,attempted,0.0,forecast_page_ok,
+VRTX,NASDAQ:VRTX,https://www.tradingview.com/symbols/NASDAQ-VRTX/forecast/,US,stock,Vertex Pharma,医薬,2026-06-27,2026-06-27,2026-07-27,491.3399963378906,553.64,641.0,330.0,12.679611699932961,30.459560544138842,-32.83673170114537,28.0,,36.0,TV_FULL,attempted,0.0,forecast_page_ok,
+DIS,NYSE:DIS,https://www.tradingview.com/symbols/NYSE-DIS/forecast/,US,stock,Disney,メディア・IP,2026-06-27,2026-06-27,2026-07-27,98.79000091552734,132.46,163.0,116.0,34.082395761148916,64.99645560219895,17.42079048990845,26.0,,31.0,TV_FULL,attempted,0.0,forecast_page_ok,
+KVYO,NYSE:KVYO,https://www.tradingview.com/symbols/NYSE-KVYO/forecast/,US,stock,Klaviyo,マーケSaaS,2026-06-27,2026-06-27,2026-07-27,14.899999618530273,28.82,37.0,17.0,93.4228237439565,148.32215400854926,14.093962652576694,22.0,,24.0,TV_FULL,attempted,0.0,forecast_page_ok,
+DKNG,NASDAQ:DKNG,https://www.tradingview.com/symbols/NASDAQ-DKNG/forecast/,US,stock,DraftKings,スポーツベッティング,2026-06-27,2026-06-27,2026-07-27,25.700000762939453,34.19,74.0,20.0,33.03501550592754,187.93773464283822,-22.178990637070754,36.0,,41.0,TV_FULL,attempted,0.0,forecast_page_ok,
+CRSP,NASDAQ:CRSP,https://www.tradingview.com/symbols/NASDAQ-CRSP/forecast/,US,stock,CRISPR Therapeutics,遺伝子編集,2026-06-27,2026-06-27,2026-07-27,54.91999816894531,81.1,291.0,44.0,47.669342141126016,429.8616345631032,-19.88346418977133,21.0,,26.0,TV_FULL,attempted,0.0,forecast_page_ok,
+BEAM,NASDAQ:BEAM,https://www.tradingview.com/symbols/NASDAQ-BEAM/forecast/,US,stock,Beam Therapeutics,遺伝子編集,2026-06-27,2026-06-27,2026-07-27,34.810001373291016,50.19,80.0,26.0,44.182700430772556,129.81900845709913,-25.308822251442788,16.0,,18.0,TV_FULL,attempted,0.0,forecast_page_ok,
+ETN,NYSE:ETN,https://www.tradingview.com/symbols/NYSE-ETN/forecast/,US,stock,Eaton,電力インフラ,2026-06-27,2026-06-27,2026-07-27,402.67999267578125,463.92,534.0,360.0,15.20810778734823,32.611505342395134,-10.598985162430244,24.0,,30.0,TV_FULL,attempted,0.0,forecast_page_ok,
+MSTR,NASDAQ:MSTR,https://www.tradingview.com/symbols/NASDAQ-MSTR/forecast/,US,stock,MicroStrategy,Bitcoin連動,2026-06-27,2026-06-27,2026-07-27,82.30999755859375,336.33,570.0,163.0,308.61378930375724,592.5039690278644,98.03183675709106,15.0,,19.0,TV_FULL,attempted,0.0,forecast_page_ok,
+POET,NASDAQ:POET,https://www.tradingview.com/symbols/NASDAQ-POET/forecast/,US,stock,POET Technologies,光電融合・CPO,2026-06-27,2026-06-27,2026-07-27,9.4399995803833,20.25,23.0,17.5,114.51272139969493,143.64407862681398,85.38136417257586,2.0,,1.0,TV_FULL,attempted,0.0,forecast_page_ok,
+KITT,NASDAQ:KITT,https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/,US,stock,Nauticus Robotics,海洋ロボ・超小型,2026-06-27,2026-06-27,2026-07-04,1.149999976158142,,,,,,,,NoRating,,TV_PARTIAL,attempted,0.0,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-KITT/forecast-price-target/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NYSE-KITT/forecast/: HTTP Error 404: Not Found
+AXTI,NASDAQ:AXTI,https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast/,US,stock,AXT,化合物半導体,2026-06-27,2026-06-27,2026-07-04,70.1500015258789,,,,,,,,Buy,,TV_PARTIAL,attempted,0.0,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast-price-target/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-AXTI/forecast/: HTTP Error 403: Forbidden
+COHR,NYSE:COHR,https://www.tradingview.com/symbols/NYSE-COHR/forecast/,US,stock,Coherent,光通信・CPO,2026-06-27,2026-06-27,2026-07-04,380.55999755859375,,,,,,,,Buy,,TV_PARTIAL,attempted,0.0,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-COHR/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-COHR/forecast-price-target/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-COHR/forecast/: HTTP Error 403: Forbidden
+ANET,NYSE:ANET,https://www.tradingview.com/symbols/NYSE-ANET/forecast/,US,stock,Arista Networks,AIネットワーク,2026-06-27,2026-06-27,2026-07-04,157.60000610351562,,,,,,,,StrongBuy,,TV_PARTIAL,attempted,0.0,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-ANET/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-ANET/forecast-price-target/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-ANET/forecast/: HTTP Error 403: Forbidden
+DDOG,NASDAQ:DDOG,https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast/,US,stock,Datadog,監視SaaS,2026-06-27,2026-06-27,2026-07-04,239.77000427246094,,,,,,,,StrongBuy,,TV_PARTIAL,attempted,0.0,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast-price-target/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-DDOG/forecast/: HTTP Error 403: Forbidden
+SNOW,NYSE:SNOW,https://www.tradingview.com/symbols/NYSE-SNOW/forecast/,US,stock,Snowflake,データクラウド,2026-06-27,2026-06-27,2026-07-04,248.9600067138672,,,,,,,,StrongBuy,,TV_PARTIAL,attempted,0.0,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-SNOW/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-SNOW/forecast-price-target/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-SNOW/forecast/: HTTP Error 403: Forbidden
+OPTX,NASDAQ:OPTX,https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/,US,stock,Syntec Optics,精密光学・フォトニクス,2026-06-27,2026-06-27,2026-07-04,10.5600004196167,,,,,,,,NoRating,,TV_PARTIAL,attempted,0.0,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-OPTX/forecast/: HTTP Error 403: Forbidden
+AEM,NYSE:AEM,https://www.tradingview.com/symbols/NYSE-AEM/forecast/,US,stock,Agnico Eagle Mines,金鉱株,2026-06-27,2026-06-27,2026-07-04,157.22999572753906,,,,,,,,Buy,,TV_PARTIAL,attempted,0.0,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-AEM/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-AEM/forecast-price-target/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-AEM/forecast/: HTTP Error 403: Forbidden
+ZETA,NYSE:ZETA,https://www.tradingview.com/symbols/NYSE-ZETA/forecast/,US,stock,Zeta Global,マーケAI,2026-06-27,2026-06-27,2026-07-04,18.979999542236328,,,,,,,,StrongBuy,,TV_PARTIAL,attempted,0.0,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-ZETA/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-ZETA/forecast-price-target/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-ZETA/forecast/: HTTP Error 403: Forbidden
+7974.T,,,JP,stock,任天堂,ゲーム・IP,,,,6589.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+6383.T,,,JP,stock,ダイフク,物流自動化,,,,7163.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+5401.T,,,JP,stock,日本製鉄,鉄鋼,,,,543.2999877929688,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+4901.T,,,JP,stock,富士フイルム,ヘルスケア・素材,,,,3436.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+3407.T,,,JP,stock,旭化成,総合化学,,,,1794.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+3402.T,,,JP,stock,東レ,素材,,,,1138.5,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+3405.T,,,JP,stock,クラレ,高機能化学,,,,1686.5,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+2871.T,,,JP,stock,ニチレイ,食品・冷凍物流,,,,2190.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+8601.T,,,JP,stock,大和証券G,金融・証券,,,,1596.5,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+8410.T,,,JP,stock,セブン銀行,銀行・ATM,,,,277.5,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+6902.T,,,JP,stock,デンソー,自動車部品,,,,1875.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+6758.T,,,JP,stock,ソニーG,エンタメ・半導体,,,,3199.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+5020.T,,,JP,stock,ENEOS,エネルギー,,,,1214.5,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+4063.T,,,JP,stock,信越化学,半導体材料・塩ビ,,,,6835.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+4042.T,,,JP,stock,東ソー,化学,,,,2930.5,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+1911.T,,,JP,stock,住友林業,住宅・木材,,,,1375.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+1928.T,,,JP,stock,積水ハウス,住宅,,,,3340.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+6326.T,,,JP,stock,クボタ,農機・水インフラ,,,,2751.5,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+7267.T,,,JP,stock,ホンダ,自動車,,,,1449.5,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+6501.T,,,JP,stock,日立,インフラ・DX,,,,4478.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+9861.T,,,JP,stock,吉野家HD,外食,,,,3060.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+7821.T,,,JP,stock,前田工繊,防災・土木資材,,,,1762.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+1377.T,,,JP,stock,サカタのタネ,種苗,,,,4185.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+6287.T,,,JP,stock,サトーHD,自動認識,,,,2370.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+4368.T,,,JP,stock,扶桑化学,半導体材料,,,,4640.0,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
+9432.T,,,JP,stock,NTT/日本電信電話,通信,,,,144.3000030517578,,,,,,,,,,NOT_APPLICABLE,not_applicable,,not_applicable,米国株以外はTradingView W04対象外
