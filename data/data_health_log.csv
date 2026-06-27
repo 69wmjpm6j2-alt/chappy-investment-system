@@ -157,3 +157,50 @@
 2026-06-27T23:17:29.192815+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-06-27T23:17:29.192819+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-06-27T23:17:29.192824+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-06-27T23:55:08.620014+09:00,W04_tv_ratings,AVAV,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620038+09:00,W04_tv_ratings,AXON,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620044+09:00,W04_tv_ratings,AUR,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620050+09:00,W04_tv_ratings,TMDX,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620055+09:00,W04_tv_ratings,NOW,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620061+09:00,W04_tv_ratings,RDW,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620066+09:00,W04_tv_ratings,TRMB,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620073+09:00,W04_tv_ratings,VEEV,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620080+09:00,W04_tv_ratings,PYPL,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620085+09:00,W04_tv_ratings,TEM,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620090+09:00,W04_tv_ratings,FICO,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620095+09:00,W04_tv_ratings,AAOI,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620100+09:00,W04_tv_ratings,OUST,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620104+09:00,W04_tv_ratings,APH,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620109+09:00,W04_tv_ratings,ASPI,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620114+09:00,W04_tv_ratings,NBIS,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620118+09:00,W04_tv_ratings,ISRG,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620123+09:00,W04_tv_ratings,SPGI,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620127+09:00,W04_tv_ratings,MELI,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620132+09:00,W04_tv_ratings,TMO,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620136+09:00,W04_tv_ratings,META,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620141+09:00,W04_tv_ratings,IONQ,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620146+09:00,W04_tv_ratings,RGTI,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620150+09:00,W04_tv_ratings,SDGR,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620155+09:00,W04_tv_ratings,RXRX,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620159+09:00,W04_tv_ratings,QCOM,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620164+09:00,W04_tv_ratings,HSAI,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620173+09:00,W04_tv_ratings,PL,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620178+09:00,W04_tv_ratings,V,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620182+09:00,W04_tv_ratings,VRTX,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620187+09:00,W04_tv_ratings,DIS,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620192+09:00,W04_tv_ratings,KVYO,US,INFO,tv_ratings,TV_FULL,mode=full; status=forecast_page_ok; stale_days=0; 
+2026-06-27T23:55:08.620196+09:00,W04_tv_ratings,DKNG,US,INFO,tv_ratings,TV_FULL,mode=full; status=kept_previous_tv_full; stale_days=0; 今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-DKNG/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-DKNG/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620207+09:00,W04_tv_ratings,CRSP,US,INFO,tv_ratings,TV_FULL,mode=full; status=kept_previous_tv_full; stale_days=0; 今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-CRSP/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-CRSP/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620217+09:00,W04_tv_ratings,BEAM,US,INFO,tv_ratings,TV_FULL,mode=full; status=kept_previous_tv_full; stale_days=0; 今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-BEAM/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-BEAM/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620226+09:00,W04_tv_ratings,ETN,US,INFO,tv_ratings,TV_FULL,mode=full; status=kept_previous_tv_full; stale_days=0; 今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NYSE-ETN/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-ETN/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620236+09:00,W04_tv_ratings,MSTR,US,INFO,tv_ratings,TV_FULL,mode=full; status=kept_previous_tv_full; stale_days=0; 今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-MSTR/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-MSTR/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620245+09:00,W04_tv_ratings,POET,US,INFO,tv_ratings,TV_FULL,mode=full; status=kept_previous_tv_full; stale_days=0; 今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-POET/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-POET/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620254+09:00,W04_tv_ratings,KITT,US,WARN,tv_ratings,TV_PARTIAL,mode=full; status=kept_previous_tv_partial; stale_days=0; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-KITT/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620263+09:00,W04_tv_ratings,AXTI,US,WARN,tv_ratings,TV_PARTIAL,mode=full; status=kept_previous_tv_partial; stale_days=0; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620271+09:00,W04_tv_ratings,COHR,US,WARN,tv_ratings,TV_PARTIAL,mode=full; status=kept_previous_tv_partial; stale_days=0; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-COHR/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-COHR/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620280+09:00,W04_tv_ratings,ANET,US,WARN,tv_ratings,TV_PARTIAL,mode=full; status=kept_previous_tv_partial; stale_days=0; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-ANET/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-ANET/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620289+09:00,W04_tv_ratings,DDOG,US,WARN,tv_ratings,TV_PARTIAL,mode=full; status=kept_previous_tv_partial; stale_days=0; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620317+09:00,W04_tv_ratings,SNOW,US,WARN,tv_ratings,TV_PARTIAL,mode=full; status=kept_previous_tv_partial; stale_days=0; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-SNOW/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-SNOW/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620326+09:00,W04_tv_ratings,OPTX,US,WARN,tv_ratings,TV_PARTIAL,mode=full; status=kept_previous_tv_partial; stale_days=0; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620335+09:00,W04_tv_ratings,AEM,US,WARN,tv_ratings,TV_PARTIAL,mode=full; status=kept_previous_tv_partial; stale_days=0; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-AEM/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-AEM/forecast-price-target/: HTTP Error 403: Forbidden
+2026-06-27T23:55:08.620343+09:00,W04_tv_ratings,ZETA,US,WARN,tv_ratings,TV_PARTIAL,mode=full; status=kept_previous_tv_partial; stale_days=0; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-ZETA/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-ZETA/forecast-price-target/: HTTP Error 403: Forbidden
