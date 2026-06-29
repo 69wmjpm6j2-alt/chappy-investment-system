@@ -2,35 +2,96 @@ name: CIS D00 iPhone Dashboard
 
 on:
   workflow_dispatch:
+  push:
   schedule:
-    # JST 08:20 = UTC 23:20
+    # JST 平日08:20 = UTC 前日23:20
     - cron: "20 23 * * 0-4"
-    # Saturday JST 08:30 = Friday UTC 23:30, after weekly report
+
+    # JST 土曜08:30 = UTC 金曜23:30
     - cron: "30 23 * * 5"
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: cis-dashboard-pages
+  cancel-in-progress: false
+
+env:
+  TZ: Asia/Tokyo
 
 jobs:
-  run:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Show run info
+        run: |
+          echo "event_name=${{ github.event_name }}"
+          echo "branch=${{ github.ref }}"
+          echo "run_id=${{ github.run_id }}"
+          echo "run_number=${{ github.run_number }}"
+          date
+
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Build dashboard
-        run: python scripts/cis_dashboard.py
-
-      - name: Commit dashboard
+      - name: Install Python packages
         run: |
-          git config user.name "cis-bot"
-          git config user.email "cis-bot@example.com"
-          git add docs/
-          git commit -m "CIS dashboard update" || echo "No changes"
-          git push
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "requirements.txt not found. Skipping."
+          fi
+
+      - name: Generate dashboard
+        env:
+          CIS_RUN_ID: ${{ github.run_id }}
+          CIS_RUN_NUMBER: ${{ github.run_number }}
+          CIS_GITHUB_SHA: ${{ github.sha }}
+        run: |
+          python scripts/cis_dashboard.py
+
+      - name: Verify dashboard files
+        run: |
+          echo "Checking docs folder..."
+          ls -la docs
+          test -f docs/index.html
+          test -s docs/index.html
+
+      - name: Write health check file
+        run: |
+          date '+最終デプロイ確認: %Y-%m-%d %H:%M:%S JST' > docs/health.txt
+          echo "github_event_name=${{ github.event_name }}" >> docs/health.txt
+          echo "github_run_id=${{ github.run_id }}" >> docs/health.txt
+          echo "github_run_number=${{ github.run_number }}" >> docs/health.txt
+          echo "github_sha=${{ github.sha }}" >> docs/health.txt
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
