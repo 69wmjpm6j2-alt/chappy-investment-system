@@ -222,3 +222,10 @@
 2026-06-30T19:45:04.290851+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-06-30T19:45:04.290856+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-06-30T19:45:04.290860+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-01T19:58:49.548492+09:00,D03_buy_alert,OUST,US,INFO,高値圏/基準再点検候補,buy_zone_master/yfinance,本命価格の4.17倍。価格異常とは断定せず、高値圏/基準再点検候補として扱う。
+2026-07-01T19:58:49.548529+09:00,D03_buy_alert,EWY,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-01T19:58:49.548535+09:00,D03_buy_alert,PL,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-01T19:58:49.548540+09:00,D03_buy_alert,MSTR,US,INFO,条件確認待ち,buy_zone_master,basis status
+2026-07-01T19:58:49.548545+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-01T19:58:49.548549+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-01T19:58:49.548554+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
