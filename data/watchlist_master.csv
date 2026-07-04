@@ -1,4 +1,4 @@
-﻿ticker,market,name,theme,asset_type,priority,watch_reason,active,memo
+ticker,market,name,theme,asset_type,priority,watch_reason,active,memo
 AVAV,US,AeroVironment,防衛ドローン,stock,high,防衛ドローン本命候補,true,
 AXON,US,Axon Enterprise,公共安全AI・防衛,stock,high,高品質グロース,true,
 AUR,US,Aurora Innovation,自動運転・物流,stock,high,自動運転物流テーマ,true,

@@ -3,13 +3,13 @@
   "module": "watchlist_repair_persist",
   "status": "success",
   "persisted": true,
-  "repair_exit_code": 2,
-  "checked_at_jst": "2026-07-04T12:10:24+09:00",
-  "message": "Watchlist修復は失敗しましたが、失敗statusをGitHubへ保存します。",
-  "user_next_action": "dashboard上部の修復失敗カード、またはGitHub Actionsの失敗ログを確認してください。",
-  "run_url": "https://github.com/69wmjpm6j2-alt/chappy-investment-system/actions/runs/28693112903",
+  "repair_exit_code": 0,
+  "checked_at_jst": "2026-07-04T12:15:45+09:00",
+  "message": "Watchlist修復結果をGitHubへ保存しました。",
+  "user_next_action": "通常対応は不要です。CIS Pages側に異常カードが出ていないことを確認してください。",
+  "run_url": "https://github.com/69wmjpm6j2-alt/chappy-investment-system/actions/runs/28693242997",
   "actions_workflow_url": "https://github.com/69wmjpm6j2-alt/chappy-investment-system/actions/workflows/watchlist_repair.yml",
   "workflow_name": "CIS Watchlist修復｜手動実行",
   "reason": "manual watchlist repair",
-  "watchlist_changed": false
+  "watchlist_changed": true
 }
