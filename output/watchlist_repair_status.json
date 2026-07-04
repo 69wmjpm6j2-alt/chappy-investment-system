@@ -4,10 +4,11 @@
   "status": "failed",
   "repair_exit_code": 2,
   "watchlist_changed": false,
-  "checked_at_jst": "2026-07-04T11:55:41+09:00",
+  "checked_at_jst": "2026-07-04T12:10:24+09:00",
   "message": "Watchlist修復スクリプトが失敗しました。watchlist_master.csv の変更は保存していません。GitHub Actionsの失敗ログを確認してください。",
   "user_next_action": "GitHub Actionsでこの失敗した実行を開き、「Watchlist修復と保存」→「Repair watchlist and persist result」を開いて、赤くなっている行の周辺を確認してください。必要ならwatchlist_master.csvを手動確認し、修正後に再度Run workflowを押してください。",
-  "run_url": "https://github.com/69wmjpm6j2-alt/chappy-investment-system/actions/runs/28692762777",
+  "run_url": "https://github.com/69wmjpm6j2-alt/chappy-investment-system/actions/runs/28693112903",
   "actions_workflow_url": "https://github.com/69wmjpm6j2-alt/chappy-investment-system/actions/workflows/watchlist_repair.yml",
-  "reason": "manual watchlist repair"
+  "reason": "manual watchlist repair",
+  "note": "前回statusが残っていたため、今回の実行結果で上書きしました。"
 }
