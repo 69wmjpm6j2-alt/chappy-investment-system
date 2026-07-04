@@ -1,0 +1,353 @@
+name: CIS Watchlist修復｜手動実行
+
+# 通常のCIS日次更新は既存のschedule workflowが自動実行します。
+# このworkflowは、監視リストが壊れた時だけ押す非常用の手動修復ボタンです。
+"on":
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "任意：今回の修復理由。空欄でも実行できます。"
+        required: false
+        default: "manual watchlist repair"
+
+permissions:
+  contents: write
+
+# 他の保存系workflowにも同じgroupを入れると、docs/dataへの同時push競合をさらに減らせます。
+concurrency:
+  group: cis-persist-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  watchlist-repair:
+    name: Watchlist修復と保存
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Repair watchlist and persist result
+        id: repair
+        shell: bash
+        env:
+          REPAIR_REASON: ${{ inputs.reason }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ACTIONS_WORKFLOW_URL: https://github.com/${{ github.repository }}/actions/workflows/watchlist_repair.yml
+          WORKFLOW_NAME: CIS Watchlist修復｜手動実行
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          echo "[CIS] Watchlist repair started"
+          echo "[CIS] Branch: ${BRANCH_NAME}"
+          echo "[CIS] Reason: ${REPAIR_REASON}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config pull.rebase true
+
+          # できるだけ最新のブランチ状態から開始する。
+          git pull --rebase --autostash origin "${BRANCH_NAME}"
+
+          mkdir -p output docs/latest
+
+          # 既存statusが残っている場合に、今回の実行結果と取り違えないため、実行前ハッシュを保存する。
+          PRE_REPAIR_STATUS_SHA="$(sha256sum output/watchlist_repair_status.json 2>/dev/null | awk '{print $1}' || true)"
+          PRE_REPAIR_STATUS_MD_SHA="$(sha256sum output/watchlist_repair_status.md 2>/dev/null | awk '{print $1}' || true)"
+          export PRE_REPAIR_STATUS_SHA PRE_REPAIR_STATUS_MD_SHA
+
+          if python scripts/cis_repair_watchlist_master.py; then
+            REPAIR_EXIT=0
+          else
+            REPAIR_EXIT=$?
+          fi
+
+          echo "[CIS] Repair script exit code: ${REPAIR_EXIT}"
+
+          # 修復スクリプト失敗時は、部分的に書き換わったwatchlist_master.csvを保存しない。
+          # 失敗statusだけをPages/Actionsへ残す。
+          if [ "${REPAIR_EXIT}" -ne 0 ]; then
+            git restore --worktree --staged data/watchlist_master.csv || true
+          fi
+
+          if [ "${REPAIR_EXIT}" -eq 0 ] && git status --porcelain -- data/watchlist_master.csv | grep -q .; then
+            WATCHLIST_CHANGED=true
+          else
+            WATCHLIST_CHANGED=false
+          fi
+          export REPAIR_EXIT WATCHLIST_CHANGED
+
+          # 修復スクリプト側がstatusを出せなかった場合、または前回statusが残っただけの場合でも、
+          # ユーザーが見える今回分のstatusを必ず作る。
+          python - <<'PYCODE1'
+          import datetime as dt
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from typing import Any, Dict
+
+          JST = dt.timezone(dt.timedelta(hours=9))
+          now = dt.datetime.now(JST).isoformat(timespec="seconds")
+          output_dir = Path("output")
+          latest_dir = Path("docs/latest")
+          output_dir.mkdir(parents=True, exist_ok=True)
+          latest_dir.mkdir(parents=True, exist_ok=True)
+
+          status_json = output_dir / "watchlist_repair_status.json"
+          status_md = output_dir / "watchlist_repair_status.md"
+          repair_exit = int(os.environ.get("REPAIR_EXIT", "1"))
+          changed = os.environ.get("WATCHLIST_CHANGED", "false").lower() == "true"
+          workflow_url = os.environ.get("ACTIONS_WORKFLOW_URL", "")
+          run_url = os.environ.get("RUN_URL", "")
+          reason = os.environ.get("REPAIR_REASON", "")
+          pre_json_sha = os.environ.get("PRE_REPAIR_STATUS_SHA", "")
+          pre_md_sha = os.environ.get("PRE_REPAIR_STATUS_MD_SHA", "")
+
+          def file_sha(path: Path) -> str:
+              if not path.exists():
+                  return ""
+              return hashlib.sha256(path.read_bytes()).hexdigest()
+
+          def is_stale(path: Path, pre_sha: str) -> bool:
+              if not path.exists():
+                  return True
+              post_sha = file_sha(path)
+              # 実行前に存在していたstatusと同じなら、今回の結果ではなく前回残骸とみなす。
+              return bool(pre_sha) and post_sha == pre_sha
+
+          json_stale = is_stale(status_json, pre_json_sha)
+          md_stale = is_stale(status_md, pre_md_sha)
+
+          def base_payload() -> Dict[str, Any]:
+              if repair_exit == 0 and changed:
+                  status = "success"
+                  message = "Watchlist修復スクリプトが正常終了し、watchlist_master.csv に変更がありました。"
+                  next_action = "通常対応は不要です。数十秒〜数分後にCIS Pagesを開き、監視リスト表示に異常カードが出ていないことを確認してください。"
+              elif repair_exit == 0 and not changed:
+                  status = "success"
+                  message = "Watchlist修復スクリプトが正常終了しました。watchlist_master.csv に変更はありませんでした。"
+                  next_action = "通常対応は不要です。CIS Pages側に異常カードが出ていないことを確認してください。"
+              else:
+                  status = "failed"
+                  message = "Watchlist修復スクリプトが失敗しました。watchlist_master.csv の変更は保存していません。GitHub Actionsの失敗ログを確認してください。"
+                  next_action = "GitHub Actionsでこの失敗した実行を開き、「Watchlist修復と保存」→「Repair watchlist and persist result」を開いて、赤くなっている行の周辺を確認してください。必要ならwatchlist_master.csvを手動確認し、修正後に再度Run workflowを押してください。"
+
+              return {
+                  "schema_version": "V3.12.4",
+                  "module": "watchlist_repair",
+                  "status": status,
+                  "repair_exit_code": repair_exit,
+                  "watchlist_changed": changed,
+                  "checked_at_jst": now,
+                  "message": message,
+                  "user_next_action": next_action,
+                  "run_url": run_url,
+                  "actions_workflow_url": workflow_url,
+                  "reason": reason,
+              }
+
+          if json_stale:
+              payload = base_payload()
+              if pre_json_sha:
+                  payload["note"] = "前回statusが残っていたため、今回の実行結果で上書きしました。"
+          else:
+              # 修復スクリプトが今回statusを作った場合は尊重しつつ、dashboard用の最低限キーを補完する。
+              try:
+                  payload = json.loads(status_json.read_text(encoding="utf-8"))
+                  if not isinstance(payload, dict):
+                      raise ValueError("status json root is not object")
+              except Exception:
+                  payload = base_payload()
+                  payload["note"] = "修復スクリプトのstatus jsonを読み取れなかったため、workflow側で再作成しました。"
+              payload.setdefault("schema_version", "V3.12.4")
+              payload.setdefault("module", "watchlist_repair")
+              payload.setdefault("status", "failed" if repair_exit else "success")
+              payload["repair_exit_code"] = repair_exit
+              payload["watchlist_changed"] = changed
+              payload.setdefault("checked_at_jst", now)
+              payload["run_url"] = payload.get("run_url") or run_url
+              payload["actions_workflow_url"] = payload.get("actions_workflow_url") or workflow_url
+              payload["reason"] = payload.get("reason") or reason
+              if repair_exit != 0:
+                  # 既存スクリプトがstatusを作った場合も、失敗実行を成功に見せない。
+                  payload["status"] = "failed"
+                  payload.setdefault("user_next_action", "GitHub Actionsでこの失敗した実行を開き、「Watchlist修復と保存」→「Repair watchlist and persist result」を確認してください。")
+
+          status_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+          if md_stale or not status_md.exists():
+              status_md.write_text(
+                  "# Watchlist修復 status\n\n"
+                  f"- status: {payload.get('status', 'unknown')}\n"
+                  f"- checked_at_jst: {payload.get('checked_at_jst', now)}\n"
+                  f"- repair_exit_code: {payload.get('repair_exit_code', '')}\n"
+                  f"- watchlist_changed: {payload.get('watchlist_changed', '')}\n"
+                  f"- message: {payload.get('message', '')}\n"
+                  f"- next_action: {payload.get('user_next_action', '')}\n"
+                  f"- run_url: {payload.get('run_url', run_url)}\n"
+                  f"- actions_workflow_url: {payload.get('actions_workflow_url', workflow_url)}\n",
+                  encoding="utf-8",
+              )
+
+          # Pages側のlatestにも必ず反映する。
+          (latest_dir / "watchlist_repair_status_latest.json").write_text(
+              status_json.read_text(encoding="utf-8"), encoding="utf-8"
+          )
+          (latest_dir / "watchlist_repair_status_latest.md").write_text(
+              status_md.read_text(encoding="utf-8"), encoding="utf-8"
+          )
+          PYCODE1
+
+          # このファイルは「修復結果statusのGitHub保存状態」。修復自体の成否とは分ける。
+          python - <<'PYCODE2'
+          import datetime as dt
+          import json
+          import os
+          from pathlib import Path
+
+          JST = dt.timezone(dt.timedelta(hours=9))
+          now = dt.datetime.now(JST).isoformat(timespec="seconds")
+          latest_dir = Path("docs/latest")
+          latest_dir.mkdir(parents=True, exist_ok=True)
+          repair_exit = int(os.environ.get("REPAIR_EXIT", "1"))
+          if repair_exit == 0:
+              message = "Watchlist修復結果をGitHubへ保存しました。"
+              next_action = "通常対応は不要です。CIS Pages側に異常カードが出ていないことを確認してください。"
+          else:
+              message = "Watchlist修復は失敗しましたが、失敗statusをGitHubへ保存します。"
+              next_action = "dashboard上部の修復失敗カード、またはGitHub Actionsの失敗ログを確認してください。"
+          payload = {
+              "schema_version": "V3.12.4",
+              "module": "watchlist_repair_persist",
+              "status": "success",
+              "persisted": True,
+              "repair_exit_code": repair_exit,
+              "checked_at_jst": now,
+              "message": message,
+              "user_next_action": next_action,
+              "run_url": os.environ.get("RUN_URL", ""),
+              "actions_workflow_url": os.environ.get("ACTIONS_WORKFLOW_URL", ""),
+              "workflow_name": os.environ.get("WORKFLOW_NAME", ""),
+              "reason": os.environ.get("REPAIR_REASON", ""),
+              "watchlist_changed": os.environ.get("WATCHLIST_CHANGED", "false").lower() == "true",
+          }
+          (latest_dir / "watchlist_repair_persist_status_latest.json").write_text(
+              json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          (latest_dir / "watchlist_repair_persist_status_latest.md").write_text(
+              "# Watchlist修復 永続化status\n\n"
+              f"- status: {payload['status']}\n"
+              f"- persisted: {payload['persisted']}\n"
+              f"- repair_exit_code: {payload['repair_exit_code']}\n"
+              f"- checked_at_jst: {payload['checked_at_jst']}\n"
+              f"- message: {payload['message']}\n"
+              f"- next_action: {payload['user_next_action']}\n"
+              f"- run_url: {payload['run_url']}\n"
+              f"- actions_workflow_url: {payload['actions_workflow_url']}\n",
+              encoding="utf-8",
+          )
+          PYCODE2
+
+          git add -A -- \
+            data/watchlist_master.csv \
+            output/watchlist_repair_status.json \
+            output/watchlist_repair_status.md \
+            docs/latest/watchlist_repair_status_latest.json \
+            docs/latest/watchlist_repair_status_latest.md \
+            docs/latest/watchlist_repair_persist_status_latest.json \
+            docs/latest/watchlist_repair_persist_status_latest.md
+
+          if git diff --cached --quiet; then
+            echo "[CIS] No file changes to commit."
+          else
+            git commit -m "CIS: watchlist repair status/update [V3.12.4]"
+          fi
+
+          # push直前に再度rebaseして、通常dashboard更新などとの競合を減らす。
+          # ここでrebase衝突した場合も、後続のpersist失敗status保存処理へ進める。
+          if git pull --rebase --autostash origin "${BRANCH_NAME}"; then
+            if git push origin "HEAD:${BRANCH_NAME}"; then
+              PUSH_EXIT=0
+            else
+              PUSH_EXIT=$?
+            fi
+          else
+            PUSH_EXIT=$?
+          fi
+
+          if [ "${PUSH_EXIT}" -ne 0 ]; then
+            echo "[CIS] Initial push failed. Trying to persist failure status only."
+            git rebase --abort || true
+            git fetch origin "${BRANCH_NAME}"
+            git reset --hard "origin/${BRANCH_NAME}"
+
+            python - <<'PYCODE3'
+          import datetime as dt
+          import json
+          import os
+          from pathlib import Path
+
+          JST = dt.timezone(dt.timedelta(hours=9))
+          now = dt.datetime.now(JST).isoformat(timespec="seconds")
+          latest_dir = Path("docs/latest")
+          latest_dir.mkdir(parents=True, exist_ok=True)
+          payload = {
+              "schema_version": "V3.12.4",
+              "module": "watchlist_repair_persist",
+              "status": "failed",
+              "persisted": False,
+              "checked_at_jst": now,
+              "message": "Watchlist修復は実行されましたが、GitHubへの保存に失敗しました。通常の更新workflowと競合したか、権限不足の可能性があります。",
+              "user_next_action": "GitHub Actionsでこの失敗した実行を開き、「Watchlist修復と保存」→「Repair watchlist and persist result」を開いて、赤くなっている行の周辺を確認してください。競合の可能性がある場合は少し時間を空けて再度Run workflowを押してください。",
+              "run_url": os.environ.get("RUN_URL", ""),
+              "actions_workflow_url": os.environ.get("ACTIONS_WORKFLOW_URL", ""),
+              "workflow_name": os.environ.get("WORKFLOW_NAME", ""),
+              "reason": os.environ.get("REPAIR_REASON", ""),
+              "repair_exit_code": int(os.environ.get("REPAIR_EXIT", "1")),
+              "watchlist_changed": os.environ.get("WATCHLIST_CHANGED", "false").lower() == "true",
+          }
+          (latest_dir / "watchlist_repair_persist_status_latest.json").write_text(
+              json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          (latest_dir / "watchlist_repair_persist_status_latest.md").write_text(
+              "# Watchlist修復 永続化status\n\n"
+              f"- status: {payload['status']}\n"
+              f"- persisted: {payload['persisted']}\n"
+              f"- checked_at_jst: {payload['checked_at_jst']}\n"
+              f"- message: {payload['message']}\n"
+              f"- next_action: {payload['user_next_action']}\n"
+              f"- run_url: {payload['run_url']}\n"
+              f"- actions_workflow_url: {payload['actions_workflow_url']}\n",
+              encoding="utf-8",
+          )
+          PYCODE3
+
+            git add -A -- docs/latest/watchlist_repair_persist_status_latest.json docs/latest/watchlist_repair_persist_status_latest.md
+            if git diff --cached --quiet; then
+              echo "[CIS] No persist failure status changes to commit."
+            else
+              git commit -m "CIS: watchlist repair persist failed status [V3.12.4]"
+              git push origin "HEAD:${BRANCH_NAME}" || true
+            fi
+
+            exit "${PUSH_EXIT}"
+          fi
+
+          if [ "${REPAIR_EXIT}" -ne 0 ]; then
+            echo "[CIS] Repair failed, but failure status files were persisted."
+            exit "${REPAIR_EXIT}"
+          fi
+
+          echo "[CIS] Watchlist repair completed and persisted."
