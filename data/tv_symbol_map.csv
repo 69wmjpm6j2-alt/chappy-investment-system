@@ -1,48 +1,48 @@
 ﻿ticker,tv_symbol,forecast_url,last_verified,source,status,note
-AVAV,NASDAQ:AVAV,https://www.tradingview.com/symbols/NASDAQ-AVAV/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-AXON,NASDAQ:AXON,https://www.tradingview.com/symbols/NASDAQ-AXON/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-AUR,NASDAQ:AUR,https://www.tradingview.com/symbols/NASDAQ-AUR/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-TMDX,NASDAQ:TMDX,https://www.tradingview.com/symbols/NASDAQ-TMDX/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-NOW,NYSE:NOW,https://www.tradingview.com/symbols/NYSE-NOW/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-RDW,NYSE:RDW,https://www.tradingview.com/symbols/NYSE-RDW/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-TRMB,NASDAQ:TRMB,https://www.tradingview.com/symbols/NASDAQ-TRMB/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-VEEV,NYSE:VEEV,https://www.tradingview.com/symbols/NYSE-VEEV/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-PYPL,NASDAQ:PYPL,https://www.tradingview.com/symbols/NASDAQ-PYPL/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-TEM,NASDAQ:TEM,https://www.tradingview.com/symbols/NASDAQ-TEM/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-FICO,NYSE:FICO,https://www.tradingview.com/symbols/NYSE-FICO/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-AAOI,NASDAQ:AAOI,https://www.tradingview.com/symbols/NASDAQ-AAOI/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-OUST,NASDAQ:OUST,https://www.tradingview.com/symbols/NASDAQ-OUST/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-APH,NYSE:APH,https://www.tradingview.com/symbols/NYSE-APH/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-ASPI,NASDAQ:ASPI,https://www.tradingview.com/symbols/NASDAQ-ASPI/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-NBIS,NASDAQ:NBIS,https://www.tradingview.com/symbols/NASDAQ-NBIS/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-ISRG,NASDAQ:ISRG,https://www.tradingview.com/symbols/NASDAQ-ISRG/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-SPGI,NYSE:SPGI,https://www.tradingview.com/symbols/NYSE-SPGI/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-MELI,NASDAQ:MELI,https://www.tradingview.com/symbols/NASDAQ-MELI/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-TMO,NYSE:TMO,https://www.tradingview.com/symbols/NYSE-TMO/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-META,NASDAQ:META,https://www.tradingview.com/symbols/NASDAQ-META/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-IONQ,NYSE:IONQ,https://www.tradingview.com/symbols/NYSE-IONQ/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-RGTI,NASDAQ:RGTI,https://www.tradingview.com/symbols/NASDAQ-RGTI/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-SDGR,NASDAQ:SDGR,https://www.tradingview.com/symbols/NASDAQ-SDGR/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-RXRX,NASDAQ:RXRX,https://www.tradingview.com/symbols/NASDAQ-RXRX/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-QCOM,NASDAQ:QCOM,https://www.tradingview.com/symbols/NASDAQ-QCOM/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-HSAI,NASDAQ:HSAI,https://www.tradingview.com/symbols/NASDAQ-HSAI/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-PL,NYSE:PL,https://www.tradingview.com/symbols/NYSE-PL/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-V,NYSE:V,https://www.tradingview.com/symbols/NYSE-V/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-VRTX,NASDAQ:VRTX,https://www.tradingview.com/symbols/NASDAQ-VRTX/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-DIS,NYSE:DIS,https://www.tradingview.com/symbols/NYSE-DIS/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-KVYO,NYSE:KVYO,https://www.tradingview.com/symbols/NYSE-KVYO/forecast/,2026-06-27,symbol_map,forecast_page_ok,
-DKNG,NASDAQ:DKNG,https://www.tradingview.com/symbols/NASDAQ-DKNG/forecast/,2026-06-27,symbol_map,kept_previous_tv_full,今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-DKNG/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-DKNG/forecast
-CRSP,NASDAQ:CRSP,https://www.tradingview.com/symbols/NASDAQ-CRSP/forecast/,2026-06-27,symbol_map,kept_previous_tv_full,今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-CRSP/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-CRSP/forecast
-BEAM,NASDAQ:BEAM,https://www.tradingview.com/symbols/NASDAQ-BEAM/forecast/,2026-06-27,symbol_map,kept_previous_tv_full,今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-BEAM/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-BEAM/forecast
-ETN,NYSE:ETN,https://www.tradingview.com/symbols/NYSE-ETN/forecast/,2026-06-27,symbol_map,kept_previous_tv_full,今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NYSE-ETN/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-ETN/forecast-price
-MSTR,NASDAQ:MSTR,https://www.tradingview.com/symbols/NASDAQ-MSTR/forecast/,2026-06-27,symbol_map,kept_previous_tv_full,今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-MSTR/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-MSTR/forecast
-POET,NASDAQ:POET,https://www.tradingview.com/symbols/NASDAQ-POET/forecast/,2026-06-27,symbol_map,kept_previous_tv_full,今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NASDAQ-POET/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-POET/forecast
-KITT,NASDAQ:KITT,https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/,2026-06-27,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-KITT/forecast-price-target/: HTTP Error 403: F
-AXTI,NASDAQ:AXTI,https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast/,2026-06-27,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast-price-target/: HTTP Error 403: F
-COHR,NYSE:COHR,https://www.tradingview.com/symbols/NYSE-COHR/forecast/,2026-06-27,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-COHR/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-COHR/forecast-price-target/: HTTP Error 403: Forbi
-ANET,NYSE:ANET,https://www.tradingview.com/symbols/NYSE-ANET/forecast/,2026-06-27,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-ANET/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-ANET/forecast-price-target/: HTTP Error 403: Forbi
-DDOG,NASDAQ:DDOG,https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast/,2026-06-27,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast-price-target/: HTTP Error 403: F
-SNOW,NYSE:SNOW,https://www.tradingview.com/symbols/NYSE-SNOW/forecast/,2026-06-27,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-SNOW/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-SNOW/forecast-price-target/: HTTP Error 403: Forbi
-OPTX,NASDAQ:OPTX,https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/,2026-06-27,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 403: F
-AEM,NYSE:AEM,https://www.tradingview.com/symbols/NYSE-AEM/forecast/,2026-06-27,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-AEM/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-AEM/forecast-price-target/: HTTP Error 403: Forbidd
-ZETA,NYSE:ZETA,https://www.tradingview.com/symbols/NYSE-ZETA/forecast/,2026-06-27,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NYSE-ZETA/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-ZETA/forecast-price-target/: HTTP Error 403: Forbi
+AVAV,NASDAQ:AVAV,https://www.tradingview.com/symbols/NASDAQ-AVAV/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+AXON,NASDAQ:AXON,https://www.tradingview.com/symbols/NASDAQ-AXON/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+AUR,NASDAQ:AUR,https://www.tradingview.com/symbols/NASDAQ-AUR/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+TMDX,NASDAQ:TMDX,https://www.tradingview.com/symbols/NASDAQ-TMDX/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+NOW,NYSE:NOW,https://www.tradingview.com/symbols/NYSE-NOW/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+RDW,NYSE:RDW,https://www.tradingview.com/symbols/NYSE-RDW/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+TRMB,NASDAQ:TRMB,https://www.tradingview.com/symbols/NASDAQ-TRMB/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+VEEV,NYSE:VEEV,https://www.tradingview.com/symbols/NYSE-VEEV/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+PYPL,NASDAQ:PYPL,https://www.tradingview.com/symbols/NASDAQ-PYPL/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+TEM,NASDAQ:TEM,https://www.tradingview.com/symbols/NASDAQ-TEM/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+FICO,NYSE:FICO,https://www.tradingview.com/symbols/NYSE-FICO/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+AAOI,NASDAQ:AAOI,https://www.tradingview.com/symbols/NASDAQ-AAOI/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+OUST,NASDAQ:OUST,https://www.tradingview.com/symbols/NASDAQ-OUST/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+APH,NYSE:APH,https://www.tradingview.com/symbols/NYSE-APH/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+ASPI,NASDAQ:ASPI,https://www.tradingview.com/symbols/NASDAQ-ASPI/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+NBIS,NASDAQ:NBIS,https://www.tradingview.com/symbols/NASDAQ-NBIS/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+ISRG,NASDAQ:ISRG,https://www.tradingview.com/symbols/NASDAQ-ISRG/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+SPGI,NYSE:SPGI,https://www.tradingview.com/symbols/NYSE-SPGI/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+MELI,NASDAQ:MELI,https://www.tradingview.com/symbols/NASDAQ-MELI/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+TMO,NYSE:TMO,https://www.tradingview.com/symbols/NYSE-TMO/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+META,NASDAQ:META,https://www.tradingview.com/symbols/NASDAQ-META/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+IONQ,NYSE:IONQ,https://www.tradingview.com/symbols/NYSE-IONQ/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+RGTI,NASDAQ:RGTI,https://www.tradingview.com/symbols/NASDAQ-RGTI/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+SDGR,NASDAQ:SDGR,https://www.tradingview.com/symbols/NASDAQ-SDGR/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+RXRX,NASDAQ:RXRX,https://www.tradingview.com/symbols/NASDAQ-RXRX/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+QCOM,NASDAQ:QCOM,https://www.tradingview.com/symbols/NASDAQ-QCOM/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+HSAI,NASDAQ:HSAI,https://www.tradingview.com/symbols/NASDAQ-HSAI/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+PL,NYSE:PL,https://www.tradingview.com/symbols/NYSE-PL/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+V,NYSE:V,https://www.tradingview.com/symbols/NYSE-V/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+VRTX,NASDAQ:VRTX,https://www.tradingview.com/symbols/NASDAQ-VRTX/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+DIS,NYSE:DIS,https://www.tradingview.com/symbols/NYSE-DIS/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+KVYO,NYSE:KVYO,https://www.tradingview.com/symbols/NYSE-KVYO/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+DKNG,NASDAQ:DKNG,https://www.tradingview.com/symbols/NASDAQ-DKNG/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+CRSP,NASDAQ:CRSP,https://www.tradingview.com/symbols/NASDAQ-CRSP/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+BEAM,NASDAQ:BEAM,https://www.tradingview.com/symbols/NASDAQ-BEAM/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+ETN,NYSE:ETN,https://www.tradingview.com/symbols/NYSE-ETN/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+MSTR,NASDAQ:MSTR,https://www.tradingview.com/symbols/NASDAQ-MSTR/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+POET,NASDAQ:POET,https://www.tradingview.com/symbols/NASDAQ-POET/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+KITT,NASDAQ:KITT,https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/,2026-07-04,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-KITT/forecast-price-target/: HTTP Error 404: N
+AXTI,NASDAQ:AXTI,https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+COHR,NYSE:COHR,https://www.tradingview.com/symbols/NYSE-COHR/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+ANET,NYSE:ANET,https://www.tradingview.com/symbols/NYSE-ANET/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+DDOG,NASDAQ:DDOG,https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+SNOW,NYSE:SNOW,https://www.tradingview.com/symbols/NYSE-SNOW/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+OPTX,NASDAQ:OPTX,https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/,2026-07-04,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 404: N
+AEM,NYSE:AEM,https://www.tradingview.com/symbols/NYSE-AEM/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+ZETA,NYSE:ZETA,https://www.tradingview.com/symbols/NYSE-ZETA/forecast/,2026-07-04,symbol_map,forecast_page_ok,

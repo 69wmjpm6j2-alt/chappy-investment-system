@@ -242,3 +242,50 @@
 2026-07-03T19:11:57.372704+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-07-03T19:11:57.372708+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-07-03T19:11:57.372713+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-04T17:14:58.323550+09:00,W04_tv_ratings,AVAV,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323571+09:00,W04_tv_ratings,AXON,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323578+09:00,W04_tv_ratings,AUR,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323583+09:00,W04_tv_ratings,TMDX,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323588+09:00,W04_tv_ratings,NOW,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323599+09:00,W04_tv_ratings,RDW,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323604+09:00,W04_tv_ratings,TRMB,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323610+09:00,W04_tv_ratings,VEEV,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323617+09:00,W04_tv_ratings,PYPL,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323622+09:00,W04_tv_ratings,TEM,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323626+09:00,W04_tv_ratings,FICO,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323631+09:00,W04_tv_ratings,AAOI,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323635+09:00,W04_tv_ratings,OUST,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323639+09:00,W04_tv_ratings,APH,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323644+09:00,W04_tv_ratings,ASPI,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323648+09:00,W04_tv_ratings,NBIS,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323653+09:00,W04_tv_ratings,ISRG,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323657+09:00,W04_tv_ratings,SPGI,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323668+09:00,W04_tv_ratings,MELI,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323680+09:00,W04_tv_ratings,TMO,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323690+09:00,W04_tv_ratings,META,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323699+09:00,W04_tv_ratings,IONQ,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323708+09:00,W04_tv_ratings,RGTI,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323717+09:00,W04_tv_ratings,SDGR,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323727+09:00,W04_tv_ratings,RXRX,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323735+09:00,W04_tv_ratings,QCOM,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323740+09:00,W04_tv_ratings,HSAI,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323745+09:00,W04_tv_ratings,PL,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323749+09:00,W04_tv_ratings,V,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323759+09:00,W04_tv_ratings,VRTX,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323763+09:00,W04_tv_ratings,DIS,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323768+09:00,W04_tv_ratings,KVYO,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323772+09:00,W04_tv_ratings,DKNG,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323776+09:00,W04_tv_ratings,CRSP,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323781+09:00,W04_tv_ratings,BEAM,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323786+09:00,W04_tv_ratings,ETN,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323791+09:00,W04_tv_ratings,MSTR,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323795+09:00,W04_tv_ratings,POET,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323799+09:00,W04_tv_ratings,KITT,US,WARN,tv_ratings,TV_PARTIAL,mode=monthly; status=kept_previous_tv_partial; stale_days=7; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-KITT/forecast-price-target/: HTTP Error 404: Not Found
+2026-07-04T17:14:58.323810+09:00,W04_tv_ratings,AXTI,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323814+09:00,W04_tv_ratings,COHR,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323819+09:00,W04_tv_ratings,ANET,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323824+09:00,W04_tv_ratings,DDOG,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323828+09:00,W04_tv_ratings,SNOW,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323833+09:00,W04_tv_ratings,OPTX,US,WARN,tv_ratings,TV_PARTIAL,mode=monthly; status=kept_previous_tv_partial; stale_days=7; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 404: Not Found
+2026-07-04T17:14:58.323841+09:00,W04_tv_ratings,AEM,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-04T17:14:58.323846+09:00,W04_tv_ratings,ZETA,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
