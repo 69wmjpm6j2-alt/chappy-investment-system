@@ -289,3 +289,9 @@
 2026-07-04T17:14:58.323833+09:00,W04_tv_ratings,OPTX,US,WARN,tv_ratings,TV_PARTIAL,mode=monthly; status=kept_previous_tv_partial; stale_days=7; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 404: Not Found
 2026-07-04T17:14:58.323841+09:00,W04_tv_ratings,AEM,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
 2026-07-04T17:14:58.323846+09:00,W04_tv_ratings,ZETA,US,INFO,tv_ratings,TV_FULL,mode=monthly; status=forecast_page_ok; stale_days=0; 
+2026-07-06T22:03:27.623245+09:00,D03_buy_alert,EWY,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-06T22:03:27.623268+09:00,D03_buy_alert,PL,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-06T22:03:27.623275+09:00,D03_buy_alert,MSTR,US,INFO,条件確認待ち,buy_zone_master,basis status
+2026-07-06T22:03:27.623280+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-06T22:03:27.623285+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-07-06T22:03:27.623290+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
