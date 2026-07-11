@@ -37,12 +37,12 @@ BEAM,NASDAQ:BEAM,https://www.tradingview.com/symbols/NASDAQ-BEAM/forecast/,2026-
 ETN,NYSE:ETN,https://www.tradingview.com/symbols/NYSE-ETN/forecast/,2026-07-04,symbol_map,forecast_page_ok,
 MSTR,NASDAQ:MSTR,https://www.tradingview.com/symbols/NASDAQ-MSTR/forecast/,2026-07-04,symbol_map,forecast_page_ok,
 POET,NASDAQ:POET,https://www.tradingview.com/symbols/NASDAQ-POET/forecast/,2026-07-04,symbol_map,forecast_page_ok,
-KITT,NASDAQ:KITT,https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/,2026-07-04,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-KITT/forecast-price-target/: HTTP Error 404: N
 AXTI,NASDAQ:AXTI,https://www.tradingview.com/symbols/NASDAQ-AXTI/forecast/,2026-07-04,symbol_map,forecast_page_ok,
 COHR,NYSE:COHR,https://www.tradingview.com/symbols/NYSE-COHR/forecast/,2026-07-04,symbol_map,forecast_page_ok,
 ANET,NYSE:ANET,https://www.tradingview.com/symbols/NYSE-ANET/forecast/,2026-07-04,symbol_map,forecast_page_ok,
 DDOG,NASDAQ:DDOG,https://www.tradingview.com/symbols/NASDAQ-DDOG/forecast/,2026-07-04,symbol_map,forecast_page_ok,
 SNOW,NYSE:SNOW,https://www.tradingview.com/symbols/NYSE-SNOW/forecast/,2026-07-04,symbol_map,forecast_page_ok,
-OPTX,NASDAQ:OPTX,https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/,2026-07-04,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 404: N
 AEM,NYSE:AEM,https://www.tradingview.com/symbols/NYSE-AEM/forecast/,2026-07-04,symbol_map,forecast_page_ok,
 ZETA,NYSE:ZETA,https://www.tradingview.com/symbols/NYSE-ZETA/forecast/,2026-07-04,symbol_map,forecast_page_ok,
+KITT,NASDAQ:KITT,https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/,2026-07-11,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-KITT/forecast-price-target/: HTTP Error 404: N
+OPTX,NASDAQ:OPTX,https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/,2026-07-11,symbol_map,kept_previous_tv_partial,今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 404: N
