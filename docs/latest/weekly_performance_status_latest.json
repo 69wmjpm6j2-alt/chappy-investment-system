@@ -1,0 +1,27 @@
+{
+  "generated_at_jst": "2026-07-11T21:11:45.921079+09:00",
+  "status": "error",
+  "row_count": 74,
+  "price_success_count": 74,
+  "price_success_ratio": 1.0,
+  "min_price_success_ratio": 0.7,
+  "price_missing_count": 0,
+  "rating_missing_count": 48,
+  "us_rating_applicable_count": 48,
+  "us_rating_missing_count": 48,
+  "us_complete_tv_count": 0,
+  "us_complete_tv_ratio": 0.0,
+  "us_incomplete_tv_count": 48,
+  "jp_rating_not_applicable_count": 26,
+  "rating_quality_policy": "TradingView is required/evaluated only for US rows. JP rows are intentionally treated as rating_not_applicable and do not affect rating quality.",
+  "rating_source_files": [],
+  "rating_source_details": [],
+  "max_us_rating_source_age_days": 7,
+  "stale_rating_source_files": [],
+  "unknown_freshness_rating_source_files": [],
+  "quality_errors": [
+    "all_us_tradingview_ratings_missing",
+    "too_many_incomplete_us_tradingview_snapshots"
+  ],
+  "fatal_error": true
+}
