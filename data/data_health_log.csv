@@ -615,3 +615,9 @@
 2026-08-05T09:03:45.626917+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-08-05T09:03:45.626922+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-08-05T09:03:45.626926+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-08-06T09:00:19.239820+09:00,D03_buy_alert,EWY,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-08-06T09:00:19.239841+09:00,D03_buy_alert,PL,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-08-06T09:00:19.239848+09:00,D03_buy_alert,MSTR,US,INFO,条件確認待ち,buy_zone_master,basis status
+2026-08-06T09:00:19.239854+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-08-06T09:00:19.239858+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-08-06T09:00:19.239863+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
