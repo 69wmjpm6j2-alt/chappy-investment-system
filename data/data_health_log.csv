@@ -627,3 +627,50 @@
 2026-08-07T10:41:53.894862+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-08-07T10:41:53.894866+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
 2026-08-07T10:41:53.894870+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-08-08T08:06:10.852234+09:00,W04_tv_ratings,AVAV,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852266+09:00,W04_tv_ratings,AXON,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852278+09:00,W04_tv_ratings,AUR,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852284+09:00,W04_tv_ratings,TMDX,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852291+09:00,W04_tv_ratings,NOW,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852297+09:00,W04_tv_ratings,RDW,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852303+09:00,W04_tv_ratings,TRMB,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852311+09:00,W04_tv_ratings,VEEV,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852320+09:00,W04_tv_ratings,PYPL,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852326+09:00,W04_tv_ratings,TEM,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852332+09:00,W04_tv_ratings,FICO,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852338+09:00,W04_tv_ratings,AAOI,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852344+09:00,W04_tv_ratings,OUST,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852350+09:00,W04_tv_ratings,APH,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852355+09:00,W04_tv_ratings,ASPI,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852361+09:00,W04_tv_ratings,NBIS,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852366+09:00,W04_tv_ratings,ISRG,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852371+09:00,W04_tv_ratings,SPGI,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852377+09:00,W04_tv_ratings,MELI,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852382+09:00,W04_tv_ratings,TMO,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852388+09:00,W04_tv_ratings,META,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852394+09:00,W04_tv_ratings,IONQ,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852399+09:00,W04_tv_ratings,RGTI,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852405+09:00,W04_tv_ratings,SDGR,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852410+09:00,W04_tv_ratings,RXRX,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852416+09:00,W04_tv_ratings,QCOM,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852421+09:00,W04_tv_ratings,HSAI,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852426+09:00,W04_tv_ratings,PL,US,INFO,tv_ratings,TV_FULL,mode=missing; status=skipped_recent_or_not_due; stale_days=7; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852432+09:00,W04_tv_ratings,V,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852437+09:00,W04_tv_ratings,VRTX,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852443+09:00,W04_tv_ratings,DIS,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852448+09:00,W04_tv_ratings,KVYO,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852454+09:00,W04_tv_ratings,DKNG,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852459+09:00,W04_tv_ratings,CRSP,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852465+09:00,W04_tv_ratings,BEAM,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852470+09:00,W04_tv_ratings,ETN,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852476+09:00,W04_tv_ratings,MSTR,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852481+09:00,W04_tv_ratings,POET,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852487+09:00,W04_tv_ratings,KITT,US,WARN,tv_ratings,TV_PARTIAL,mode=missing; status=kept_previous_tv_partial; stale_days=42; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-KITT/forecast-price-target/: HTTP Error 404: Not Found
+2026-08-08T08:06:10.852518+09:00,W04_tv_ratings,AXTI,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852526+09:00,W04_tv_ratings,COHR,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852532+09:00,W04_tv_ratings,ANET,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852537+09:00,W04_tv_ratings,DDOG,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852542+09:00,W04_tv_ratings,SNOW,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852548+09:00,W04_tv_ratings,OPTX,US,WARN,tv_ratings,TV_PARTIAL,mode=missing; status=kept_previous_tv_partial; stale_days=42; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 404: Not Found
+2026-08-08T08:06:10.852556+09:00,W04_tv_ratings,AEM,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
+2026-08-08T08:06:10.852561+09:00,W04_tv_ratings,ZETA,US,INFO,tv_ratings,TV_CACHE,mode=missing; status=skipped_recent_or_not_due; stale_days=35; 今回は再取得対象外。保存済みTradingView情報を使用。
