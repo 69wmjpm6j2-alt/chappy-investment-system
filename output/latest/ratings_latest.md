@@ -1,5 +1,5 @@
 【CIS-W04｜TradingViewレーティング更新 v0.6.3】
-実行日：2026-10-17 JST
+実行日：2026-10-24 JST
 実行モード：missing
 単独銘柄：—
 
@@ -28,62 +28,62 @@ TV_MISSING：0件
 - ETN｜Eaton｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
 - MSTR｜MicroStrategy｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
 - POET｜POET Technologies｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
-- KITT｜Nauticus Robotics｜TV_PARTIAL｜rating_date=2026-06-27｜next=2026-10-24｜note=今回未取得のため前回TV_PARTIALを保持。forecast page returned no usable fields
+- KITT｜Nauticus Robotics｜TV_PARTIAL｜rating_date=2026-06-27｜next=2026-10-31｜note=今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-KITT/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-KITT/forecast-price-target/: HTTP Error 404: Not Found
 - AXTI｜AXT｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
 - COHR｜Coherent｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
 - ANET｜Arista Networks｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
 - DDOG｜Datadog｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
 - SNOW｜Snowflake｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
-- OPTX｜Syntec Optics｜TV_PARTIAL｜rating_date=2026-06-27｜next=2026-10-24｜note=今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 404: Not Found
+- OPTX｜Syntec Optics｜TV_PARTIAL｜rating_date=2026-06-27｜next=2026-10-31｜note=今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 404: Not Found / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 404: Not Found
 - AEM｜Agnico Eagle Mines｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
 - ZETA｜Zeta Global｜TV_STALE｜rating_date=2026-07-04｜next=2026-08-03｜note=今回は再取得対象外。保存済みTradingView情報を使用。
 
 ## 上昇余地が大きい順（TV目標株価あり）
-- ASPI｜ASP Isotopes｜TV_FULL｜3.0人｜—｜内訳 —｜平均目標 13｜乖離 488.24% / 14日古
-- POET｜POET Technologies｜TV_STALE｜2.0人｜—｜内訳 —｜平均目標 20.25｜乖離 236.94% / 105日古
-- PL｜Planet Labs｜TV_FULL｜10.0人｜—｜内訳 —｜平均目標 35｜乖離 140.72% / 14日古
-- RGTI｜Rigetti｜TV_FULL｜11.0人｜—｜内訳 —｜平均目標 29.55｜乖離 133.97% / 14日古
-- AUR｜Aurora Innovation｜TV_FULL｜11.0人｜—｜内訳 —｜平均目標 11.78｜乖離 118.15% / 14日古
-- HSAI｜Hesai｜TV_FULL｜19.0人｜—｜内訳 —｜平均目標 28.39｜乖離 112.50% / 14日古
-- BEAM｜Beam Therapeutics｜TV_FULL｜14.0人｜—｜内訳 —｜平均目標 51.07｜乖離 106.51% / 14日古
-- MSTR｜MicroStrategy｜TV_STALE｜15.0人｜—｜内訳 —｜平均目標 309.87｜乖離 104.82% / 105日古
-- AAOI｜Applied Optoelectronics｜TV_FULL｜6.0人｜—｜内訳 —｜平均目標 170.5｜乖離 103.63% / 14日古
-- IONQ｜IonQ｜TV_FULL｜13.0人｜—｜内訳 —｜平均目標 68.54｜乖離 99.53% / 14日古
-- OUST｜Ouster｜TV_FULL｜6.0人｜—｜内訳 —｜平均目標 58.5｜乖離 86.72% / 14日古
-- DKNG｜DraftKings｜TV_FULL｜37.0人｜—｜内訳 —｜平均目標 34.2｜乖離 77.11% / 14日古
-- AVAV｜AeroVironment｜TV_FULL｜19.0人｜—｜内訳 —｜平均目標 217.79｜乖離 76.75% / 14日古
-- RXRX｜Recursion｜TV_FULL｜6.0人｜—｜内訳 —｜平均目標 7.22｜乖離 73.56% / 14日古
-- AXON｜Axon Enterprise｜TV_FULL｜17.0人｜—｜内訳 —｜平均目標 722.65｜乖離 73.22% / 14日古
-- AXTI｜AXT｜TV_STALE｜4.0人｜—｜内訳 —｜平均目標 96.5｜乖離 66.64% / 105日古
-- RDW｜Redwire｜TV_FULL｜8.0人｜—｜内訳 —｜平均目標 14.69｜乖離 64.87% / 14日古
-- CRSP｜CRISPR Therapeutics｜TV_FULL｜18.0人｜—｜内訳 —｜平均目標 84.72｜乖離 64.44% / 14日古
-- FICO｜Fair Isaac｜TV_FULL｜19.0人｜—｜内訳 —｜平均目標 1,223.26｜乖離 58.88% / 14日古
-- COHR｜Coherent｜TV_STALE｜22.0人｜—｜内訳 —｜平均目標 391｜乖離 56.03% / 105日古
-- NBIS｜Nebius｜TV_FULL｜20.0人｜—｜内訳 —｜平均目標 289.45｜乖離 53.63% / 14日古
-- KVYO｜Klaviyo｜TV_FULL｜21.0人｜—｜内訳 —｜平均目標 26.57｜乖離 46.88% / 14日古
-- AEM｜Agnico Eagle Mines｜TV_STALE｜19.0人｜—｜内訳 —｜平均目標 250.61｜乖離 33.62% / 105日古
-- TRMB｜Trimble｜TV_FULL｜10.0人｜—｜内訳 —｜平均目標 79.55｜乖離 30.47% / 14日古
-- TMDX｜TransMedics｜TV_FULL｜10.0人｜—｜内訳 —｜平均目標 97.3｜乖離 27.16% / 14日古
-- MELI｜MercadoLibre｜TV_FULL｜24.0人｜—｜内訳 —｜平均目標 2,295.31｜乖離 23.60% / 14日古
-- APH｜Amphenol｜TV_FULL｜18.0人｜—｜内訳 —｜平均目標 100.72｜乖離 23.60% / 14日古
-- SPGI｜S&P Global｜TV_FULL｜21.0人｜—｜内訳 —｜平均目標 519.05｜乖離 22.18% / 14日古
-- ETN｜Eaton｜TV_STALE｜22.0人｜—｜内訳 —｜平均目標 468.95｜乖離 16.52% / 105日古
-- DIS｜Disney｜TV_FULL｜31.0人｜—｜内訳 —｜平均目標 127.41｜乖離 15.12% / 14日古
-- VRTX｜Vertex Pharma｜TV_FULL｜27.0人｜—｜内訳 —｜平均目標 575.89｜乖離 13.20% / 14日古
-- ISRG｜Intuitive Surgical｜TV_FULL｜28.0人｜—｜内訳 —｜平均目標 479.86｜乖離 12.15% / 14日古
-- QCOM｜Qualcomm｜TV_FULL｜27.0人｜—｜内訳 —｜平均目標 196.73｜乖離 10.27% / 14日古
-- META｜Meta Platforms｜TV_FULL｜57.0人｜—｜内訳 —｜平均目標 793.21｜乖離 7.67% / 14日古
-- V｜Visa｜TV_FULL｜35.0人｜—｜内訳 —｜平均目標 423.54｜乖離 5.95% / 14日古
-- ANET｜Arista Networks｜TV_STALE｜25.0人｜—｜内訳 —｜平均目標 190.3｜乖離 2.54% / 105日古
-- PYPL｜PayPal｜TV_FULL｜30.0人｜—｜内訳 —｜平均目標 56.5｜乖離 -1.15% / 14日古
-- NOW｜ServiceNow｜TV_FULL｜45.0人｜—｜内訳 —｜平均目標 145.87｜乖離 -1.82% / 14日古
-- TEM｜Tempus AI｜TV_FULL｜18.0人｜—｜内訳 —｜平均目標 69.44｜乖離 -2.38% / 14日古
-- TMO｜Thermo Fisher｜TV_FULL｜24.0人｜—｜内訳 —｜平均目標 662.25｜乖離 -4.92% / 14日古
-- VEEV｜Veeva Systems｜TV_FULL｜26.0人｜—｜内訳 —｜平均目標 297.42｜乖離 -4.99% / 14日古
-- DDOG｜Datadog｜TV_STALE｜44.0人｜—｜内訳 —｜平均目標 244.77｜乖離 -8.07% / 105日古
-- SNOW｜Snowflake｜TV_STALE｜44.0人｜—｜内訳 —｜平均目標 298.16｜乖離 -11.02% / 105日古
-- ZETA｜Zeta Global｜TV_STALE｜14.0人｜—｜内訳 —｜平均目標 28.68｜乖離 -14.52% / 105日古
-- SDGR｜Schrodinger｜TV_FULL｜7.0人｜—｜内訳 —｜平均目標 21.43｜乖離 -15.89% / 14日古
+- ASPI｜ASP Isotopes｜TV_FULL｜3.0人｜—｜内訳 —｜平均目標 13｜乖離 522.01% / 21日古
+- POET｜POET Technologies｜TV_STALE｜2.0人｜—｜内訳 —｜平均目標 20.25｜乖離 279.92% / 112日古
+- PL｜Planet Labs｜TV_FULL｜10.0人｜—｜内訳 —｜平均目標 35｜乖離 167.58% / 21日古
+- RGTI｜Rigetti｜TV_FULL｜11.0人｜—｜内訳 —｜平均目標 29.55｜乖離 157.40% / 21日古
+- AAOI｜Applied Optoelectronics｜TV_FULL｜6.0人｜—｜内訳 —｜平均目標 170.5｜乖離 150.48% / 21日古
+- AUR｜Aurora Innovation｜TV_FULL｜11.0人｜—｜内訳 —｜平均目標 11.78｜乖離 142.39% / 21日古
+- HSAI｜Hesai｜TV_FULL｜19.0人｜—｜内訳 —｜平均目標 28.39｜乖離 133.86% / 21日古
+- IONQ｜IonQ｜TV_FULL｜13.0人｜—｜内訳 —｜平均目標 68.54｜乖離 119.96% / 21日古
+- MSTR｜MicroStrategy｜TV_STALE｜15.0人｜—｜内訳 —｜平均目標 309.87｜乖離 112.53% / 112日古
+- OUST｜Ouster｜TV_FULL｜6.0人｜—｜内訳 —｜平均目標 58.5｜乖離 109.08% / 21日古
+- BEAM｜Beam Therapeutics｜TV_FULL｜14.0人｜—｜内訳 —｜平均目標 51.07｜乖離 107.94% / 21日古
+- RXRX｜Recursion｜TV_FULL｜6.0人｜—｜内訳 —｜平均目標 7.22｜乖離 101.68% / 21日古
+- COHR｜Coherent｜TV_STALE｜22.0人｜—｜内訳 —｜平均目標 391｜乖離 88.14% / 112日古
+- AXTI｜AXT｜TV_STALE｜4.0人｜—｜内訳 —｜平均目標 96.5｜乖離 87.16% / 112日古
+- AVAV｜AeroVironment｜TV_FULL｜19.0人｜—｜内訳 —｜平均目標 217.79｜乖離 85.04% / 21日古
+- NBIS｜Nebius｜TV_FULL｜20.0人｜—｜内訳 —｜平均目標 289.45｜乖離 81.85% / 21日古
+- RDW｜Redwire｜TV_FULL｜8.0人｜—｜内訳 —｜平均目標 14.69｜乖離 80.47% / 21日古
+- AXON｜Axon Enterprise｜TV_FULL｜17.0人｜—｜内訳 —｜平均目標 722.65｜乖離 74.30% / 21日古
+- CRSP｜CRISPR Therapeutics｜TV_FULL｜18.0人｜—｜内訳 —｜平均目標 84.72｜乖離 69.47% / 21日古
+- DKNG｜DraftKings｜TV_FULL｜37.0人｜—｜内訳 —｜平均目標 34.2｜乖離 63.32% / 21日古
+- FICO｜Fair Isaac｜TV_FULL｜19.0人｜—｜内訳 —｜平均目標 1,223.26｜乖離 48.59% / 21日古
+- AEM｜Agnico Eagle Mines｜TV_STALE｜19.0人｜—｜内訳 —｜平均目標 250.61｜乖離 42.27% / 112日古
+- APH｜Amphenol｜TV_FULL｜18.0人｜—｜内訳 —｜平均目標 100.72｜乖離 37.84% / 21日古
+- TMDX｜TransMedics｜TV_FULL｜10.0人｜—｜内訳 —｜平均目標 97.3｜乖離 35.03% / 21日古
+- KVYO｜Klaviyo｜TV_FULL｜21.0人｜—｜内訳 —｜平均目標 26.57｜乖離 29.04% / 21日古
+- ETN｜Eaton｜TV_STALE｜22.0人｜—｜内訳 —｜平均目標 468.95｜乖離 27.09% / 112日古
+- MELI｜MercadoLibre｜TV_FULL｜24.0人｜—｜内訳 —｜平均目標 2,295.31｜乖離 25.77% / 21日古
+- TRMB｜Trimble｜TV_FULL｜10.0人｜—｜内訳 —｜平均目標 79.55｜乖離 24.28% / 21日古
+- META｜Meta Platforms｜TV_FULL｜57.0人｜—｜内訳 —｜平均目標 793.21｜乖離 22.25% / 21日古
+- SPGI｜S&P Global｜TV_FULL｜21.0人｜—｜内訳 —｜平均目標 519.05｜乖離 14.56% / 21日古
+- QCOM｜Qualcomm｜TV_FULL｜27.0人｜—｜内訳 —｜平均目標 196.73｜乖離 13.83% / 21日古
+- DIS｜Disney｜TV_FULL｜31.0人｜—｜内訳 —｜平均目標 127.41｜乖離 12.62% / 21日古
+- ANET｜Arista Networks｜TV_STALE｜25.0人｜—｜内訳 —｜平均目標 190.3｜乖離 11.24% / 112日古
+- TEM｜Tempus AI｜TV_FULL｜18.0人｜—｜内訳 —｜平均目標 69.44｜乖離 8.82% / 21日古
+- ISRG｜Intuitive Surgical｜TV_FULL｜28.0人｜—｜内訳 —｜平均目標 479.86｜乖離 8.11% / 21日古
+- VRTX｜Vertex Pharma｜TV_FULL｜27.0人｜—｜内訳 —｜平均目標 575.89｜乖離 7.61% / 21日古
+- V｜Visa｜TV_FULL｜35.0人｜—｜内訳 —｜平均目標 423.54｜乖離 2.22% / 21日古
+- PYPL｜PayPal｜TV_FULL｜30.0人｜—｜内訳 —｜平均目標 56.5｜乖離 -1.80% / 21日古
+- TMO｜Thermo Fisher｜TV_FULL｜24.0人｜—｜内訳 —｜平均目標 662.25｜乖離 -2.11% / 21日古
+- SNOW｜Snowflake｜TV_STALE｜44.0人｜—｜内訳 —｜平均目標 298.16｜乖離 -5.03% / 112日古
+- DDOG｜Datadog｜TV_STALE｜44.0人｜—｜内訳 —｜平均目標 244.77｜乖離 -5.04% / 112日古
+- SDGR｜Schrodinger｜TV_FULL｜7.0人｜—｜内訳 —｜平均目標 21.43｜乖離 -5.18% / 21日古
+- NOW｜ServiceNow｜TV_FULL｜45.0人｜—｜内訳 —｜平均目標 145.87｜乖離 -7.09% / 21日古
+- VEEV｜Veeva Systems｜TV_FULL｜26.0人｜—｜内訳 —｜平均目標 297.42｜乖離 -7.79% / 21日古
+- ZETA｜Zeta Global｜TV_STALE｜14.0人｜—｜内訳 —｜平均目標 28.68｜乖離 -14.44% / 112日古
 
 ## TV_PARTIAL / TV_PARTIAL_PLUS（判断/内訳のみ・平均目標未取得）
 - KITT｜Nauticus Robotics｜—人｜NoRating｜平均目標 未取得
