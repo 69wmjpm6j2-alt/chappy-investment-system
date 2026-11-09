@@ -1675,3 +1675,9 @@
 2026-11-07T11:12:13.480148+09:00,W04_tv_ratings,OPTX,US,WARN,tv_ratings,TV_PARTIAL,mode=monthly; status=kept_previous_tv_partial; stale_days=133; 今回未取得のため前回TV_PARTIALを保持。https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NASDAQ-OPTX/forecast-price-target/: HTTP Error 403: Forbidden
 2026-11-07T11:12:13.480158+09:00,W04_tv_ratings,AEM,US,WARN,tv_ratings,TV_STALE,mode=monthly; status=kept_previous_tv_full; stale_days=126; 今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NYSE-AEM/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-AEM/forecast-price-target/: HTTP Error 403: Forbidden
 2026-11-07T11:12:13.480167+09:00,W04_tv_ratings,ZETA,US,WARN,tv_ratings,TV_STALE,mode=monthly; status=kept_previous_tv_full; stale_days=126; 今回TV_FULL未取得のため前回TV_FULL値を保持。attempt_quality=TV_MISSING; https://www.tradingview.com/symbols/NYSE-ZETA/forecast/: HTTP Error 403: Forbidden / https://www.tradingview.com/symbols/NYSE-ZETA/forecast-price-target/: HTTP Error 403: Forbidden
+2026-11-09T11:25:35.339846+09:00,D03_buy_alert,EWY,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-11-09T11:25:35.339863+09:00,D03_buy_alert,PL,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-11-09T11:25:35.339867+09:00,D03_buy_alert,MSTR,US,INFO,条件確認待ち,buy_zone_master,basis status
+2026-11-09T11:25:35.339871+09:00,D03_buy_alert,AXTI,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-11-09T11:25:35.339873+09:00,D03_buy_alert,COHR,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
+2026-11-09T11:25:35.339876+09:00,D03_buy_alert,OPTX,US,INFO,価格スケール確認待ち,buy_zone_master,basis status
